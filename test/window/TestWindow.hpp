@@ -1,22 +1,24 @@
 # ifndef TEST_WINDOW
 # define TEST_WINDOW
 
+# include "../../src/namespace.hpp"
 # include <QOpenGLWindow>
 # include <QOpenGLBuffer>
 # include <QOpenGLVertexArrayObject>
 # include <QOpenGLShaderProgram>
+# include <QVariant>
 
 class TestWindow: public QOpenGLWindow
 {
     Q_OBJECT
 public slots:
-    void Render(int); // param 은 뭐?
+    void Render(QVariant); // param 은 뭐?
 private:
     QOpenGLBuffer vbo;
     QOpenGLBuffer ibo;
     QOpenGLVertexArrayObject vao;
     QOpenGLShaderProgram program;
-    int num;
+    Vector2 testCoord;
 
 public:
     bool draw;
@@ -24,7 +26,9 @@ public:
     ~TestWindow();
     void initializeGL() Q_DECL_OVERRIDE;
 	void paintGL() Q_DECL_OVERRIDE;
+    // void resizeGL(int w, int h) Q_DECL_OVERRIDE;
     void Init();
+    void fff();
 };
 
 

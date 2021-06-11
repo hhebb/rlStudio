@@ -17,11 +17,15 @@ find_package(GLUT REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
-        # window/TestWindow.cpp
-        # apps/TestApp.cpp
-        # ../src/physics/World.cpp
+        window/TestWindow.cpp
+        apps/TestApp.cpp
+        ../src/physics/World.cpp
+        ../src/physics/Body.cpp
+        # ../src/physics/TestThread.cpp
+        # ../src/physics/Collider.cpp
 
-        _gltest/RectangleWindow.cpp
+
+        # _gltest/RectangleWindow.cpp
         # _gltest/TestDialog.cpp
         # src/OpenGLWindow.cpp
         # src/TriangleWindow.cpp

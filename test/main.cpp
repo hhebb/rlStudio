@@ -1,21 +1,24 @@
 // #include "_gltest/RectangleWindow.hpp"
+# include "apps/TestApp.hpp"
 
 #include <QApplication>
 #include <QSurfaceFormat>
 # include <QPushButton>
 
 int main(int argc, char **argv) {
-	QGuiApplication app(argc, argv);
+	QApplication app(argc, argv);
 
-	// Set OpenGL Version information
-	QSurfaceFormat format;
-	format.setRenderableType(QSurfaceFormat::OpenGL);
-	format.setProfile(QSurfaceFormat::CoreProfile);
-	format.setVersion(3,3);
+	
 
+	TestWindow* window = new TestWindow();
+	World* world = new World();
+	TestApp testApp(window, world);
+	testApp.InitApp();
 	// Note: The format must be set before show() is called.
-	QPushButton* button = new QPushButton();
-	button->show();
+	// RectangleWindow window;
+	// window.setFormat(format);
+	// window.resize(640, 480);
+	// window.show();
 
 	return app.exec();
 }
