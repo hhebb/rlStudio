@@ -76,7 +76,7 @@ void TestApp::Run()
 
 void TestApp::setReady()
 {
-    cout << "> update" << endl;
+    // cout << "> update" << endl;
     world->ready = true;
 }
 
