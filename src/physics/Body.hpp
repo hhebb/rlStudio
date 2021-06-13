@@ -9,9 +9,10 @@ class Body
 private:
     Vector2 position;
     SCALAR rotation;
+    Vector2 velocity = {.0f, .0f};
     SCALAR angularVelocity;
 
-    Vector2 force;
+    Vector2 force = {.0f, .0f};
     SCALAR torque;
     SCALAR inverseMass;
     float radius;
@@ -20,7 +21,6 @@ private:
 
 public:
     SCALAR mass;
-    Vector2 velocity;
     Body(VERTEX, Vector2, SCALAR, SCALAR, float);
     void AddForce(Vector2);
     void ClearForce();
