@@ -103,7 +103,6 @@ struct Matrix3x3
     }
 };
 
-
 Q_DECLARE_METATYPE(Vector2);
 Q_DECLARE_METATYPE(Matrix3x3);
 

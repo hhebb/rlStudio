@@ -1,7 +1,5 @@
 # include "Collider.hpp"
 # include "Body.hpp"
-# include <QMatrix2x2>
-# include <QMatrix>
 # include <iostream>
 
 using namespace std;

@@ -38,7 +38,7 @@ void World::Step()
         SCALAR rotateDiff = bodies[i].GetRotation();
 
         // - force generation
-        Vector2 gravity = {0.0f, -9.8f * bodies[i].mass};
+        Vector2 gravity = {.0f, -9.8f * bodies[i].mass};
         bodies[i].AddForce(gravity);
         
         // - velocity calculation
@@ -60,7 +60,9 @@ void World::Step()
         bodies[i].ClearForce();
 
         // update collider shape
-        rotateDiff = 1;
+        rotateDiff = 5;
+        // translateDiff = {0, -.00001f};
+        cout << translateDiff.x << ", " << translateDiff.y << endl;
         bodies[i].GetCollider()->Update(bodies[i].GetPosition(), translateDiff, rotateDiff);
     }
 }
@@ -98,7 +100,7 @@ void World::run()
     // 모든 물리 연산은 여기서 수행되고 결과를 emit 한다.
     // GL window 가 vsync 가 될 때까지 대기를 하므로, 렌더링을 켜면 연산이 느려진다.
     int count = 0;
-    while(count < 10)
+    while(count < 1)
     {
         while(!ready) {}
         ready = false;

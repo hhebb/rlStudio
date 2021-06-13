@@ -11,7 +11,7 @@ private:
     SCALAR rotation;
     SCALAR angularVelocity;
 
-    Vector2 force;
+    Vector2 force = {0, 0};
     SCALAR torque;
     SCALAR inverseMass;
     float radius;

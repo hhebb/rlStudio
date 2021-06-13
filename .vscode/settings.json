@@ -55,6 +55,8 @@
         "variant": "cpp",
         "qobject": "cpp",
         "qopenglwindow": "cpp",
-        "qapplication": "cpp"
+        "qapplication": "cpp",
+        "qmetatype": "cpp",
+        "qvariant": "cpp"
     }
 }
