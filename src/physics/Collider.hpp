@@ -2,19 +2,21 @@
 # define COLLIDER
 
 # include "../namespace.hpp"
-# include "Body.hpp"
+
+class Body;
 
 class Collider
 {
 private:
-    // Body* body;
+    Body* body;
     VERTEX vertices;
     float radius;
+    Matrix3x3 matrix;
     
 public:
-    // Collider(Body*, VERTEX, float);
-    void Update(Vector2, SCALAR);
+    Collider(Body*, VERTEX, float);
+    void Update(Vector2, Vector2, SCALAR);
+    VERTEX GetVertices();
 };
-
 
 # endif

@@ -14,11 +14,11 @@ class TestWindow: public QOpenGLWindow
 public slots:
     void Render(QVariant); // param 은 뭐?
 private:
-    QOpenGLBuffer vbo;
-    QOpenGLBuffer ibo;
-    QOpenGLVertexArrayObject vao;
-    QOpenGLShaderProgram program;
-    Vector2 testCoord;
+    // QOpenGLBuffer vbo;
+    // QOpenGLBuffer ibo;
+    // QOpenGLVertexArrayObject vao;
+    // QOpenGLShaderProgram program;
+    VERTEX testCoord;
 
 public:
     bool draw;
