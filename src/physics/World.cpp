@@ -12,12 +12,27 @@ World::World()
 void World::Init()
 {
     // body 들 생성, 물성치 설정. 모든 물리 환경 설정.
-    // 예시 body 생성.
-    VERTEX vert = {Vector2{0, 0.5}, Vector2{.1, .6}, Vector2{.1, .5}}; // x, y order
-    Vector2 pos = {0.0, 0.5};
-    SCALAR rot = 0;
-    SCALAR mass = 1;
-    float radius = 1;
+    VERTEX vert; // vertices
+    Vector2 pos; // center
+    SCALAR rot;
+    SCALAR mass;
+    float radius;
+
+    // 바닥
+    vert = {Vector2{-.4, -.1}, Vector2{.4, -.1}, Vector2{.4, .1}, Vector2{-.4, .1}}; // x, y order
+    pos = {0.0, -0.1};
+    rot = 0;
+    mass = 1;
+    radius = 0;
+    Create(vert, pos, rot, mass, radius);
+
+
+    // 예시 body
+    vert = {Vector2{0, 0.5}, Vector2{.1, .6}, Vector2{.1, .5}}; // x, y order
+    pos = {0.0, 0.5};
+    rot = 0;
+    mass = 1;
+    radius = 1;
     Create(vert, pos, rot, mass, radius);
 
 }
@@ -29,8 +44,6 @@ void World::Reset()
 
 void World::Step()
 {
-    // Debug();
-
     // obj 들 update, vertices update
     for (int i = 0; i < bodies.size(); i ++)
     {   
@@ -60,14 +73,12 @@ void World::Step()
         bodies[i].ClearForce();
 
         // update collider shape
-        rotateDiff = 5;
-        // translateDiff = {0, -.00001f};
-        cout << translateDiff.x << ", " << translateDiff.y << endl;
+        rotateDiff = 3;
         bodies[i].GetCollider()->Update(bodies[i].GetPosition(), translateDiff, rotateDiff);
     }
 }
 
-VERTEX World::GetVertices()
+VERTEX_LIST World::GetVertices()
 {
     return this->vertices;
 }
@@ -102,12 +113,22 @@ void World::run()
     int count = 0;
     while(count < 1)
     {
+        // main physics.
         while(!ready) {}
         ready = false;
         count ++;
         Step();
+
+        // emit for rendering.
         QVariant var;
-        var.setValue(bodies[0].GetCollider()->GetVertices());
+        vertices.clear();
+
+        for (int i = 0; i < bodies.size(); i ++)
+        {
+            // var.setValue(bodies[i].GetCollider()->GetVertices());
+            vertices.push_back(bodies[i].GetCollider()->GetVertices());
+        }
+        var.setValue(vertices);
         emit physicsUpdate(var);
     }
 }

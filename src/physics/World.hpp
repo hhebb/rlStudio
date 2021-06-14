@@ -15,7 +15,7 @@ signals:
 private:
     // PhysicalObjects objs
     vector<Body> bodies;
-    VERTEX vertices;
+    VERTEX_LIST vertices;
     void run();
 
 public:
@@ -24,7 +24,7 @@ public:
     void Init();
     void Reset();
     void Step();
-    VERTEX GetVertices();
+    VERTEX_LIST GetVertices();
     void Create(VERTEX, Vector2, SCALAR, SCALAR, float);
     void Debug();
     vector<Body> GetBodies();

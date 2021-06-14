@@ -1,7 +1,7 @@
 # ifndef TEST_WINDOW
 # define TEST_WINDOW
 
-# include "../../src/namespace.hpp"
+# include "../../src/definition.hpp"
 # include <QOpenGLWindow>
 # include <QOpenGLBuffer>
 # include <QOpenGLVertexArrayObject>
@@ -18,7 +18,9 @@ private:
     // QOpenGLBuffer ibo;
     // QOpenGLVertexArrayObject vao;
     // QOpenGLShaderProgram program;
-    VERTEX testCoord;
+    VERTEX_LIST testCoord;
+    int width;
+    int height;
 
 public:
     bool draw;
@@ -26,8 +28,10 @@ public:
     ~TestWindow();
     void initializeGL() Q_DECL_OVERRIDE;
 	void paintGL() Q_DECL_OVERRIDE;
-    // void resizeGL(int w, int h) Q_DECL_OVERRIDE;
+    void resizeGL(int w, int h) Q_DECL_OVERRIDE;
     void Init();
+    void SetVertices(VERTEX_LIST);
+    void Resize();
     void fff();
 };
 

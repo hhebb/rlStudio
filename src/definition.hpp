@@ -12,8 +12,9 @@ using namespace std;
 # define DELTA_TIME 0.016f
 # define GRAVITY 9.8f
 # define VERTEX vector<Vector2> //vector<float>
+# define VERTEX_LIST vector<VERTEX>
 # define PI 3.141592
-# define INVERSE_RADIAN 0.01745 //PI / 180.0
+# define INVERSE_RADIAN 0.0174533 //PI / 180.0
 
 using namespace std;
 
@@ -25,27 +26,13 @@ struct Vector2
 
 struct Matrix3x3
 {
-    float m11;
-    float m12;
-    float m13;
-    float m21;
-    float m22;
-    float m23;
-    float m31;
-    float m32;
-    float m33;
+    float m11, m12, m13, m21, m22, m23, m31, m32, m33;
     Vector2 center;
 
     void SetIdentity()
     {
         m11 = 1, m22 = 1, m33 = 1;
         m12 = 0, m13 = 0, m21 = 0, m23 = 0, m31 = 0, m32 = 0;
-    }
-
-    void SetCenter(Vector2 center)
-    {
-        this->center = center;
-
     }
 
     void Translate(Vector2 translate)
@@ -58,30 +45,21 @@ struct Matrix3x3
         m23 = m23 + translate.y * m33;
     }
 
-    void Rotate(SCALAR angle)
+    void Rotate(SCALAR angle, Vector2 center)
     {
-        Translate(Vector2{-center.x, -center.y});
-
         SCALAR radAngle = angle * INVERSE_RADIAN;
         float c = cos(radAngle);
         float s = sin(radAngle);
+        float e1 = center.x * (1 - c) + center.y * s;
+        float e2 = center.y * (1 - c) - center.x * s;
 
-        m11 = c * m11 - s * m21;
-        m12 = c * m12 - s * m22;
-        m13 = c * m13 - s * m23;
-        m21 = s * m11 + c * m21;
-        m22 = s * m12 + c * m22;
-        m23 = s * m13 + c * m23;
+        m11 = c * m11 - s * m21 + e1 * m31;
+        m12 = c * m12 - s * m22 + e1 * m32;
+        m13 = c * m13 - s * m23 + e1 * m33;
+        m21 = s * m11 + c * m21 + e2 * m31;
+        m22 = s * m12 + c * m22 + e2 * m32;
+        m23 = s * m13 + c * m23 + e2 * m33;
         
-        Translate(center);
-
-        // local rotation.
-        // m11 = m11 * c + m12 * s;
-        // m12 = m12 * c - m11 * s;
-        // m21 = m21 * c + m22 * s;
-        // m22 = m22 * c - m21 * s;
-        // m31 = m31 * c + m32 * s;
-        // m32 = m32 * c - m31 * s;
     }
 
 
@@ -93,9 +71,6 @@ struct Matrix3x3
         {
             tmp.x = m11 * vertices[i].x + m12 * vertices[i].y + m13;
             tmp.y = m21 * vertices[i].x + m22 * vertices[i].y + m23;
-
-            // cout << tmp.x << ", " << tmp.y << endl;
-
             result.push_back(tmp);
         }
 

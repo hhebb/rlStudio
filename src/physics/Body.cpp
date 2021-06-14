@@ -10,7 +10,7 @@ Body::Body(VERTEX vertices, Vector2 pos, SCALAR rot, SCALAR m, float rad)
     inverseMass = 1 / mass;
     radius = rad;
     velocity = {0, 0};
-    collider = new Collider(this, vertices, radius);
+    collider = new Collider(vertices, radius);
 }
 
 

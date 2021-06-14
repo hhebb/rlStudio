@@ -1,12 +1,12 @@
 # include "Collider.hpp"
-# include "Body.hpp"
+// # include "Body.hpp"
 # include <iostream>
 
 using namespace std;
 
-Collider::Collider(Body* body, VERTEX vert, float rad)
+Collider::Collider(VERTEX vert, float rad)
 {
-    this->body = body;
+    // this->body = body;
     vertices = vert;
     radius = rad;
 }
@@ -19,9 +19,8 @@ VERTEX Collider::GetVertices()
 void Collider::Update(Vector2 center,Vector2 translate, SCALAR rotate)
 {
     matrix.SetIdentity();
-    matrix.SetCenter(center);
     matrix.Translate(translate);
-    matrix.Rotate(rotate);
+    matrix.Rotate(rotate, center);
     vertices = matrix.Multiply(vertices);
     // cout << vertices[1].x << ", " << vertices[1].y << endl;
 

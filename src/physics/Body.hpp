@@ -1,7 +1,7 @@
 # ifndef BODY
 # define BODY
 
-# include "../namespace.hpp"
+# include "../definition.hpp"
 # include "Collider.hpp"
 
 class Body

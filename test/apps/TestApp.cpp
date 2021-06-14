@@ -32,10 +32,10 @@ void TestApp::InitApp()
     // format.setStencilBufferSize(8);
     // window->setFormat(format);
     window->resize(640, 480);
-    window->show();
-
 
     world->Init();
+    window->SetVertices(world->GetVertices());
+    window->show();
 
 }
 // void TestApp::SetWorld(World* world)
@@ -58,7 +58,6 @@ TestWindow* TestApp::GetWindow()
 void TestApp::Run()
 {
     // 루프를 돌면서 물리 연산과 디버깅 창 렌더링 동시에 진행.
-    // 독립적으로 진행할 수 있도록 변경해야 함.
 
     // window create 함수 따로 만들기.
     // QSurfaceFormat format;
