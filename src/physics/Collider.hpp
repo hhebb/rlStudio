@@ -1,7 +1,7 @@
 # ifndef COLLIDER
 # define COLLIDER
 
-# include "../definition.hpp"
+# include "../Definition.hpp"
 
 // class Body;
 

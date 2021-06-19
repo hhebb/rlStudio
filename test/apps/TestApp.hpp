@@ -4,7 +4,7 @@
 # include <QObject>
 # include "../../src/physics/World.hpp"
 # include "../window/TestWindow.hpp"
-# include "../../src/definition.hpp"
+# include "../../src/Definition.hpp"
 
 class TestApp: public QObject
 {

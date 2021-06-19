@@ -23,6 +23,7 @@ set(PROJECT_SOURCES
         ../src/physics/Body.cpp
         # ../src/physics/TestThread.cpp
         ../src/physics/Collider.cpp
+        ../src/physics/Collision.cpp
 
 
         # _gltest/RectangleWindow.cpp

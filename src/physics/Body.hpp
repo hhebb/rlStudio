@@ -1,7 +1,7 @@
 # ifndef BODY
 # define BODY
 
-# include "../definition.hpp"
+# include "../Definition.hpp"
 # include "Collider.hpp"
 
 class Body
@@ -12,8 +12,9 @@ private:
     SCALAR angularVelocity;
 
     Vector2 force = {0, 0};
-    SCALAR torque;
+    SCALAR torque = 0;
     SCALAR inverseMass;
+    SCALAR moment;
     float radius;
 
     Collider* collider;
@@ -23,13 +24,18 @@ public:
     Vector2 velocity;
     Body(VERTEX, Vector2, SCALAR, SCALAR, float);
     void AddForce(Vector2);
+    void AddTorque(SCALAR);
     void ClearForce();
+    void ClearTorque();
     void CalculateVelocity();
+    void CalculateAngularVelocity();
     void CalculatePosition();
+    void CalculateAngle();
 
     Collider* GetCollider();
-    Vector2 GetPosition();
     Vector2 GetVelocity();
+    SCALAR GetAngularVelocity();
+    Vector2 GetPosition();
     SCALAR GetRotation();
 
 };

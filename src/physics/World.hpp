@@ -1,14 +1,15 @@
 # ifndef WORLD
 # define WORLD
 
-# include "Body.hpp"
-# include "Collider.hpp"
 # include <QThread>
 # include <QVariant>
+# include "Body.hpp"
+# include "Collider.hpp"
+# include "../Helper.hpp"
 
 class World: public QThread
 {
-    Q_OBJECT
+    Q_OBJECT0
 
 signals:
     void physicsUpdate(QVariant);
@@ -28,6 +29,7 @@ public:
     void Create(VERTEX, Vector2, SCALAR, SCALAR, float);
     void Debug();
     vector<Body> GetBodies();
+    bool IsCollide(Body*);
     
 };
 

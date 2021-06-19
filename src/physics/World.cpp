@@ -52,17 +52,20 @@ void World::Step()
 
         // - force generation
         Vector2 gravity = {.0f, -9.8f * bodies[i].mass};
+        SCALAR torque = 20;
         bodies[i].AddForce(gravity);
+        bodies[i].AddTorque(torque);
         
         // - velocity calculation
         bodies[i].CalculateVelocity();
+        bodies[i].CalculateAngularVelocity();
         // cout << bodies[i].velocity.x << bodies[i].velocity.y << endl;
         
         // - collision handling
         // - position calculation
         bodies[i].CalculatePosition();
+        bodies[i].CalculateAngle();
         // - update position, rotation, vertices
-        // bodies[i].GetCollider().Update();
 
         //  calculate diff position, rotation
         translateDiff.x = bodies[i].GetPosition().x - translateDiff.x;
@@ -73,7 +76,7 @@ void World::Step()
         bodies[i].ClearForce();
 
         // update collider shape
-        rotateDiff = 3;
+        // rotateDiff = 3;
         bodies[i].GetCollider()->Update(bodies[i].GetPosition(), translateDiff, rotateDiff);
     }
 }
@@ -131,4 +134,38 @@ void World::run()
         var.setValue(vertices);
         emit physicsUpdate(var);
     }
+}
+
+bool World::IsCollide(Body* body1, Body* body2)
+{
+    Vector2 center1, center2;
+    Vector2 direction = center1 - center2;
+    Simplex simplex;
+    Vector2 a = SupportFunction(body1->GetCollider()->GetVertices(), body2->GetCollider()->GetVertices(), direction);
+    simplex.add(a);
+    direction = -direction;
+
+    while(true)
+    {
+        Vector2 b = SupportFunction(body1->GetCollider()->GetVertices(), body2->GetCollider()->GetVertices(), direction);
+        simplex.add(b);
+
+        if (simplex.GetLastElement().Dot(direction) < 0)
+        {
+            // origin 을 지나지 않는다는 것이 확실할 때 종료
+            return false;
+        }
+        else
+        {
+            // origin 지날 때, 아직은 지나지 않을 때
+            if (IsContainOrigin(simplex, direction))
+            {
+                // 이 때 simplex 갖고 있어야 함!
+                return true;
+            }
+
+        }
+    }
+
+
 }

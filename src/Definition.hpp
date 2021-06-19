@@ -1,7 +1,8 @@
-# ifndef NAMESPACE
-# define NAMESPACE
+# ifndef DEFINITION
+# define DEFINITION
 
 # include <vector>
+# include <queue>
 # include <math.h>
 # include <QMetaType>
 # include <iostream>
@@ -22,8 +23,59 @@ struct Vector2
 {
     float x;
     float y;
+
+    void Set(float x, float y)
+    {
+        this->x = x;
+        this->y = y;
+    }
+
+    void Set(Vector2 vec)
+    {
+        this->x = vec.x;
+        this->y = vec.y;
+    }
+
+    SCALAR Dot(Vector2 vec)
+    {
+        return SCALAR{x * vec.x + y * vec.y};
+    }
+
+    Vector2 Normalise()
+    {
+        float factor = sqrt(x * x + y * y);
+        return Vector2{x / factor, y / factor};
+    }
+
+    // operator
+    Vector2 operator-()
+    {
+        return Vector2{-x, -y};
+    }
+
+    Vector2 operator+(Vector2 vec)
+    {
+        return Vector2{x + vec.x, y + vec.y};
+    }
+
+    Vector2 operator-(Vector2 vec)
+    {
+        return Vector2{x - vec.x, y - vec.y};
+    }
+
+    Vector2 operator*(SCALAR scale)
+    {
+        return Vector2{x * scale, y * scale};
+    }
+
+    Vector2 operator/(SCALAR div)
+    {
+        return Vector2{x / div, y / div};
+    }
 };
 
+
+// homogeneous transform matrix for 2D.
 struct Matrix3x3
 {
     float m11, m12, m13, m21, m22, m23, m31, m32, m33;
@@ -77,6 +129,39 @@ struct Matrix3x3
         return result;
     }
 };
+
+struct Simplex
+{
+    // float a, b, c;
+    vector<Vector2> elements;
+
+    void add(Vector2 v)
+    {
+        elements.push_back(v);
+    }
+
+    Vector2 GetLastElement()
+    {
+        return elements[elements.size() - 1];
+    }
+
+    Vector2 GetB()
+    {
+        return elements[elements.size() - 2];
+    }
+
+    Vector2 GetC()
+    {
+        return elements[0];
+    }
+
+    void Remove(int index)
+    {
+        elements.erase(elements.begin() + index);
+    }
+
+};
+
 
 Q_DECLARE_METATYPE(Vector2);
 Q_DECLARE_METATYPE(Matrix3x3);

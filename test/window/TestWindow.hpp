@@ -1,7 +1,7 @@
 # ifndef TEST_WINDOW
 # define TEST_WINDOW
 
-# include "../../src/definition.hpp"
+# include "../../src/Definition.hpp"
 # include <QOpenGLWindow>
 # include <QOpenGLBuffer>
 # include <QOpenGLVertexArrayObject>

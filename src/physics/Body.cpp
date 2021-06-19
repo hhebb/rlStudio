@@ -20,11 +20,21 @@ void Body::AddForce(Vector2 f)
     force.y += f.y;
 }
 
+void Body::AddTorque(SCALAR t)
+{
+    torque += t;
+}
+
 void Body::CalculateVelocity()
 {
     velocity.x += force.x * inverseMass * DELTA_TIME;
     velocity.y += force.y * inverseMass * DELTA_TIME;
 
+}
+
+void Body::CalculateAngularVelocity()
+{
+    angularVelocity += torque * DELTA_TIME;
 }
 
 void Body::CalculatePosition()
@@ -33,9 +43,19 @@ void Body::CalculatePosition()
     position.y += velocity.y * DELTA_TIME;
 }
 
+void Body::CalculateAngle()
+{
+    rotation += angularVelocity * DELTA_TIME;
+}
+
 void Body::ClearForce()
 {
     force = {0, 0};
+}
+
+void Body::ClearTorque()
+{
+    torque = 0;
 }
 
 Collider* Body::GetCollider()
@@ -57,3 +77,4 @@ Vector2 Body::GetVelocity()
 {
     return velocity;
 }
+
