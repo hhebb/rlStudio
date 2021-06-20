@@ -16,8 +16,11 @@ using namespace std;
 # define VERTEX_LIST vector<VERTEX>
 # define PI 3.141592
 # define INVERSE_RADIAN 0.0174533 //PI / 180.0
+# define TOLERANCE 0.0001
 
 using namespace std;
+
+enum BodyType {DYNAMIC, KINEMATIC, STATIC};
 
 struct Vector2
 {
@@ -160,8 +163,12 @@ struct Simplex
         elements.erase(elements.begin() + index);
     }
 
-};
+    void Insert(Vector2 v, int index)
+    {
+        elements.insert(elements.begin() + index, v);
+    }
 
+};
 
 Q_DECLARE_METATYPE(Vector2);
 Q_DECLARE_METATYPE(Matrix3x3);

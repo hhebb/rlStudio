@@ -7,6 +7,8 @@
 class Body
 {
 private:
+    int index; // 초기화 시 추가
+    BodyType type = DYNAMIC; // 초기화 시 추가
     Vector2 position;
     SCALAR rotation;
     SCALAR angularVelocity;
@@ -22,7 +24,7 @@ private:
 public:
     SCALAR mass;
     Vector2 velocity;
-    Body(VERTEX, Vector2, SCALAR, SCALAR, float);
+    Body(VERTEX, Vector2, SCALAR, SCALAR, float); // index 추가하기
     void AddForce(Vector2);
     void AddTorque(SCALAR);
     void ClearForce();

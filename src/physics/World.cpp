@@ -138,7 +138,8 @@ void World::run()
 
 bool World::IsCollide(Body* body1, Body* body2)
 {
-    Vector2 center1, center2;
+    Vector2 center1 = body1->GetCollider()->GetCenter();
+    Vector2 center2 = body2->GetCollider()->GetCenter();
     Vector2 direction = center1 - center2;
     Simplex simplex;
     Vector2 a = SupportFunction(body1->GetCollider()->GetVertices(), body2->GetCollider()->GetVertices(), direction);
@@ -167,5 +168,26 @@ bool World::IsCollide(Body* body1, Body* body2)
         }
     }
 
-
 }
+
+// void GetCollisionInfo(Simplex simplex, Body* a, Body* b)
+// {
+//     Vector2 collisionNormal;
+//     float penetrationDepth;
+
+//     while (true)
+//     {
+//         Edge e = FindClosetEdge(simplex);
+//         Vector2 p = SupportFunction(a->GetCollider()->GetVertices(), b->GetCollider()->GetVertices(), e.normal);
+//         float d = p.Dot(e.normal);
+//         if (d - e.distance < TOLERANCE)
+//         {
+//             collisionNormal = e.normal;
+//             penetrationDepth = d;
+//         }
+//         else
+//         {
+//             simplex.Insert(p, e.index);
+//         }
+//     }
+// }

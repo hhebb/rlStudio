@@ -2,16 +2,19 @@
 # define COLLISION
 
 # include "Body.hpp"
+# include "../Helper.hpp"
 
 class Collision
 {
 private:
-    // body 대신 body index 를 저장할까?
     Body* b1;
     Body* b2;
-    // normal, manifold 필요.
+    Vector2 collisionNormal;
+    float penetrationDepth;
+    VERTEX manifolds;
 public:
-    
+    void FindCollisioninfo(Simplex);
+    void FindManifolds();
 };
 
 # endif
