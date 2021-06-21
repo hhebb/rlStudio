@@ -42,4 +42,65 @@ void Collision::FindManifolds()
         inc = e1;
         flip = true;
     }
+
+    Vector2 normalizedRef = ref.GetVector().Normalise();
+    float offset1 = normalizedRef.Dot(ref.a);
+
+    ClippedPoints cp = Clip(inc.a, inc.b, normalizedRef, offset1);
+
+    if (cp.cPoints.size() < 2)
+    {
+        return;
+    }
+    
+    float offset2 = normalizedRef.Dot(ref.b);
+    ClippedPoints cp2 = Clip(cp.cPoints[0], cp.cPoints[1], -normalizedRef, -offset2);
+    if (cp2.cPoints.size() < 2)
+    {
+        return;
+    }
+
+    Vector2 refNormal = ref.GetVector().Cross(-1.0);
+    if (flip)
+    {
+        refNormal = -refNormal;
+    }
+    float max = refNormal.Dot(ref.farthest);
+    if (refNormal.Dot(cp2.cPoints[0]) - max < 0.0)
+    {
+        cp2.cPoints.erase(cp2.cPoints.begin());
+    }
+    if (refNormal.Dot(cp2.cPoints[1]) - max < 0.0)
+    {
+        cp2.cPoints.erase(cp2.cPoints.begin() + 1);
+    }
+
+    manifolds = cp2;
+}
+
+ClippedPoints Collision::Clip(Vector2 p1, Vector2 p2, Vector2 n, float o)
+{
+    ClippedPoints cp;
+    float d1 = n.Dot(p1) - o;
+    float d2 = n.Dot(p2) - o;
+
+    if (d1 > 0.0)
+    {
+        cp.cPoints.push_back(p1);
+    }
+    if (d2 > 0.0)
+    {
+        cp.cPoints.push_back(p2);
+    }
+
+    if (d1 * d2 < 0.0)
+    {
+        Vector2 e = p2 - p1;
+        float u = d1 / (d1 - d2);
+        e = e * u;
+        e = e + p1;
+        cp.cPoints.push_back(e);
+    }
+
+    return cp;
 }

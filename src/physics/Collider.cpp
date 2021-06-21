@@ -74,10 +74,10 @@ Edge Collider::FindBestEdge(Vector2 normal)
 
     if (right.Dot(normal) <= left.Dot(normal))
     {
-        return Edge{v0, v, Vector2{0, 0}, Vector2{0, 0}, 0, 0};
+        return Edge{v0, v, v, Vector2{0, 0}, Vector2{0, 0}, 0, 0};
     }
     else
     {
-        return Edge{v, v1, Vector2{0, 0}, Vector2{0, 0}, 0, 0};
+        return Edge{v, v1, v, Vector2{0, 0}, Vector2{0, 0}, 0, 0};
     }
 }

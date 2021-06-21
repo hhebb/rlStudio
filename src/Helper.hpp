@@ -12,6 +12,7 @@ struct Edge
 {
     Vector2 a;
     Vector2 b;
+    Vector2 farthest;
     Vector2 e; // ?? 걍 getter 로 가져오기
     Vector2 normal;
     float distance;

@@ -75,6 +75,11 @@ struct Vector2
     {
         return Vector2{x / div, y / div};
     }
+
+    Vector2 Cross(float z)
+    {
+        return Vector2{-1.0f * y * z, x * z};
+    }
 };
 
 
@@ -168,6 +173,11 @@ struct Simplex
         elements.insert(elements.begin() + index, v);
     }
 
+};
+
+struct ClippedPoints
+{
+    VERTEX cPoints;
 };
 
 Q_DECLARE_METATYPE(Vector2);
