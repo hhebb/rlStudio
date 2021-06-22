@@ -62,6 +62,7 @@ bool IsContainOrigin(Simplex simplex, Vector2& d)
             else
             {
                 // already contain origin. dont need to change direction
+                cout << "> contain origin" << endl;
                 return true;
             }
         }

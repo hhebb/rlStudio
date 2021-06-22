@@ -19,8 +19,8 @@ void World::Init()
     float radius;
 
     // 바닥
-    vert = {Vector2{-.4, -.1}, Vector2{.4, -.1}, Vector2{.4, .1}, Vector2{-.4, .1}}; // x, y order
-    pos = {0.0, -0.1};
+    pos = {0.2, 0.3};
+    vert = {Vector2{pos.x -.4f, pos.y}, Vector2{pos.x + .4f, pos.y}, Vector2{pos.x + .4f, pos.y + .2f}, Vector2{pos.x -.4f, pos.y + .2f}}; // x, y order
     rot = 0;
     mass = 1;
     radius = 0;
@@ -28,8 +28,8 @@ void World::Init()
 
 
     // 예시 body
-    vert = {Vector2{0, 0.5}, Vector2{.1, .6}, Vector2{.1, .5}}; // x, y order
-    pos = {0.0, 0.5};
+    pos = {0.2, 0.505};
+    vert = {Vector2{pos.x, pos.y}, Vector2{pos.x + .1f, pos.y}, Vector2{pos.x + .1f, pos.y + .1f}}; // x, y order
     rot = 0;
     mass = 1;
     radius = 1;
@@ -62,6 +62,14 @@ void World::Step()
         // cout << bodies[i].velocity.x << bodies[i].velocity.y << endl;
         
         // - collision handling
+        for (int j = i + 1; j < bodies.size(); j ++)
+        {
+            if (IsCollide(&bodies[i], &bodies[j]))
+            {
+                cout << "> collide!" << endl;
+            }
+        }
+
         // - position calculation
         bodies[i].CalculatePosition();
         bodies[i].CalculateAngle();
@@ -162,6 +170,10 @@ bool World::IsCollide(Body* body1, Body* body2)
             if (IsContainOrigin(simplex, direction))
             {
                 // 이 때 simplex 갖고 있어야 함!
+                Collision collision(body1, body2);
+                collisionList.push_back(collision);
+                collision.FindCollisioninfo(simplex);
+                collision.FindManifolds();
                 return true;
             }
 
@@ -169,25 +181,3 @@ bool World::IsCollide(Body* body1, Body* body2)
     }
 
 }
-
-// void GetCollisionInfo(Simplex simplex, Body* a, Body* b)
-// {
-//     Vector2 collisionNormal;
-//     float penetrationDepth;
-
-//     while (true)
-//     {
-//         Edge e = FindClosetEdge(simplex);
-//         Vector2 p = SupportFunction(a->GetCollider()->GetVertices(), b->GetCollider()->GetVertices(), e.normal);
-//         float d = p.Dot(e.normal);
-//         if (d - e.distance < TOLERANCE)
-//         {
-//             collisionNormal = e.normal;
-//             penetrationDepth = d;
-//         }
-//         else
-//         {
-//             simplex.Insert(p, e.index);
-//         }
-//     }
-// }

@@ -1,6 +1,12 @@
 # include "Collision.hpp"
 # include <cmath>
 
+Collision::Collision(Body* b1, Body* b2)
+{
+    this->b1 = b1;
+    this->b2 = b2;
+}
+
 void Collision::FindCollisioninfo(Simplex simplex)
 {
     // EPA algorithm for find collision normal, penetration depth.
@@ -13,6 +19,8 @@ void Collision::FindCollisioninfo(Simplex simplex)
         {
             collisionNormal = e.normal;
             penetrationDepth = d;
+            cout << "> collision info: " << collisionNormal.x << ", " << collisionNormal.y << ", " << penetrationDepth << endl;
+            break;
         }
         else
         {
@@ -27,6 +35,8 @@ void Collision::FindManifolds()
     bool flip = false;
     Edge e1 = b1->GetCollider()->FindBestEdge(collisionNormal);
     Edge e2 = b2->GetCollider()->FindBestEdge(-collisionNormal);
+
+    cout << "> find best edge" << endl;
 
     Edge ref;
     Edge inc;
@@ -44,7 +54,13 @@ void Collision::FindManifolds()
     }
 
     Vector2 normalizedRef = ref.GetVector().Normalise();
+    cout << "> ref a: " << ref.a.x  << ", " << ref.a.y << endl;
+    cout << "> ref b: " << ref.b.x  << ", " << ref.b.y << endl;
+    cout << "> ref edge: " << ref.GetVector().x  << ", " << ref.GetVector().y << endl;
+    cout << "> normalized ref edge: " << normalizedRef.x  << ", " << normalizedRef.y << endl;
     float offset1 = normalizedRef.Dot(ref.a);
+
+    cout << "> offset1, " << offset1 << endl;
 
     ClippedPoints cp = Clip(inc.a, inc.b, normalizedRef, offset1);
 
@@ -54,9 +70,13 @@ void Collision::FindManifolds()
     }
     
     float offset2 = normalizedRef.Dot(ref.b);
+
+    cout << "> offset2, " << offset2 << endl;
+    
     ClippedPoints cp2 = Clip(cp.cPoints[0], cp.cPoints[1], -normalizedRef, -offset2);
     if (cp2.cPoints.size() < 2)
     {
+        cout << "> less than 2 cp" << endl;
         return;
     }
 
@@ -68,14 +88,23 @@ void Collision::FindManifolds()
     float max = refNormal.Dot(ref.farthest);
     if (refNormal.Dot(cp2.cPoints[0]) - max < 0.0)
     {
+        cout << "> erase 1" << endl;
         cp2.cPoints.erase(cp2.cPoints.begin());
     }
+
     if (refNormal.Dot(cp2.cPoints[1]) - max < 0.0)
     {
+        cout << "> erase 2" << endl;
         cp2.cPoints.erase(cp2.cPoints.begin() + 1);
     }
 
     manifolds = cp2;
+
+    for (int i = 0; i < manifolds.cPoints.size(); i ++)
+    {
+        cout << "> manifold: " << manifolds.cPoints[i].x << ", " << manifolds.cPoints[i].y << endl;
+    }
+
 }
 
 ClippedPoints Collision::Clip(Vector2 p1, Vector2 p2, Vector2 n, float o)

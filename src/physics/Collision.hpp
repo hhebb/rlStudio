@@ -13,9 +13,10 @@ private:
     float penetrationDepth;
     ClippedPoints manifolds;
 public:
+    Collision(Body*, Body*);
     void FindCollisioninfo(Simplex);
-    ClippedPoints Clip(Vector2, Vector2, Vector2, float);
     void FindManifolds();
+    ClippedPoints Clip(Vector2, Vector2, Vector2, float);
 };
 
 # endif
