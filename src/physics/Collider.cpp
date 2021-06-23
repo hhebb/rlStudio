@@ -66,12 +66,12 @@ Edge Collider::FindBestEdge(Vector2 normal)
     }
 
     Vector2 v = vertices[index];
-    int rightIndex = index + 1 >= vertices.size() ? index + 1 : 0;
+    int rightIndex = index + 1 >= vertices.size() ? 0 : index + 1;
     int leftIndex = index <= 0 ? vertices.size() - 1 : index - 1;
 
-    cout << "> index test: " << vertices.size() << ", " << index << endl;
+    cout << "> index test: " << vertices.size() << ", " << index << ", " << rightIndex << ", " << leftIndex << endl;
     Vector2 v1 = vertices[rightIndex]; // index + 1
-    Vector2 v0 = vertices[leftIndex]; // index - 1. 마지막 인덱스일 때 0 으로 처리해줘야함.
+    Vector2 v0 = vertices[leftIndex]; // index - 1
 
     Vector2 left = v - v1;
     Vector2 right = v - v0;

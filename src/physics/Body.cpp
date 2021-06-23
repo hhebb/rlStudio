@@ -7,7 +7,7 @@ Body::Body(VERTEX vertices, Vector2 pos, SCALAR rot, SCALAR m, float rad)
     position = pos;
     rotation = rot;
     mass = m;
-    inverseMass = 1 / mass;
+    inverseMass = m != 0 ? 1 / mass : 0;
     radius = rad;
     velocity = {0, 0};
     collider = new Collider(vertices, radius);

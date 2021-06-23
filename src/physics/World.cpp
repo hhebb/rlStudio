@@ -19,19 +19,19 @@ void World::Init()
     float radius;
 
     // 바닥
-    pos = {0.2, 0.3};
+    pos = {-0.4, -0.1};
     vert = {Vector2{pos.x -.4f, pos.y}, Vector2{pos.x + .4f, pos.y}, Vector2{pos.x + .4f, pos.y + .2f}, Vector2{pos.x -.4f, pos.y + .2f}}; // x, y order
     rot = 0;
-    mass = 1;
+    mass = 0;
     radius = 0;
     Create(vert, pos, rot, mass, radius);
 
 
     // 예시 body
-    pos = {0.2, 0.505};
+    pos = {-0.2, 0.205};
     vert = {Vector2{pos.x, pos.y}, Vector2{pos.x + .1f, pos.y}, Vector2{pos.x + .1f, pos.y + .1f}}; // x, y order
     rot = 0;
-    mass = 1;
+    mass = 0;
     radius = 1;
     Create(vert, pos, rot, mass, radius);
 
@@ -153,9 +153,12 @@ bool World::IsCollide(Body* body1, Body* body2)
     Vector2 a = SupportFunction(body1->GetCollider()->GetVertices(), body2->GetCollider()->GetVertices(), direction);
     simplex.add(a);
     direction = -direction;
+    int vertexSum = body1->GetCollider()->GetVertices().size() + body2->GetCollider()->GetVertices().size();
+    int count = 0;
 
-    while(true)
+    while(vertexSum > count)
     {
+        // cout << "> colliding check" << endl;
         Vector2 b = SupportFunction(body1->GetCollider()->GetVertices(), body2->GetCollider()->GetVertices(), direction);
         simplex.add(b);
 
@@ -178,6 +181,9 @@ bool World::IsCollide(Body* body1, Body* body2)
             }
 
         }
+
+        count ++;
     }
 
+    return false;
 }

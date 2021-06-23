@@ -80,22 +80,43 @@ void Collision::FindManifolds()
         return;
     }
 
+    for (int i = 0; i < 2; i++)
+        cout << "> points: " << cp2.cPoints[i].x << ", " << cp2.cPoints[i].y << endl;
+
     Vector2 refNormal = ref.GetVector().Cross(-1.0);
     if (flip)
     {
         refNormal = -refNormal;
     }
     float max = refNormal.Dot(ref.farthest);
+    cout << "> max vertex: " << max << endl;
+
     if (refNormal.Dot(cp2.cPoints[0]) - max < 0.0)
     {
-        cout << "> erase 1" << endl;
-        cp2.cPoints.erase(cp2.cPoints.begin());
-    }
+        cout << "> erase 1, dot: " << refNormal.Dot(cp2.cPoints[0]) << endl;
+        // cp2.cPoints.erase(cp2.cPoints.begin());
 
-    if (refNormal.Dot(cp2.cPoints[1]) - max < 0.0)
+        if (refNormal.Dot(cp2.cPoints[1]) - max >= 0.0)
+        {
+            cout << "> erase 2, dot: " << refNormal.Dot(cp2.cPoints[1]) << cp2.cPoints[1].x << endl;
+            cp2.cPoints.erase(cp2.cPoints.begin());
+            cp2.cPoints.erase(cp2.cPoints.begin());
+
+        }
+        else
+        {
+            cp2.cPoints.erase(cp2.cPoints.begin());
+        }
+    }
+    else
     {
-        cout << "> erase 2" << endl;
-        cp2.cPoints.erase(cp2.cPoints.begin() + 1);
+        if (refNormal.Dot(cp2.cPoints[1]) - max >= 0.0)
+        {
+            cout << "> erase 2, " << cp2.cPoints[1].x << endl;
+            cp2.cPoints.erase(cp2.cPoints.begin() + 1);
+
+        }
+        
     }
 
     manifolds = cp2;
