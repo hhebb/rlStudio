@@ -7,9 +7,9 @@
 class Body
 {
 private:
-    int index; // 초기화 시 추가
+    int id; // 초기화 시 추가
     BodyType type = DYNAMIC; // 초기화 시 추가
-    Vector2 position;
+    Vector2 position; // massData.centroid
     SCALAR rotation;
     SCALAR angularVelocity;
 
@@ -22,9 +22,10 @@ private:
     Collider* collider;
 
 public:
-    SCALAR mass;
-    Vector2 velocity;
+    SCALAR mass; // massData.mass
+    Vector2 velocity = {0.0f, 0.0f};
     Body(VERTEX, Vector2, SCALAR, SCALAR, float); // index 추가하기
+    void UpdateAttribute();
     void AddForce(Vector2);
     void AddTorque(SCALAR);
     void ClearForce();

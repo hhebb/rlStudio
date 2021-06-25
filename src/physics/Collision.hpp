@@ -17,6 +17,7 @@ public:
     void FindCollisioninfo(Simplex);
     void FindManifolds();
     ClippedPoints Clip(Vector2, Vector2, Vector2, float);
+    void Solve();
 };
 
 # endif

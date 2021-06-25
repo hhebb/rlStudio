@@ -20,7 +20,7 @@ void World::Init()
 
     // 바닥
     pos = {-0.4, -0.1};
-    vert = {Vector2{pos.x -.4f, pos.y}, Vector2{pos.x + .4f, pos.y}, Vector2{pos.x + .4f, pos.y + .2f}, Vector2{pos.x -.4f, pos.y + .2f}}; // x, y order
+    vert = {Vector2{pos.x -.4f, pos.y - .1f}, Vector2{pos.x + .4f, pos.y - .1f}, Vector2{pos.x + .4f, pos.y + .1f}, Vector2{pos.x -.4f, pos.y + .1f}}; // x, y order
     rot = 0;
     mass = 0;
     radius = 0;
@@ -31,7 +31,7 @@ void World::Init()
     pos = {-0.2, 0.205};
     vert = {Vector2{pos.x, pos.y}, Vector2{pos.x + .1f, pos.y}, Vector2{pos.x + .1f, pos.y + .1f}}; // x, y order
     rot = 0;
-    mass = 0;
+    mass = 1;
     radius = 1;
     Create(vert, pos, rot, mass, radius);
 
@@ -59,15 +59,21 @@ void World::Step()
         // - velocity calculation
         bodies[i].CalculateVelocity();
         bodies[i].CalculateAngularVelocity();
-        // cout << bodies[i].velocity.x << bodies[i].velocity.y << endl;
+        cout << "> real velocity: " << bodies[i].velocity.x << ", " << bodies[i].velocity.y << endl;
         
-        // - collision handling
+        // - collision detection
         for (int j = i + 1; j < bodies.size(); j ++)
         {
             if (IsCollide(&bodies[i], &bodies[j]))
             {
                 cout << "> collide!" << endl;
             }
+        }
+
+        // collision solve
+        for (int j = 0; j < collisionList.size(); j ++)
+        {
+            collisionList[j]->Solve();
         }
 
         // - position calculation
@@ -83,9 +89,9 @@ void World::Step()
         // - clear forces
         bodies[i].ClearForce();
 
-        // update collider shape
-        // rotateDiff = 3;
+        // update collider shape, body centroid
         bodies[i].GetCollider()->Update(bodies[i].GetPosition(), translateDiff, rotateDiff);
+        bodies[i].UpdateAttribute();
     }
 }
 
@@ -105,9 +111,9 @@ void World::Debug()
 {
     for (int i = 0; i < bodies.size(); i ++)
     {
-        cout << "Body " << i + 1 << " : ";
+        // cout << "Body " << i + 1 << " : ";
         Vector2 vel = bodies[i].GetPosition();
-        cout << vel.x << ", " << vel.y << endl;
+        // cout << vel.x << ", " << vel.y << endl;
     }
 }
 
@@ -173,10 +179,10 @@ bool World::IsCollide(Body* body1, Body* body2)
             if (IsContainOrigin(simplex, direction))
             {
                 // 이 때 simplex 갖고 있어야 함!
-                Collision collision(body1, body2);
+                Collision* collision = new Collision(body1, body2);
                 collisionList.push_back(collision);
-                collision.FindCollisioninfo(simplex);
-                collision.FindManifolds();
+                collision->FindCollisioninfo(simplex);
+                collision->FindManifolds();
                 return true;
             }
 

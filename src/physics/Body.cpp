@@ -6,18 +6,26 @@ Body::Body(VERTEX vertices, Vector2 pos, SCALAR rot, SCALAR m, float rad)
 {
     position = pos;
     rotation = rot;
-    mass = m;
-    inverseMass = m != 0 ? 1 / mass : 0;
+    // mass = m;
+    // inverseMass = m != 0 ? 1 / mass : 0;
     radius = rad;
     velocity = {0, 0};
     collider = new Collider(vertices, radius);
+    mass = collider->GetMassData().mass;
+    inverseMass = collider->GetMassData().inverseMass;
+    
 }
 
+void Body::UpdateAttribute()
+{
+    position = collider->GetMassData().centroid;
+}
 
 void Body::AddForce(Vector2 f)
 {
-    force.x += f.x;
-    force.y += f.y;
+    // force.x += f.x;
+    // force.y += f.y;
+    force = force + f;
 }
 
 void Body::AddTorque(SCALAR t)
@@ -27,9 +35,10 @@ void Body::AddTorque(SCALAR t)
 
 void Body::CalculateVelocity()
 {
-    velocity.x += force.x * inverseMass * DELTA_TIME;
-    velocity.y += force.y * inverseMass * DELTA_TIME;
+    // velocity.x += force.x * inverseMass * DELTA_TIME;
+    // velocity.y += force.y * inverseMass * DELTA_TIME;
 
+    velocity = velocity + force * inverseMass * DELTA_TIME;
 }
 
 void Body::CalculateAngularVelocity()
@@ -39,8 +48,10 @@ void Body::CalculateAngularVelocity()
 
 void Body::CalculatePosition()
 {
-    position.x += velocity.x * DELTA_TIME;
-    position.y += velocity.y * DELTA_TIME;
+    // position.x += velocity.x * DELTA_TIME;
+    // position.y += velocity.y * DELTA_TIME;
+
+    position = position + velocity * DELTA_TIME;
 }
 
 void Body::CalculateAngle()

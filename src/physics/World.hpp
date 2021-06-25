@@ -17,7 +17,7 @@ signals:
 private:
     vector<Body> bodies;
     VERTEX_LIST vertices;
-    vector<Collision> collisionList; // collision manager 만들어서 관리하도록 수정해야함.
+    vector<Collision*> collisionList; // collision manager 만들어서 관리하도록 수정해야함.
     void run();
 
 public:

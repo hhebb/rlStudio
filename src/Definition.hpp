@@ -180,6 +180,17 @@ struct ClippedPoints
     VERTEX cPoints;
 };
 
+struct MassData
+{
+    SCALAR density = 1;
+    SCALAR mass; // = density * area
+    SCALAR inverseMass;
+    SCALAR area;
+    SCALAR inertia;
+    SCALAR inverseInertia;
+    Vector2 centroid;
+};
+
 Q_DECLARE_METATYPE(Vector2);
 Q_DECLARE_METATYPE(Matrix3x3);
 

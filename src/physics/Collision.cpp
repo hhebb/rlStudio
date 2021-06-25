@@ -36,7 +36,7 @@ void Collision::FindManifolds()
     Edge e1 = b1->GetCollider()->FindBestEdge(collisionNormal);
     Edge e2 = b2->GetCollider()->FindBestEdge(-collisionNormal);
 
-    cout << "> find best edge" << endl;
+    // cout << "> find best edge" << endl;
 
     Edge ref;
     Edge inc;
@@ -54,13 +54,13 @@ void Collision::FindManifolds()
     }
 
     Vector2 normalizedRef = ref.GetVector().Normalise();
-    cout << "> ref a: " << ref.a.x  << ", " << ref.a.y << endl;
-    cout << "> ref b: " << ref.b.x  << ", " << ref.b.y << endl;
-    cout << "> ref edge: " << ref.GetVector().x  << ", " << ref.GetVector().y << endl;
-    cout << "> normalized ref edge: " << normalizedRef.x  << ", " << normalizedRef.y << endl;
+    // cout << "> ref a: " << ref.a.x  << ", " << ref.a.y << endl;
+    // cout << "> ref b: " << ref.b.x  << ", " << ref.b.y << endl;
+    // cout << "> ref edge: " << ref.GetVector().x  << ", " << ref.GetVector().y << endl;
+    // cout << "> normalized ref edge: " << normalizedRef.x  << ", " << normalizedRef.y << endl;
     float offset1 = normalizedRef.Dot(ref.a);
 
-    cout << "> offset1, " << offset1 << endl;
+    // cout << "> offset1, " << offset1 << endl;
 
     ClippedPoints cp = Clip(inc.a, inc.b, normalizedRef, offset1);
 
@@ -71,7 +71,7 @@ void Collision::FindManifolds()
     
     float offset2 = normalizedRef.Dot(ref.b);
 
-    cout << "> offset2, " << offset2 << endl;
+    // cout << "> offset2, " << offset2 << endl;
     
     ClippedPoints cp2 = Clip(cp.cPoints[0], cp.cPoints[1], -normalizedRef, -offset2);
     if (cp2.cPoints.size() < 2)
@@ -80,8 +80,8 @@ void Collision::FindManifolds()
         return;
     }
 
-    for (int i = 0; i < 2; i++)
-        cout << "> points: " << cp2.cPoints[i].x << ", " << cp2.cPoints[i].y << endl;
+    // for (int i = 0; i < 2; i++)
+    //     cout << "> points: " << cp2.cPoints[i].x << ", " << cp2.cPoints[i].y << endl;
 
     Vector2 refNormal = ref.GetVector().Cross(-1.0);
     if (flip)
@@ -89,16 +89,16 @@ void Collision::FindManifolds()
         refNormal = -refNormal;
     }
     float max = refNormal.Dot(ref.farthest);
-    cout << "> max vertex: " << max << endl;
+    // cout << "> max vertex: " << max << endl;
 
     if (refNormal.Dot(cp2.cPoints[0]) - max < 0.0)
     {
-        cout << "> erase 1, dot: " << refNormal.Dot(cp2.cPoints[0]) << endl;
+        // cout << "> erase 1, dot: " << refNormal.Dot(cp2.cPoints[0]) << endl;
         // cp2.cPoints.erase(cp2.cPoints.begin());
 
         if (refNormal.Dot(cp2.cPoints[1]) - max >= 0.0)
         {
-            cout << "> erase 2, dot: " << refNormal.Dot(cp2.cPoints[1]) << cp2.cPoints[1].x << endl;
+            // cout << "> erase 2, dot: " << refNormal.Dot(cp2.cPoints[1]) << cp2.cPoints[1].x << endl;
             cp2.cPoints.erase(cp2.cPoints.begin());
             cp2.cPoints.erase(cp2.cPoints.begin());
 
@@ -112,7 +112,7 @@ void Collision::FindManifolds()
     {
         if (refNormal.Dot(cp2.cPoints[1]) - max >= 0.0)
         {
-            cout << "> erase 2, " << cp2.cPoints[1].x << endl;
+            // cout << "> erase 2, " << cp2.cPoints[1].x << endl;
             cp2.cPoints.erase(cp2.cPoints.begin() + 1);
 
         }
@@ -153,4 +153,14 @@ ClippedPoints Collision::Clip(Vector2 p1, Vector2 p2, Vector2 n, float o)
     }
 
     return cp;
+}
+
+void Collision::Solve()
+{
+    cout << "> before velocity: " << b1->velocity.x << ", " << b1->velocity.y << endl;
+    cout << "> normal: " << collisionNormal.x << ", " << collisionNormal.y << endl;
+    b1->velocity = b1->velocity - collisionNormal;// * DELTA_TIME; // add velocity 할 수 있도록 메서드 추가하기
+    b2->velocity = b2->velocity + collisionNormal;// * DELTA_TIME; // add velocity 할 수 있도록 메서드 추가하기
+    cout << "> after velocity: " << b2->velocity.x << ", " << b2->velocity.y << endl;
+
 }
