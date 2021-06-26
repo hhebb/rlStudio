@@ -9,40 +9,46 @@ class Body
 private:
     int id; // 초기화 시 추가
     BodyType type = DYNAMIC; // 초기화 시 추가
-    Vector2 position; // massData.centroid
-    SCALAR rotation;
-    SCALAR angularVelocity;
 
+    Vector2 position; // = centroid
+    SCALAR rotation;
+    Vector2 velocity = {0.0f, 0.0f};
+    SCALAR angularVelocity;
     Vector2 force = {0, 0};
     SCALAR torque = 0;
+
+    // mass data
+    SCALAR mass;
     SCALAR inverseMass;
-    SCALAR moment;
+    SCALAR inertia;
+    SCALAR inverseInertia;
     float radius;
 
     Collider* collider;
 
 public:
-    SCALAR mass; // massData.mass
-    Vector2 velocity = {0.0f, 0.0f};
-    Body(VERTEX, Vector2, SCALAR, SCALAR, float); // index 추가하기
-    void UpdateAttribute();
+    Body(POLY_DATA, Vector2, SCALAR, float, int, SCALAR);
+
+    // getter
+    Vector2 GetPosition();
+    SCALAR GetRotation();
+    Vector2 GetVelocity();
+    SCALAR GetAngularVelocity();
+    SCALAR GetMass();
+    SCALAR GetInertia();
+    Collider* GetCollider();
+
     void AddForce(Vector2);
     void AddTorque(SCALAR);
-    void ClearForce();
-    void ClearTorque();
+    void AddImpulseAt(Vector2, Vector2);
     void CalculateVelocity();
     void CalculateAngularVelocity();
     void CalculatePosition();
     void CalculateAngle();
-
-    Collider* GetCollider();
-    Vector2 GetVelocity();
-    SCALAR GetAngularVelocity();
-    Vector2 GetPosition();
-    SCALAR GetRotation();
-
+    void ClearForce();
+    void ClearTorque();
+    
 };
-
 
 
 # endif

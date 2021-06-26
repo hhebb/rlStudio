@@ -5,21 +5,14 @@
 
 using namespace std;
 
-Collider::Collider(VERTEX vert, float rad)
+Collider::Collider(POLY_DATA vert, Vector2 pos, float rad)
 {
-    // this->body = body;
     vertices = vert;
-    radius = rad;
-}
+    radius = rad; // deprecated
+    CalculateArea();
+    CalculateCentroid();
+    InitVertices(pos); // body 의 position 기준으로 centroid 를 옮김.
 
-MassData Collider::GetMassData()
-{
-    return massData;
-}
-
-VERTEX Collider::GetVertices()
-{
-    return vertices;
 }
 
 void Collider::Update(Vector2 center,Vector2 translate, SCALAR rotate)
@@ -28,7 +21,7 @@ void Collider::Update(Vector2 center,Vector2 translate, SCALAR rotate)
     matrix.Translate(translate);
     matrix.Rotate(rotate, center);
     vertices = matrix.Multiply(vertices);
-    CalculateCenter();
+    // CalculateCenter();
     // cout << vertices[1].x << ", " << vertices[1].y << endl;
 
     // for (int i = 0; vertices.size(); i ++)
@@ -36,6 +29,88 @@ void Collider::Update(Vector2 center,Vector2 translate, SCALAR rotate)
     //     cout << vertices[i].x << ", " << vertices[i].y << ", ";
     // }
     // cout << endl;
+}
+
+SCALAR Collider::CalculateArea()
+{
+    for (int i = 0; i < vertices.size() - 1; i ++)
+    {
+        // area += vertices[i].x * vertices[i + 1].y - vertices[i + 1].x * vertices[i].y;
+        area += vertices[i].Cross(vertices[i + 1]);
+    }
+
+    area /= 2;
+    return area;
+}
+
+Vector2 Collider::CalculateCentroid()
+{
+    for (int i = 0; i < vertices.size() - 1; i ++)
+    {
+        // similar to cross product.
+        // center.x += (vertices[i].x + vertices[i + 1].x) * (vertices[i].x * vertices[i + 1].y - vertices[i + 1].x * vertices[i].y);
+        // center.y += (vertices[i].y + vertices[i + 1].y) * (vertices[i].x * vertices[i + 1].y - vertices[i + 1].x * vertices[i].y);
+        
+        // center.x += (vertices[i].x + vertices[i + 1].x) * (vertices[i].Cross(vertices[i + 1]));
+        // center.y += (vertices[i].y + vertices[i + 1].y) * (vertices[i].Cross(vertices[i + 1]));
+
+        centroid += (vertices[i] + vertices[i + 1]) * vertices[i].Cross(vertices[i + 1]);
+    }
+
+    // center = center / (6 * area);
+    centroid /= (6 * area);
+
+    return centroid;
+}
+
+void Collider::InitVertices(Vector2 origin)
+{
+    Vector2 diff = origin - centroid;
+    for (int i = 0; i < vertices.size(); i ++)
+    {
+        vertices[i] -= diff;
+    }
+}
+
+SCALAR Collider::CalculateMass(SCALAR density)
+{
+    SCALAR mass = density * area;
+    return mass;
+}
+
+SCALAR Collider::CalculateInertia()
+{
+    SCALAR inertia;
+    for (int i = 0; i < vertices.size() - 1; i ++)
+    {
+        SCALAR mass_tri = vertices[i].Cross(vertices[i + 1]) * .5f;
+        SCALAR inertia_tri = mass_tri * (vertices[i].GetSqrLength() + vertices[i + 1].GetSqrLength() + vertices[i].Dot(vertices[i + 1])) / 6;
+        inertia += inertia_tri;
+    }
+
+    return inertia;
+}
+
+POLY_DATA Collider::GetVertices()
+{
+    return vertices;
+}
+
+POLY_DATA Collider::GetLocalVertices()
+{
+    POLY_DATA local;
+    for (int i = 0; i< vertices.size(); i ++)
+    {
+        Vector2 v = vertices[i] -= centroid;
+        local.push_back(v);
+    }
+
+    return local;
+}
+
+Vector2 Collider::GetCentroid()
+{
+    return centroid;
 }
 
 Vector2 Collider::GetCenter()
@@ -93,32 +168,4 @@ Edge Collider::FindBestEdge(Vector2 normal)
     {
         return Edge{v, v1, v, Vector2{0, 0}, Vector2{0, 0}, 0, 0};
     }
-}
-
-void Collider::CalculateArea()
-{
-    for (int i = 0; i < vertices.size() - 1; i ++)
-    {
-        // same as cross product.
-        area += vertices[i].x * vertices[i + 1].y - vertices[i + 1].x * vertices[i].y;
-    }
-
-    area /= 2;
-    massData.area = area;
-    massData.mass = massData.density * massData.area;
-}
-
-void Collider::CalculateCenter()
-{
-    Vector2 center{0, 0};
-
-    for (int i = 0; i < vertices.size() - 1; i ++)
-    {
-        // similar to cross product.
-        center.x += (vertices[i].x + vertices[i + 1].x) * (vertices[i].x * vertices[i + 1].y - vertices[i + 1].x * vertices[i].y);
-        center.y += (vertices[i].y + vertices[i + 1].y) * (vertices[i].x * vertices[i + 1].y - vertices[i + 1].x * vertices[i].y);
-    }
-
-    center = center / (6 * area);
-    massData.centroid = center;
 }

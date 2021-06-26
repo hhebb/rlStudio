@@ -18,7 +18,7 @@ private:
     // QOpenGLBuffer ibo;
     // QOpenGLVertexArrayObject vao;
     // QOpenGLShaderProgram program;
-    VERTEX_LIST testCoord;
+    POLY_LIST testCoord;
     int width;
     int height;
 
@@ -30,7 +30,7 @@ public:
 	void paintGL() Q_DECL_OVERRIDE;
     void resizeGL(int w, int h) Q_DECL_OVERRIDE;
     void Init();
-    void SetVertices(VERTEX_LIST);
+    void SetVertices(POLY_LIST);
     void Resize();
     void fff();
 };

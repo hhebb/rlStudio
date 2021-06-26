@@ -12,8 +12,11 @@ using namespace std;
 # define SCALAR float
 # define DELTA_TIME 0.016f
 # define GRAVITY 9.8f
-# define VERTEX vector<Vector2> //vector<float>
-# define VERTEX_LIST vector<VERTEX>
+# define POLY_DATA vector<Vector2>
+# define VERTEX_LIST vector<Vector2>
+# define VERTEX vector<Vector2> // deprecated!
+# define POLY_LIST vector<POLY_DATA>
+// # define VERTEX_LIST vector<VERTEX> // deprecated!
 # define PI 3.141592
 # define INVERSE_RADIAN 0.0174533 //PI / 180.0
 # define TOLERANCE 0.0001
@@ -42,6 +45,30 @@ struct Vector2
     SCALAR Dot(Vector2 vec)
     {
         return SCALAR{x * vec.x + y * vec.y};
+    }
+
+    Vector2 Cross(float z)
+    {
+        // get perpendicular vector.
+        // display direction is positive z-axis.
+        return Vector2{-1.0f * y * z, x * z};
+    }
+
+    SCALAR Cross(Vector2 vec)
+    {
+        // get magnitude of cross product.
+        // same as area of trapezoid.
+        return x * vec.y - y * vec.x;
+    }
+
+    SCALAR GetSqrLength()
+    {
+        return x * x + y * y;
+    }
+
+    SCALAR GetLength()
+    {
+        return sqrt(x * x + y * y);
     }
 
     Vector2 Normalise()
@@ -76,15 +103,34 @@ struct Vector2
         return Vector2{x / div, y / div};
     }
 
-    Vector2 Cross(float z)
+    Vector2& operator+=(const Vector2& vec)
     {
-        return Vector2{-1.0f * y * z, x * z};
+        (*this) = (*this) + vec;
+        return *this;
+    }
+
+    Vector2& operator-=(const Vector2& vec)
+    {
+        (*this) = (*this) - vec;
+        return *this;
+    }
+
+    Vector2& operator*=(const SCALAR& scale)
+    {
+        (*this) = (*this) * scale;
+        return *this;
+    }
+
+    Vector2& operator/=(const SCALAR& scale)
+    {
+        (*this) = (*this) / scale;
+        return *this;
     }
 };
 
 
-// homogeneous transform matrix for 2D.
-struct Matrix3x3
+// homogeneous transform 3x3 matrix for 2D.
+struct HomogeneousMatrix3x3 //HomogeneousMatrix
 {
     float m11, m12, m13, m21, m22, m23, m31, m32, m33;
     Vector2 center;
@@ -123,9 +169,9 @@ struct Matrix3x3
     }
 
 
-    VERTEX Multiply(VERTEX vertices)
+    POLY_DATA Multiply(POLY_DATA vertices)
     {
-        VERTEX result;
+        POLY_DATA result;
         Vector2 tmp;
         for (int i = 0 ; i < vertices.size(); i ++)
         {
@@ -177,7 +223,7 @@ struct Simplex
 
 struct ClippedPoints
 {
-    VERTEX cPoints;
+    VERTEX_LIST cPoints;
 };
 
 struct MassData
@@ -192,6 +238,6 @@ struct MassData
 };
 
 Q_DECLARE_METATYPE(Vector2);
-Q_DECLARE_METATYPE(Matrix3x3);
+Q_DECLARE_METATYPE(HomogeneousMatrix3x3);
 
 # endif

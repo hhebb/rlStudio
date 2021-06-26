@@ -9,22 +9,33 @@
 class Collider
 {
 private:
-    // Body* body;
-    VERTEX vertices;
-    Matrix3x3 matrix;
-    MassData massData;
+    POLY_DATA vertices;
+    HomogeneousMatrix3x3 matrix;
     float radius;
-    float area = 0;
+
+    // attr
+    SCALAR area = 0;
+    Vector2 centroid;
     
 public:
-    Collider(VERTEX, float);
+    Collider(POLY_DATA, Vector2, float);
     void Update(Vector2, Vector2, SCALAR);
-    MassData GetMassData();
-    VERTEX GetVertices();
-    Vector2 GetCenter();
+
+    // collider attribute. mass, inertia are called by body.
+    SCALAR CalculateArea();
+    Vector2 CalculateCentroid();
+    void InitVertices(Vector2);
+    SCALAR CalculateMass(SCALAR);
+    SCALAR CalculateInertia();
+
+    // getter
+    POLY_DATA GetVertices();
+    POLY_DATA GetLocalVertices();
+    Vector2 GetCentroid(); // same as body's position.
+    Vector2 GetCenter(); // deprecated??
+    
+    // collision info
     Edge FindBestEdge(Vector2);
-    void CalculateArea();
-    void CalculateCenter();
 };
 
 # endif

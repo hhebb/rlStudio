@@ -12,7 +12,7 @@ World::World()
 void World::Init()
 {
     // body 들 생성, 물성치 설정. 모든 물리 환경 설정.
-    VERTEX vert; // vertices
+    POLY_DATA vert; // vertices
     Vector2 pos; // center
     SCALAR rot;
     SCALAR mass;
@@ -24,7 +24,7 @@ void World::Init()
     rot = 0;
     mass = 0;
     radius = 0;
-    Create(vert, pos, rot, mass, radius);
+    Create(vert, pos, rot, mass, radius, 0);
 
 
     // 예시 body
@@ -33,7 +33,7 @@ void World::Init()
     rot = 0;
     mass = 1;
     radius = 1;
-    Create(vert, pos, rot, mass, radius);
+    Create(vert, pos, rot, mass, radius, 1);
 
 }
 
@@ -51,7 +51,7 @@ void World::Step()
         SCALAR rotateDiff = bodies[i].GetRotation();
 
         // - force generation
-        Vector2 gravity = {.0f, -9.8f * bodies[i].mass};
+        Vector2 gravity = {.0f, -9.8f * bodies[i].GetMass()};
         SCALAR torque = 20;
         bodies[i].AddForce(gravity);
         bodies[i].AddTorque(torque);
@@ -59,7 +59,7 @@ void World::Step()
         // - velocity calculation
         bodies[i].CalculateVelocity();
         bodies[i].CalculateAngularVelocity();
-        cout << "> real velocity: " << bodies[i].velocity.x << ", " << bodies[i].velocity.y << endl;
+        cout << "> real velocity: " << bodies[i].GetVelocity().x << ", " << bodies[i].GetVelocity().y << endl;
         
         // - collision detection
         for (int j = i + 1; j < bodies.size(); j ++)
@@ -91,18 +91,17 @@ void World::Step()
 
         // update collider shape, body centroid
         bodies[i].GetCollider()->Update(bodies[i].GetPosition(), translateDiff, rotateDiff);
-        bodies[i].UpdateAttribute();
     }
 }
 
-VERTEX_LIST World::GetVertices()
+POLY_LIST World::GetVertices()
 {
     return this->vertices;
 }
 
-void World::Create(VERTEX ver, Vector2 pos, SCALAR rot, SCALAR m, float rad)
+void World::Create(POLY_DATA ver, Vector2 pos, SCALAR rot, SCALAR m, float rad, int id)
 {
-    Body body(ver, pos, rot, m, rad);
+    Body body(ver, pos, rot, m, rad, id);
     this->bodies.push_back(body);
     // this->vertices.push_back(ver.data());
 }
@@ -152,8 +151,8 @@ void World::run()
 
 bool World::IsCollide(Body* body1, Body* body2)
 {
-    Vector2 center1 = body1->GetCollider()->GetCenter();
-    Vector2 center2 = body2->GetCollider()->GetCenter();
+    Vector2 center1 = body1->GetPosition(); //body1->GetCollider()->GetCenter();
+    Vector2 center2 = body2->GetPosition(); //body2->GetCollider()->GetCenter();
     Vector2 direction = center1 - center2;
     Simplex simplex;
     Vector2 a = SupportFunction(body1->GetCollider()->GetVertices(), body2->GetCollider()->GetVertices(), direction);

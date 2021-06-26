@@ -53,7 +53,7 @@ void TestWindow::Init()
     glClearColor(.3f, .3f, .6f, 1);
 }
 
-void TestWindow::SetVertices(VERTEX_LIST vertices)
+void TestWindow::SetVertices(POLY_LIST vertices)
 {
     testCoord = vertices;
 }
@@ -70,7 +70,7 @@ void TestWindow::Resize()
 
 void TestWindow::Render(QVariant vertices)
 {    
-    this->testCoord = vertices.value<VERTEX_LIST>();
+    this->testCoord = vertices.value<POLY_LIST>();
     // // 버퍼 데이터들을 받아와서 셋팅해주기.
     update();
 }

@@ -16,7 +16,7 @@ signals:
     void physicsUpdate(QVariant);
 private:
     vector<Body> bodies;
-    VERTEX_LIST vertices;
+    POLY_LIST vertices;
     vector<Collision*> collisionList; // collision manager 만들어서 관리하도록 수정해야함.
     void run();
 
@@ -26,8 +26,8 @@ public:
     void Init();
     void Reset();
     void Step();
-    VERTEX_LIST GetVertices();
-    void Create(VERTEX, Vector2, SCALAR, SCALAR, float);
+    POLY_LIST GetVertices();
+    void Create(POLY_DATA, Vector2, SCALAR, SCALAR, float, int);
     void Debug();
     vector<Body> GetBodies();
     bool IsCollide(Body*, Body*);

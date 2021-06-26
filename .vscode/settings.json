@@ -57,6 +57,7 @@
         "qopenglwindow": "cpp",
         "qapplication": "cpp",
         "qmetatype": "cpp",
-        "qvariant": "cpp"
+        "qvariant": "cpp",
+        "thread": "cpp"
     }
 }

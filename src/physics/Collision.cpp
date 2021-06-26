@@ -157,10 +157,12 @@ ClippedPoints Collision::Clip(Vector2 p1, Vector2 p2, Vector2 n, float o)
 
 void Collision::Solve()
 {
-    cout << "> before velocity: " << b1->velocity.x << ", " << b1->velocity.y << endl;
+    cout << "> before velocity: " << b1->GetVelocity().x << ", " << b1->GetVelocity().y << endl;
     cout << "> normal: " << collisionNormal.x << ", " << collisionNormal.y << endl;
-    b1->velocity = b1->velocity - collisionNormal;// * DELTA_TIME; // add velocity 할 수 있도록 메서드 추가하기
-    b2->velocity = b2->velocity + collisionNormal;// * DELTA_TIME; // add velocity 할 수 있도록 메서드 추가하기
-    cout << "> after velocity: " << b2->velocity.x << ", " << b2->velocity.y << endl;
+    // b1->velocity = b1->velocity - collisionNormal;// * DELTA_TIME; // add velocity 할 수 있도록 메서드 추가하기
+    // b2->velocity = b2->velocity + collisionNormal;// * DELTA_TIME; // add velocity 할 수 있도록 메서드 추가하기
+    b1->AddImpulseAt(-collisionNormal, manifolds.cPoints[0]);
+    b2->AddImpulseAt(collisionNormal, manifolds.cPoints[0]);
+    cout << "> after velocity: " << b2->GetVelocity().x << ", " << b2->GetVelocity().y << endl;
 
 }
