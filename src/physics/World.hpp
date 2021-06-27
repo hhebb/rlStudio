@@ -27,7 +27,7 @@ public:
     void Reset();
     void Step();
     POLY_LIST GetVertices();
-    void Create(POLY_DATA, Vector2, SCALAR, SCALAR, float, int);
+    void Create(POLY_DATA ver, Vector2 pos, SCALAR rot, int id, BodyType t);
     void Debug();
     vector<Body> GetBodies();
     bool IsCollide(Body*, Body*);

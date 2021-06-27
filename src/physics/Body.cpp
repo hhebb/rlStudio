@@ -2,22 +2,28 @@
 # include <iostream>
 using namespace std;
 
-Body::Body(POLY_DATA vertices, Vector2 pos, SCALAR rot, float rad, int i, SCALAR density=1)
+Body::Body(POLY_DATA vertices, Vector2 pos, SCALAR rot, int i, SCALAR density, BodyType t)
 {
     // set collider
     // calc collider's centroid, move vertices.
     id = i;
     position = pos; // centroid 로 작동한다.
     rotation = rot;
-    collider = new Collider(vertices, position, radius);
-    radius = rad; // ??? deprecated.
+    collider = new Collider(vertices, position, rotation, radius);
+    type = t;
+    PrintScalar("type", t);
+    // radius = rad; // ??? deprecated.
     
     
     // get mass data from created collider.
-    mass = collider->CalculateMass(density);
+    mass = type == DYNAMIC ? collider->CalculateMass(density) : 0;
     inverseMass = mass == 0 ? 0 : 1 / mass;
-    inertia = collider->CalculateInertia();
+    inertia = type == DYNAMIC ? collider->CalculateInertia() : 0;
     inverseInertia = inertia == 0 ? 0 : 1 / inertia;
+    // PrintScalar("mass", mass);
+    // PrintScalar("i_mass", inverseMass);
+    // PrintScalar("inertia", inertia);
+    // PrintScalar("i_intertia", inverseInertia);
 }
 
 Vector2 Body::GetPosition()
@@ -57,7 +63,6 @@ Collider* Body::GetCollider()
 
 void Body::AddForce(Vector2 f)
 {
-    // force = force + f;
     force += f;
 }
 
@@ -76,18 +81,16 @@ void Body::AddImpulseAt(Vector2 impulse, Vector2 pos)
 
 void Body::CalculateVelocity()
 {
-    // velocity = velocity + force * inverseMass * DELTA_TIME;
     velocity += force * inverseMass * DELTA_TIME;
 }
 
 void Body::CalculateAngularVelocity()
 {
-    angularVelocity += torque * DELTA_TIME;
+    angularVelocity += torque * inverseInertia * DELTA_TIME;
 }
 
 void Body::CalculatePosition()
 {
-    // position = position + velocity * DELTA_TIME;
     position += velocity * DELTA_TIME;
 }
 
@@ -106,3 +109,14 @@ void Body::ClearTorque()
     torque = 0;
 }
 
+void Body::UpdateCentroid()
+{
+    position = collider->GetCentroid();
+    // PrintVector("body centroid", position);
+}
+
+// test
+void Body::SetVel(SCALAR w)
+{
+    angularVelocity = w;
+}

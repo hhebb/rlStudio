@@ -19,21 +19,21 @@ void World::Init()
     float radius;
 
     // 바닥
-    pos = {-0.4, -0.1};
-    vert = {Vector2{pos.x -.4f, pos.y - .1f}, Vector2{pos.x + .4f, pos.y - .1f}, Vector2{pos.x + .4f, pos.y + .1f}, Vector2{pos.x -.4f, pos.y + .1f}}; // x, y order
-    rot = 0;
+    pos = {-0.5, -0.5};
+    vert = {Vector2{0.0, 0.0}, Vector2{.4, .0}, Vector2{.4, .1}, Vector2{0.0, .1}}; // x, y order
+    rot = 45;
     mass = 0;
     radius = 0;
-    Create(vert, pos, rot, mass, radius, 0);
+    Create(vert, pos, rot, 0, DYNAMIC);
 
 
     // 예시 body
-    pos = {-0.2, 0.205};
-    vert = {Vector2{pos.x, pos.y}, Vector2{pos.x + .1f, pos.y}, Vector2{pos.x + .1f, pos.y + .1f}}; // x, y order
+    pos = {-0.5, 0.2};
+    vert = {Vector2{0.0, 0.0}, Vector2{.1, 0.0}, Vector2{.1, .1}}; // x, y order
     rot = 0;
     mass = 1;
     radius = 1;
-    Create(vert, pos, rot, mass, radius, 1);
+    // Create(vert, pos, rot, 1, DYNAMIC);
 
 }
 
@@ -51,15 +51,18 @@ void World::Step()
         SCALAR rotateDiff = bodies[i].GetRotation();
 
         // - force generation
-        Vector2 gravity = {.0f, -9.8f * bodies[i].GetMass()};
-        SCALAR torque = 20;
-        bodies[i].AddForce(gravity);
+        Vector2 gravity = {.0, -GRAVITY * bodies[i].GetMass()};
+        SCALAR torque = 10;
+        // bodies[i].AddForce(gravity);
         bodies[i].AddTorque(torque);
         
         // - velocity calculation
         bodies[i].CalculateVelocity();
         bodies[i].CalculateAngularVelocity();
-        cout << "> real velocity: " << bodies[i].GetVelocity().x << ", " << bodies[i].GetVelocity().y << endl;
+        // bodies[i].SetVel(100);
+
+        // cout << "> velocity: " << i << ", " << bodies[i].GetVelocity().x << ", " << bodies[i].GetVelocity().y << endl;
+        // cout << "> position: " << i << ", " << bodies[i].GetPosition().x << ", " << bodies[i].GetPosition().y << endl;
         
         // - collision detection
         for (int j = i + 1; j < bodies.size(); j ++)
@@ -73,7 +76,7 @@ void World::Step()
         // collision solve
         for (int j = 0; j < collisionList.size(); j ++)
         {
-            collisionList[j]->Solve();
+            // collisionList[j]->Solve();
         }
 
         // - position calculation
@@ -91,6 +94,7 @@ void World::Step()
 
         // update collider shape, body centroid
         bodies[i].GetCollider()->Update(bodies[i].GetPosition(), translateDiff, rotateDiff);
+        bodies[i].UpdateCentroid();
     }
 }
 
@@ -99,9 +103,9 @@ POLY_LIST World::GetVertices()
     return this->vertices;
 }
 
-void World::Create(POLY_DATA ver, Vector2 pos, SCALAR rot, SCALAR m, float rad, int id)
+void World::Create(POLY_DATA ver, Vector2 pos, SCALAR rot, int id, BodyType t)
 {
-    Body body(ver, pos, rot, m, rad, id);
+    Body body(ver, pos, rot, id, 1, t);
     this->bodies.push_back(body);
     // this->vertices.push_back(ver.data());
 }
@@ -151,8 +155,8 @@ void World::run()
 
 bool World::IsCollide(Body* body1, Body* body2)
 {
-    Vector2 center1 = body1->GetPosition(); //body1->GetCollider()->GetCenter();
-    Vector2 center2 = body2->GetPosition(); //body2->GetCollider()->GetCenter();
+    Vector2 center1 = body1->GetPosition();
+    Vector2 center2 = body2->GetPosition();
     Vector2 direction = center1 - center2;
     Simplex simplex;
     Vector2 a = SupportFunction(body1->GetCollider()->GetVertices(), body2->GetCollider()->GetVertices(), direction);

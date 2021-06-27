@@ -10,13 +10,13 @@ private:
     Body* b1;
     Body* b2;
     Vector2 collisionNormal;
-    float penetrationDepth;
+    double penetrationDepth;
     ClippedPoints manifolds;
 public:
     Collision(Body*, Body*);
     void FindCollisioninfo(Simplex);
     void FindManifolds();
-    ClippedPoints Clip(Vector2, Vector2, Vector2, float);
+    ClippedPoints Clip(Vector2, Vector2, Vector2, double);
     void Solve();
 };
 

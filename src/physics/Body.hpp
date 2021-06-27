@@ -22,12 +22,12 @@ private:
     SCALAR inverseMass;
     SCALAR inertia;
     SCALAR inverseInertia;
-    float radius;
+    double radius;
 
     Collider* collider;
 
 public:
-    Body(POLY_DATA, Vector2, SCALAR, float, int, SCALAR);
+    Body(POLY_DATA vertices, Vector2 pos, SCALAR rot, int i, SCALAR density, BodyType t);
 
     // getter
     Vector2 GetPosition();
@@ -47,7 +47,9 @@ public:
     void CalculateAngle();
     void ClearForce();
     void ClearTorque();
+    void UpdateCentroid();
     
+    void SetVel(SCALAR);
 };
 
 

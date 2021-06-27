@@ -11,20 +11,20 @@ class Collider
 private:
     POLY_DATA vertices;
     HomogeneousMatrix3x3 matrix;
-    float radius;
+    double radius;
 
     // attr
     SCALAR area = 0;
-    Vector2 centroid;
+    Vector2 centroid{0, 0};
     
 public:
-    Collider(POLY_DATA, Vector2, float);
+    Collider(POLY_DATA vert, Vector2 pos, SCALAR rot, double rad);
     void Update(Vector2, Vector2, SCALAR);
 
     // collider attribute. mass, inertia are called by body.
     SCALAR CalculateArea();
     Vector2 CalculateCentroid();
-    void InitVertices(Vector2);
+    void InitVertices(Vector2 origin, SCALAR rot);
     SCALAR CalculateMass(SCALAR);
     SCALAR CalculateInertia();
 

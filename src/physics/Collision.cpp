@@ -14,7 +14,7 @@ void Collision::FindCollisioninfo(Simplex simplex)
     {
         Edge e = FindClosetEdge(simplex);
         Vector2 p = SupportFunction(b1->GetCollider()->GetVertices(), b2->GetCollider()->GetVertices(), e.normal);
-        float d = p.Dot(e.normal);
+        double d = p.Dot(e.normal);
         if (d - e.distance < TOLERANCE)
         {
             collisionNormal = e.normal;
@@ -58,7 +58,7 @@ void Collision::FindManifolds()
     // cout << "> ref b: " << ref.b.x  << ", " << ref.b.y << endl;
     // cout << "> ref edge: " << ref.GetVector().x  << ", " << ref.GetVector().y << endl;
     // cout << "> normalized ref edge: " << normalizedRef.x  << ", " << normalizedRef.y << endl;
-    float offset1 = normalizedRef.Dot(ref.a);
+    double offset1 = normalizedRef.Dot(ref.a);
 
     // cout << "> offset1, " << offset1 << endl;
 
@@ -69,7 +69,7 @@ void Collision::FindManifolds()
         return;
     }
     
-    float offset2 = normalizedRef.Dot(ref.b);
+    double offset2 = normalizedRef.Dot(ref.b);
 
     // cout << "> offset2, " << offset2 << endl;
     
@@ -88,7 +88,7 @@ void Collision::FindManifolds()
     {
         refNormal = -refNormal;
     }
-    float max = refNormal.Dot(ref.farthest);
+    double max = refNormal.Dot(ref.farthest);
     // cout << "> max vertex: " << max << endl;
 
     if (refNormal.Dot(cp2.cPoints[0]) - max < 0.0)
@@ -128,11 +128,11 @@ void Collision::FindManifolds()
 
 }
 
-ClippedPoints Collision::Clip(Vector2 p1, Vector2 p2, Vector2 n, float o)
+ClippedPoints Collision::Clip(Vector2 p1, Vector2 p2, Vector2 n, double o)
 {
     ClippedPoints cp;
-    float d1 = n.Dot(p1) - o;
-    float d2 = n.Dot(p2) - o;
+    double d1 = n.Dot(p1) - o;
+    double d2 = n.Dot(p2) - o;
 
     if (d1 > 0.0)
     {
@@ -146,7 +146,7 @@ ClippedPoints Collision::Clip(Vector2 p1, Vector2 p2, Vector2 n, float o)
     if (d1 * d2 < 0.0)
     {
         Vector2 e = p2 - p1;
-        float u = d1 / (d1 - d2);
+        double u = d1 / (d1 - d2);
         e = e * u;
         e = e + p1;
         cp.cPoints.push_back(e);

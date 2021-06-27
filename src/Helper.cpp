@@ -1,13 +1,13 @@
 # include "Helper.hpp"
 # include <limits>
 
-Vector2 GetFarthestVertex(VERTEX verts, Vector2 d)
+Vector2 GetFarthestVertex(POLY_DATA verts, Vector2 d)
 {
-    float max = -1;
+    double max = -1;
     int maxIdx = -1;
     for (int i = 0; i < verts.size(); i ++)
     {
-        float dist = verts[i].Dot(d);
+        double dist = verts[i].Dot(d);
         if (dist > max)
         {
             max = dist;
@@ -18,7 +18,7 @@ Vector2 GetFarthestVertex(VERTEX verts, Vector2 d)
     return verts[maxIdx];
 }
 
-Vector2 SupportFunction(VERTEX verts1, VERTEX verts2, Vector2 d)
+Vector2 SupportFunction(POLY_DATA verts1, POLY_DATA verts2, Vector2 d)
 {
     Vector2 a = GetFarthestVertex(verts1, d);
     Vector2 b = GetFarthestVertex(verts2, -d);
@@ -82,7 +82,7 @@ bool IsContainOrigin(Simplex simplex, Vector2& d)
 Edge FindClosetEdge(Simplex simplex)
 {
     Edge closest;
-    closest.distance = numeric_limits<float>::max();
+    closest.distance = numeric_limits<double>::max();
     for (int i = 0; i < simplex.elements.size(); i ++)
     {
         int j = i + 1 == simplex.elements.size() ? 0 : i + 1;
@@ -91,7 +91,7 @@ Edge FindClosetEdge(Simplex simplex)
         Vector2 e = b - a;
         Vector2 normal = TripleProduct(e, a, e);
         normal = normal.Normalise();
-        float dist = normal.Dot(a);
+        double dist = normal.Dot(a);
         if (dist < closest.distance)
         {
             closest.distance = dist;
@@ -106,4 +106,14 @@ Edge FindClosetEdge(Simplex simplex)
 Vector2 Edge::GetVector()
 {
     return b - a;
+}
+
+void PrintVector(string desc, Vector2 vec)
+{
+    cout << "> "  << desc  << ": " << vec.x << ", " << vec.y << endl;
+}
+
+void PrintScalar(string desc, SCALAR s)
+{
+    cout << "> "  << desc  << ": " << s << endl;
 }

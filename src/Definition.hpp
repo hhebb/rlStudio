@@ -9,14 +9,12 @@
 
 using namespace std;
 
-# define SCALAR float
-# define DELTA_TIME 0.016f
-# define GRAVITY 9.8f
+# define SCALAR double
+# define DELTA_TIME 0.016
+# define GRAVITY 9.81
 # define POLY_DATA vector<Vector2>
 # define VERTEX_LIST vector<Vector2>
-# define VERTEX vector<Vector2> // deprecated!
 # define POLY_LIST vector<POLY_DATA>
-// # define VERTEX_LIST vector<VERTEX> // deprecated!
 # define PI 3.141592
 # define INVERSE_RADIAN 0.0174533 //PI / 180.0
 # define TOLERANCE 0.0001
@@ -27,10 +25,10 @@ enum BodyType {DYNAMIC, KINEMATIC, STATIC};
 
 struct Vector2
 {
-    float x;
-    float y;
+    double x;
+    double y;
 
-    void Set(float x, float y)
+    void Set(double x, double y)
     {
         this->x = x;
         this->y = y;
@@ -47,11 +45,11 @@ struct Vector2
         return SCALAR{x * vec.x + y * vec.y};
     }
 
-    Vector2 Cross(float z)
+    Vector2 Cross(double z)
     {
         // get perpendicular vector.
         // display direction is positive z-axis.
-        return Vector2{-1.0f * y * z, x * z};
+        return Vector2{-1.0 * y * z, x * z};
     }
 
     SCALAR Cross(Vector2 vec)
@@ -73,7 +71,7 @@ struct Vector2
 
     Vector2 Normalise()
     {
-        float factor = sqrt(x * x + y * y);
+        double factor = sqrt(x * x + y * y);
         return Vector2{x / factor, y / factor};
     }
 
@@ -132,7 +130,7 @@ struct Vector2
 // homogeneous transform 3x3 matrix for 2D.
 struct HomogeneousMatrix3x3 //HomogeneousMatrix
 {
-    float m11, m12, m13, m21, m22, m23, m31, m32, m33;
+    double m11, m12, m13, m21, m22, m23, m31, m32, m33;
     Vector2 center;
 
     void SetIdentity()
@@ -153,11 +151,12 @@ struct HomogeneousMatrix3x3 //HomogeneousMatrix
 
     void Rotate(SCALAR angle, Vector2 center)
     {
+        // cout << "> center check: " << center.x << ", " << center.y << endl;
         SCALAR radAngle = angle * INVERSE_RADIAN;
-        float c = cos(radAngle);
-        float s = sin(radAngle);
-        float e1 = center.x * (1 - c) + center.y * s;
-        float e2 = center.y * (1 - c) - center.x * s;
+        double c = cos(radAngle);
+        double s = sin(radAngle);
+        double e1 = center.x * (1 - c) + center.y * s;
+        double e2 = center.y * (1 - c) - center.x * s;
 
         m11 = c * m11 - s * m21 + e1 * m31;
         m12 = c * m12 - s * m22 + e1 * m32;
