@@ -2,6 +2,7 @@
 // # include "Body.hpp"
 # include <iostream>
 # include <limits>
+# include <cmath>
 
 using namespace std;
 
@@ -9,7 +10,7 @@ Collider::Collider(POLY_DATA vert, Vector2 pos, SCALAR rot, double rad)
 {
     vertices = vert;
     radius = rad; // deprecated
-    // CalculateArea();
+    CalculateArea();
     CalculateCentroid();
     InitVertices(pos, rot); // body 의 position 기준으로 centroid 를 옮김.
 }
@@ -20,6 +21,7 @@ void Collider::Update(Vector2 center,Vector2 translate, SCALAR rotate)
     matrix.Translate(translate);
     matrix.Rotate(rotate, center);
     vertices = matrix.Multiply(vertices);
+
     // cout << vertices[1].x << ", " << vertices[1].y << endl;
 
     for (int i = 0; i < vertices.size(); i ++)
@@ -31,22 +33,28 @@ void Collider::Update(Vector2 center,Vector2 translate, SCALAR rotate)
     // centroid update!
     // CalculateArea();
     CalculateCentroid();
+    
+    for (int i = 0; i < vertices.size(); i ++)
+    {
+        PrintScalar("ratio", area_ratio);
+        vertices[i] += (vertices[i] - centroid) * (1 - sqrt(area_ratio));
+    }
+
     // PrintVector("centroid updated", centroid);
 }
 
-SCALAR Collider::CalculateArea()
+void Collider::CalculateArea()
 {
-    area = 0;
+    area_init = 0;
     for (int i = 0; i < vertices.size() - 1; i ++)
     {
         // area += vertices[i].x * vertices[i + 1].y - vertices[i + 1].x * vertices[i].y;
-        area += vertices[i].Cross(vertices[i + 1]);
+        area_init += vertices[i].Cross(vertices[i + 1]);
     }
-    area += vertices[vertices.size() - 1].Cross(vertices[0]);
+    area_init += vertices[vertices.size() - 1].Cross(vertices[0]);
 
-    area /= 2;
-    PrintScalar("area only", area);
-    return area;
+    area_init /= 2;
+    PrintScalar("initial area", area_init);
 }
 
 Vector2 Collider::CalculateCentroid()
@@ -69,6 +77,7 @@ Vector2 Collider::CalculateCentroid()
         
     //
     area *= .5;
+    area_ratio = area / area_init;
     centroid /= (6 * area);
     PrintScalar("area update", area);
     PrintVector("centroid updated", centroid);

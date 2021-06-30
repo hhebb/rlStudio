@@ -15,6 +15,8 @@ private:
 
     // attr
     SCALAR area = 0;
+    SCALAR area_init = 0;
+    double area_ratio = 0;
     Vector2 centroid{0, 0};
     
 public:
@@ -22,7 +24,7 @@ public:
     void Update(Vector2, Vector2, SCALAR);
 
     // collider attribute. mass, inertia are called by body.
-    SCALAR CalculateArea();
+    void CalculateArea();
     Vector2 CalculateCentroid();
     void InitVertices(Vector2 origin, SCALAR rot);
     SCALAR CalculateMass(SCALAR);

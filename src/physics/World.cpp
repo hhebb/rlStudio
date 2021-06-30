@@ -21,7 +21,7 @@ void World::Init()
     // 바닥
     pos = {-0.5, -0.5};
     vert = {Vector2{0.0, 0.0}, Vector2{.4, .0}, Vector2{.4, .1}, Vector2{0.0, .1}}; // x, y order
-    rot = 45;
+    rot = 0;
     mass = 0;
     radius = 0;
     Create(vert, pos, rot, 0, DYNAMIC);
@@ -52,14 +52,14 @@ void World::Step()
 
         // - force generation
         Vector2 gravity = {.0, -GRAVITY * bodies[i].GetMass()};
-        SCALAR torque = 10;
+        SCALAR torque = 3;
         // bodies[i].AddForce(gravity);
-        bodies[i].AddTorque(torque);
+        // bodies[i].AddTorque(torque);
         
         // - velocity calculation
         bodies[i].CalculateVelocity();
         bodies[i].CalculateAngularVelocity();
-        // bodies[i].SetVel(100);
+        bodies[i].SetVel(500);
 
         // cout << "> velocity: " << i << ", " << bodies[i].GetVelocity().x << ", " << bodies[i].GetVelocity().y << endl;
         // cout << "> position: " << i << ", " << bodies[i].GetPosition().x << ", " << bodies[i].GetPosition().y << endl;
