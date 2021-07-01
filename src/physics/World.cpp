@@ -24,7 +24,7 @@ void World::Init()
     rot = 0;
     mass = 0;
     radius = 0;
-    Create(vert, pos, rot, 0, DYNAMIC);
+    Create(vert, pos, rot, 0, STATIC);
 
 
     // 예시 body
@@ -33,7 +33,7 @@ void World::Init()
     rot = 0;
     mass = 1;
     radius = 1;
-    // Create(vert, pos, rot, 1, DYNAMIC);
+    Create(vert, pos, rot, 1, DYNAMIC);
 
 }
 
@@ -53,13 +53,13 @@ void World::Step()
         // - force generation
         Vector2 gravity = {.0, -GRAVITY * bodies[i].GetMass()};
         SCALAR torque = 3;
-        // bodies[i].AddForce(gravity);
+        bodies[i].AddForce(gravity);
         // bodies[i].AddTorque(torque);
         
         // - velocity calculation
         bodies[i].CalculateVelocity();
         bodies[i].CalculateAngularVelocity();
-        bodies[i].SetVel(500);
+        // bodies[i].SetVel(500);
 
         // cout << "> velocity: " << i << ", " << bodies[i].GetVelocity().x << ", " << bodies[i].GetVelocity().y << endl;
         // cout << "> position: " << i << ", " << bodies[i].GetPosition().x << ", " << bodies[i].GetPosition().y << endl;
@@ -76,7 +76,7 @@ void World::Step()
         // collision solve
         for (int j = 0; j < collisionList.size(); j ++)
         {
-            // collisionList[j]->Solve();
+            collisionList[j]->Solve();
         }
 
         // - position calculation
@@ -85,8 +85,7 @@ void World::Step()
         // - update position, rotation, vertices
 
         //  calculate diff position, rotation
-        translateDiff.x = bodies[i].GetPosition().x - translateDiff.x;
-        translateDiff.y = bodies[i].GetPosition().y - translateDiff.y;
+        translateDiff = bodies[i].GetPosition() - translateDiff;
         rotateDiff = bodies[i].GetRotation() - rotateDiff;
         
         // - clear forces
@@ -95,6 +94,9 @@ void World::Step()
         // update collider shape, body centroid
         bodies[i].GetCollider()->Update(bodies[i].GetPosition(), translateDiff, rotateDiff);
         bodies[i].UpdateCentroid();
+
+        // clear collisions
+        collisionList.clear();
     }
 }
 

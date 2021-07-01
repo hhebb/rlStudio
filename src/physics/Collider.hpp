@@ -35,6 +35,10 @@ public:
     POLY_DATA GetLocalVertices();
     Vector2 GetCentroid(); // same as body's position.
     Vector2 GetCenter(); // deprecated??
+
+    // setter
+    void SetPosition(Vector2);
+    void SetRotation(SCALAR);
     
     // collision info
     Edge FindBestEdge(Vector2);

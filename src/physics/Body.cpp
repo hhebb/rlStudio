@@ -7,9 +7,11 @@ Body::Body(POLY_DATA vertices, Vector2 pos, SCALAR rot, int i, SCALAR density, B
     // set collider
     // calc collider's centroid, move vertices.
     id = i;
-    position = pos; // centroid 로 작동한다.
+    position = pos; // centroid 로 대체된다.
     rotation = rot;
     collider = new Collider(vertices, position, rotation, radius);
+    // SetPosition(pos);
+    // SetRotation(rot);
     type = t;
     PrintScalar("type", t);
     // radius = rad; // ??? deprecated.
@@ -61,6 +63,18 @@ Collider* Body::GetCollider()
     return collider;
 }
 
+void Body::SetPosition(Vector2 pos)
+{
+    position = pos;
+    collider->SetPosition(position);
+}
+
+void Body::SetRotation(SCALAR rot)
+{
+    rotation = rot;
+    collider->SetRotation(rotation);
+}
+
 void Body::AddForce(Vector2 f)
 {
     force += f;
@@ -75,8 +89,8 @@ void Body::AddImpulseAt(Vector2 impulse, Vector2 pos)
 {
     // dynamics for impulse at arbitrary point.
     // for collision solve.
-    velocity += impulse * inverseMass;
-    angularVelocity += pos.Cross(impulse) * inverseInertia;
+    velocity += impulse * inverseMass * .01;
+    angularVelocity += pos.Cross(impulse) * inverseInertia * .01;
 }
 
 void Body::CalculateVelocity()

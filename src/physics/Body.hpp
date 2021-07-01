@@ -38,6 +38,10 @@ public:
     SCALAR GetInertia();
     Collider* GetCollider();
 
+    // setter
+    void SetPosition(Vector2);
+    void SetRotation(SCALAR);
+
     void AddForce(Vector2);
     void AddTorque(SCALAR);
     void AddImpulseAt(Vector2, Vector2);

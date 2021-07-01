@@ -167,6 +167,26 @@ struct HomogeneousMatrix3x3 //HomogeneousMatrix
         
     }
 
+    void Scale(Vector2 scale)
+    {
+        m11 *= scale.x;
+        m12 *= scale.y;
+        m21 *= scale.x;
+        m22 *= scale.y;
+        m31 *= scale.x;
+        m32 *= scale.y;
+    }
+
+    void Scale(SCALAR scale)
+    {
+        m11 *= scale;
+        m12 *= scale;
+        m21 *= scale;
+        m22 *= scale;
+        m31 *= scale;
+        m32 *= scale;
+    }
+
 
     POLY_DATA Multiply(POLY_DATA vertices)
     {

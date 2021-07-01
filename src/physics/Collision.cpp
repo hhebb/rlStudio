@@ -66,6 +66,7 @@ void Collision::FindManifolds()
 
     if (cp.cPoints.size() < 2)
     {
+        cout << "less than 2 point" << endl;
         return;
     }
     
@@ -91,6 +92,7 @@ void Collision::FindManifolds()
     double max = refNormal.Dot(ref.farthest);
     // cout << "> max vertex: " << max << endl;
 
+    cout << "point count_1: " << cp2.cPoints.size() << endl;
     if (refNormal.Dot(cp2.cPoints[0]) - max < 0.0)
     {
         // cout << "> erase 1, dot: " << refNormal.Dot(cp2.cPoints[0]) << endl;
@@ -99,12 +101,13 @@ void Collision::FindManifolds()
         if (refNormal.Dot(cp2.cPoints[1]) - max >= 0.0)
         {
             // cout << "> erase 2, dot: " << refNormal.Dot(cp2.cPoints[1]) << cp2.cPoints[1].x << endl;
+            cout << "point count_2: " << cp2.cPoints.size() << endl;
             cp2.cPoints.erase(cp2.cPoints.begin());
             cp2.cPoints.erase(cp2.cPoints.begin());
-
         }
         else
         {
+            cout << "point count_3: " << cp2.cPoints.size() << endl;
             cp2.cPoints.erase(cp2.cPoints.begin());
         }
     }
@@ -113,6 +116,7 @@ void Collision::FindManifolds()
         if (refNormal.Dot(cp2.cPoints[1]) - max >= 0.0)
         {
             // cout << "> erase 2, " << cp2.cPoints[1].x << endl;
+            cout << "point count_4: " << cp2.cPoints.size() << endl;
             cp2.cPoints.erase(cp2.cPoints.begin() + 1);
 
         }
@@ -157,12 +161,21 @@ ClippedPoints Collision::Clip(Vector2 p1, Vector2 p2, Vector2 n, double o)
 
 void Collision::Solve()
 {
-    cout << "> before velocity: " << b1->GetVelocity().x << ", " << b1->GetVelocity().y << endl;
-    cout << "> normal: " << collisionNormal.x << ", " << collisionNormal.y << endl;
+    // PrintVector("before velocity", b2->GetVelocity());
+    // PrintVector("normal", b2->GetVelocity());
+
+    SCALAR e = 1;
+    Vector2 norm = collisionNormal.Normalise();
+    Vector2 relative = b1->GetVelocity() - b2->GetVelocity();
+    Vector2 reflect = relative + collisionNormal * (relative.Dot(norm)) * 2 * .001;
     // b1->velocity = b1->velocity - collisionNormal;// * DELTA_TIME; // add velocity 할 수 있도록 메서드 추가하기
     // b2->velocity = b2->velocity + collisionNormal;// * DELTA_TIME; // add velocity 할 수 있도록 메서드 추가하기
-    b1->AddImpulseAt(-collisionNormal, manifolds.cPoints[0]);
-    b2->AddImpulseAt(collisionNormal, manifolds.cPoints[0]);
-    cout << "> after velocity: " << b2->GetVelocity().x << ", " << b2->GetVelocity().y << endl;
+    if(manifolds.cPoints.size() > 0)
+    {
+        b1->AddImpulseAt(-reflect, manifolds.cPoints[0]);
+        b2->AddImpulseAt(reflect, manifolds.cPoints[1]);
+
+    }
+    // PrintVector("after velocity", b2->GetVelocity());
 
 }

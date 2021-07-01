@@ -13,6 +13,7 @@ Collider::Collider(POLY_DATA vert, Vector2 pos, SCALAR rot, double rad)
     CalculateArea();
     CalculateCentroid();
     InitVertices(pos, rot); // body 의 position 기준으로 centroid 를 옮김.
+
 }
 
 void Collider::Update(Vector2 center,Vector2 translate, SCALAR rotate)
@@ -28,17 +29,18 @@ void Collider::Update(Vector2 center,Vector2 translate, SCALAR rotate)
     {
         // PrintVector("v", vertices[i]);
     }
-    cout << endl;
+    // cout << endl;
 
     // centroid update!
     // CalculateArea();
-    CalculateCentroid();
     
     for (int i = 0; i < vertices.size(); i ++)
     {
-        PrintScalar("ratio", area_ratio);
+        // PrintScalar("ratio", area_ratio);
         vertices[i] += (vertices[i] - centroid) * (1 - sqrt(area_ratio));
     }
+
+    CalculateCentroid();
 
     // PrintVector("centroid updated", centroid);
 }
@@ -54,7 +56,7 @@ void Collider::CalculateArea()
     area_init += vertices[vertices.size() - 1].Cross(vertices[0]);
 
     area_init /= 2;
-    PrintScalar("initial area", area_init);
+    // PrintScalar("initial area", area_init);
 }
 
 Vector2 Collider::CalculateCentroid()
@@ -65,7 +67,7 @@ Vector2 Collider::CalculateCentroid()
     for (int i = 0; i < vertices.size() - 1; i ++)
     {
         // similar to cross product.
-        PrintVector("v", vertices[i]);
+        // PrintVector("v", vertices[i]);
         area_tmp = vertices[i].Cross(vertices[i + 1]);
         area += area_tmp;
         centroid += (vertices[i] + vertices[i + 1]) * area_tmp;
@@ -78,9 +80,9 @@ Vector2 Collider::CalculateCentroid()
     //
     area *= .5;
     area_ratio = area / area_init;
-    centroid /= (6 * area);
-    PrintScalar("area update", area);
-    PrintVector("centroid updated", centroid);
+    // centroid /= (6 * area);
+    // PrintScalar("area update", area);
+    // PrintVector("centroid updated", centroid);
 
     return centroid;
 }
@@ -159,6 +161,28 @@ Vector2 Collider::GetCenter()
     y /= vertices.size();
 
     return Vector2{x, y};
+}
+
+void Collider::SetPosition(Vector2 pos)
+{
+    Vector2 diff = pos - centroid;
+    for (int i = 0; i < vertices.size(); i ++)
+    {
+        vertices[i] += diff;
+    }
+}
+
+void Collider::SetRotation(SCALAR rot)
+{
+    // SCALAR diff = rot - ;
+    SCALAR radAngle = rot * INVERSE_RADIAN;
+    double c = cos(radAngle);
+    double s = sin(radAngle);
+    for (int i = 0; i < vertices.size(); i ++)
+    {
+        vertices[i].x = (vertices[i].x - centroid.x) * c - (vertices[i].y - centroid.y) * s + centroid.x;
+        vertices[i].y = (vertices[i].x - centroid.x) * s + (vertices[i].y - centroid.y) * c + centroid.y;
+    }
 }
 
 Edge Collider::FindBestEdge(Vector2 normal)
