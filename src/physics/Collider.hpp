@@ -28,7 +28,7 @@ public:
     Vector2 CalculateCentroid();
     void InitVertices(Vector2 origin, SCALAR rot);
     SCALAR CalculateMass(SCALAR);
-    SCALAR CalculateInertia();
+    SCALAR CalculateInertia(Vector2 center);
 
     // getter
     POLY_DATA GetVertices();

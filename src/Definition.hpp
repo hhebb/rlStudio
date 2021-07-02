@@ -151,20 +151,28 @@ struct HomogeneousMatrix3x3 //HomogeneousMatrix
 
     void Rotate(SCALAR angle, Vector2 center)
     {
+        // cout << "> angle check: " << angle << endl;
         // cout << "> center check: " << center.x << ", " << center.y << endl;
         SCALAR radAngle = angle * INVERSE_RADIAN;
         double c = cos(radAngle);
         double s = sin(radAngle);
-        double e1 = center.x * (1 - c) + center.y * s;
-        double e2 = center.y * (1 - c) - center.x * s;
 
-        m11 = c * m11 - s * m21 + e1 * m31;
-        m12 = c * m12 - s * m22 + e1 * m32;
-        m13 = c * m13 - s * m23 + e1 * m33;
+        double e1 = center.x * (1.0 - c) + center.y * s;
+        double e2 = center.y * (1.0 - c) - center.x * s;
+
+        double tmp_m11, tmp_m12, tmp_m13;
+
+        tmp_m11 = c * m11 - s * m21 + e1 * m31;
+        tmp_m12 = c * m12 - s * m22 + e1 * m32;
+        tmp_m13 = c * m13 - s * m23 + e1 * m33;
         m21 = s * m11 + c * m21 + e2 * m31;
         m22 = s * m12 + c * m22 + e2 * m32;
         m23 = s * m13 + c * m23 + e2 * m33;
-        
+
+        m11 = tmp_m11;
+        m12 = tmp_m12;
+        m13 = tmp_m13;
+
     }
 
     void Scale(Vector2 scale)

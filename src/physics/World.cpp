@@ -30,7 +30,7 @@ void World::Init()
     // 예시 body
     pos = {-0.5, 0.2};
     vert = {Vector2{0.0, 0.0}, Vector2{.1, 0.0}, Vector2{.1, .1}}; // x, y order
-    rot = 0;
+    rot = 30;
     mass = 1;
     radius = 1;
     Create(vert, pos, rot, 1, DYNAMIC);

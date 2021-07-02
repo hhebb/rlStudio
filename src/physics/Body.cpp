@@ -20,7 +20,7 @@ Body::Body(POLY_DATA vertices, Vector2 pos, SCALAR rot, int i, SCALAR density, B
     // get mass data from created collider.
     mass = type == DYNAMIC ? collider->CalculateMass(density) : 0;
     inverseMass = mass == 0 ? 0 : 1 / mass;
-    inertia = type == DYNAMIC ? collider->CalculateInertia() : 0;
+    inertia = type == DYNAMIC ? collider->CalculateInertia(position) : 0;
     inverseInertia = inertia == 0 ? 0 : 1 / inertia;
     // PrintScalar("mass", mass);
     // PrintScalar("i_mass", inverseMass);
@@ -101,6 +101,8 @@ void Body::CalculateVelocity()
 void Body::CalculateAngularVelocity()
 {
     angularVelocity += torque * inverseInertia * DELTA_TIME;
+    // PrintScalar("angular", angularVelocity);
+    // PrintScalar("inertia", inertia);
 }
 
 void Body::CalculatePosition()

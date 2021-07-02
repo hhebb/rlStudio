@@ -34,14 +34,9 @@ void Collider::Update(Vector2 center,Vector2 translate, SCALAR rotate)
     // centroid update!
     // CalculateArea();
     
-    for (int i = 0; i < vertices.size(); i ++)
-    {
-        // PrintScalar("ratio", area_ratio);
-        vertices[i] += (vertices[i] - centroid) * (1 - sqrt(area_ratio));
-    }
-
+    
+    // PrintScalar("ratio", area_ratio);
     CalculateCentroid();
-
     // PrintVector("centroid updated", centroid);
 }
 
@@ -80,7 +75,7 @@ Vector2 Collider::CalculateCentroid()
     //
     area *= .5;
     area_ratio = area / area_init;
-    // centroid /= (6 * area);
+    centroid /= (6 * area);
     // PrintScalar("area update", area);
     // PrintVector("centroid updated", centroid);
 
@@ -110,16 +105,26 @@ SCALAR Collider::CalculateMass(SCALAR density)
     return mass;
 }
 
-SCALAR Collider::CalculateInertia()
+SCALAR Collider::CalculateInertia(Vector2 center)
 {
     SCALAR inertia = 0;
+    SCALAR mass_tri;
+    SCALAR inertia_tri;
+    Vector2 a, b;
     for (int i = 0; i < vertices.size() - 1; i ++)
     {
-        SCALAR mass_tri = abs(vertices[i].Cross(vertices[i + 1]) * .5);
-        SCALAR inertia_tri = mass_tri * (vertices[i].GetSqrLength() + vertices[i + 1].GetSqrLength() + abs(vertices[i].Dot(vertices[i + 1]))) / 6;
+        a = vertices[i] - center;
+        b = vertices[i + 1] - center;
+        mass_tri = abs(a.Cross(b) * .5);
+        inertia_tri = mass_tri * (a.GetSqrLength() + b.GetSqrLength() + a.Dot(b)) / 6;
         inertia += inertia_tri;
     }
-
+    int idx = vertices.size() - 1;
+    a = vertices[idx] - center;
+    b = vertices[0] - center;
+    mass_tri = abs(a.Cross(b) * .5);
+    inertia_tri = mass_tri * (a.GetSqrLength() + b.GetSqrLength() + a.Dot(b)) / 6;
+    inertia += inertia_tri;
     return inertia;
 }
 
