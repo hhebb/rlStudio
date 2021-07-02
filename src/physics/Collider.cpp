@@ -207,8 +207,8 @@ Edge Collider::FindBestEdge(Vector2 normal)
     }
 
     Vector2 v = vertices[index];
-    int rightIndex = index + 1 >= vertices.size() ? 0 : index + 1;
-    int leftIndex = index <= 0 ? vertices.size() - 1 : index - 1;
+    int leftIndex = index + 1 >= vertices.size() ? 0 : index + 1;
+    int rightIndex = index <= 0 ? vertices.size() - 1 : index - 1;
 
     // cout << "> index test: " << vertices.size() << ", " << index << ", " << rightIndex << ", " << leftIndex << endl;
     Vector2 v1 = vertices[rightIndex]; // index + 1

@@ -28,6 +28,7 @@ Body::Body(POLY_DATA vertices, Vector2 pos, SCALAR rot, int i, SCALAR density, B
     // PrintScalar("i_intertia", inverseInertia);
 }
 
+#pragma region GETTER
 Vector2 Body::GetPosition()
 {
     return position;
@@ -58,10 +59,17 @@ SCALAR Body::GetInertia()
     return inertia;
 }
 
+BodyType Body::GetType()
+{
+    return type;
+}
+
 Collider* Body::GetCollider()
 {
     return collider;
 }
+
+#pragma endregion
 
 void Body::SetPosition(Vector2 pos)
 {
@@ -75,6 +83,7 @@ void Body::SetRotation(SCALAR rot)
     collider->SetRotation(rotation);
 }
 
+#pragma region CALCULATE
 void Body::AddForce(Vector2 f)
 {
     force += f;
@@ -89,8 +98,8 @@ void Body::AddImpulseAt(Vector2 impulse, Vector2 pos)
 {
     // dynamics for impulse at arbitrary point.
     // for collision solve.
-    velocity += impulse * inverseMass * .01;
-    angularVelocity += pos.Cross(impulse) * inverseInertia * .01;
+    velocity = impulse;
+    angularVelocity += pos.Cross(impulse) * 1;
 }
 
 void Body::CalculateVelocity()
@@ -130,6 +139,8 @@ void Body::UpdateCentroid()
     position = collider->GetCentroid();
     // PrintVector("body centroid", position);
 }
+
+#pragma endregion
 
 // test
 void Body::SetVel(SCALAR w)

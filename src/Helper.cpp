@@ -3,7 +3,7 @@
 
 Vector2 GetFarthestVertex(POLY_DATA verts, Vector2 d)
 {
-    double max = -1;
+    double max = -numeric_limits<double>::max();
     int maxIdx = -1;
     for (int i = 0; i < verts.size(); i ++)
     {
@@ -79,6 +79,11 @@ bool IsContainOrigin(Simplex simplex, Vector2& d)
     return false;
 }
 
+Vector2 Edge::GetVector()
+{
+    return b - a;
+}
+
 Edge FindClosetEdge(Simplex simplex)
 {
     Edge closest;
@@ -101,11 +106,6 @@ Edge FindClosetEdge(Simplex simplex)
     }
 
     return closest;
-}
-
-Vector2 Edge::GetVector()
-{
-    return b - a;
 }
 
 void PrintVector(string desc, Vector2 vec)

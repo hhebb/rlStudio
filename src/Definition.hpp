@@ -17,7 +17,7 @@ using namespace std;
 # define POLY_LIST vector<POLY_DATA>
 # define PI 3.141592
 # define INVERSE_RADIAN 0.0174533 //PI / 180.0
-# define TOLERANCE 0.0001
+# define TOLERANCE 0.00001
 
 using namespace std;
 

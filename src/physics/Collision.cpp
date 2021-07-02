@@ -32,16 +32,15 @@ void Collision::FindCollisioninfo(Simplex simplex)
 void Collision::FindManifolds()
 {
     // 
-    bool flip = false;
+    flip = false;
     Edge e1 = b1->GetCollider()->FindBestEdge(collisionNormal);
     Edge e2 = b2->GetCollider()->FindBestEdge(-collisionNormal);
 
     // cout << "> find best edge" << endl;
 
-    Edge ref;
-    Edge inc;
+    Edge ref, inc;
 
-    if (abs(e1.GetVector().Dot(collisionNormal) <= abs(e1.GetVector().Dot(collisionNormal))))
+    if (abs(e1.GetVector().Dot(collisionNormal) <= abs(e2.GetVector().Dot(collisionNormal))))
     {
         ref = e1;
         inc = e2;
@@ -66,7 +65,7 @@ void Collision::FindManifolds()
 
     if (cp.cPoints.size() < 2)
     {
-        cout << "less than 2 point" << endl;
+        // cout << "less than 2 point (1)" << endl;
         return;
     }
     
@@ -77,7 +76,7 @@ void Collision::FindManifolds()
     ClippedPoints cp2 = Clip(cp.cPoints[0], cp.cPoints[1], -normalizedRef, -offset2);
     if (cp2.cPoints.size() < 2)
     {
-        cout << "> less than 2 cp" << endl;
+        // cout << "> less than 2 point (2)" << endl;
         return;
     }
 
@@ -92,31 +91,31 @@ void Collision::FindManifolds()
     double max = refNormal.Dot(ref.farthest);
     // cout << "> max vertex: " << max << endl;
 
-    cout << "point count_1: " << cp2.cPoints.size() << endl;
+    // cout << "point count_1: " << cp2.cPoints.size() << endl;
     if (refNormal.Dot(cp2.cPoints[0]) - max < 0.0)
     {
         // cout << "> erase 1, dot: " << refNormal.Dot(cp2.cPoints[0]) << endl;
         // cp2.cPoints.erase(cp2.cPoints.begin());
 
-        if (refNormal.Dot(cp2.cPoints[1]) - max >= 0.0)
+        if (refNormal.Dot(cp2.cPoints[1]) - max < 0.0)
         {
-            // cout << "> erase 2, dot: " << refNormal.Dot(cp2.cPoints[1]) << cp2.cPoints[1].x << endl;
-            cout << "point count_2: " << cp2.cPoints.size() << endl;
+            cout << "> erase 1, 2, dot: " << refNormal.Dot(cp2.cPoints[1]) << cp2.cPoints[1].x << endl;
+            // cout << "point count_2: " << cp2.cPoints.size() << endl;
             cp2.cPoints.erase(cp2.cPoints.begin());
             cp2.cPoints.erase(cp2.cPoints.begin());
         }
         else
         {
-            cout << "point count_3: " << cp2.cPoints.size() << endl;
+            cout << "erase 1: " << cp2.cPoints.size() << endl;
             cp2.cPoints.erase(cp2.cPoints.begin());
         }
     }
     else
     {
-        if (refNormal.Dot(cp2.cPoints[1]) - max >= 0.0)
+        if (refNormal.Dot(cp2.cPoints[1]) - max < 0.0)
         {
             // cout << "> erase 2, " << cp2.cPoints[1].x << endl;
-            cout << "point count_4: " << cp2.cPoints.size() << endl;
+            cout << "erase 2: " << cp2.cPoints.size() << endl;
             cp2.cPoints.erase(cp2.cPoints.begin() + 1);
 
         }
@@ -127,7 +126,7 @@ void Collision::FindManifolds()
 
     for (int i = 0; i < manifolds.cPoints.size(); i ++)
     {
-        cout << "> manifold: " << manifolds.cPoints[i].x << ", " << manifolds.cPoints[i].y << endl;
+        // cout << "> manifold: " << manifolds.cPoints[i].x << ", " << manifolds.cPoints[i].y << endl;
     }
 
 }
@@ -151,8 +150,8 @@ ClippedPoints Collision::Clip(Vector2 p1, Vector2 p2, Vector2 n, double o)
     {
         Vector2 e = p2 - p1;
         double u = d1 / (d1 - d2);
-        e = e * u;
-        e = e + p1;
+        e *= u;
+        e += p1;
         cp.cPoints.push_back(e);
     }
 
@@ -166,14 +165,44 @@ void Collision::Solve()
 
     SCALAR e = 1;
     Vector2 norm = collisionNormal.Normalise();
-    Vector2 relative = b1->GetVelocity() - b2->GetVelocity();
-    Vector2 reflect = relative + collisionNormal * (relative.Dot(norm)) * 2 * .001;
+    Vector2 relative = b2->GetVelocity() - b1->GetVelocity(); // 상대가 고정되었다고 본 자신의 상대속도.
+    if (flip) {relative *= -1;}
+    Vector2 reflect = relative - norm * (relative.Dot(norm)) * 2 * 1; // 각 body 에 추가해줄 속도 방향.
     // b1->velocity = b1->velocity - collisionNormal;// * DELTA_TIME; // add velocity 할 수 있도록 메서드 추가하기
     // b2->velocity = b2->velocity + collisionNormal;// * DELTA_TIME; // add velocity 할 수 있도록 메서드 추가하기
+    
+    for (int i = 0; i < manifolds.cPoints.size(); i ++)
+    {
+        PrintVector("manifold", manifolds.cPoints[i]);
+    }
+    
     if(manifolds.cPoints.size() > 0)
     {
-        b1->AddImpulseAt(-reflect, manifolds.cPoints[0]);
-        b2->AddImpulseAt(reflect, manifolds.cPoints[1]);
+        if (b1->GetType() != DYNAMIC)
+        {
+            if (b2->GetType() != DYNAMIC)
+            {
+                ;
+            }
+            else
+            {
+                // (b2->GetVelocity() + reflect) .Normalise() * reflect.GetLength();
+                b2->AddImpulseAt(reflect, manifolds.cPoints[0]);
+            }
+        }
+        else
+        {
+            if (b2->GetType() != DYNAMIC)
+            {
+                b1->AddImpulseAt(-reflect, manifolds.cPoints[0]);
+            }
+            else
+            {
+                b1->AddImpulseAt(-reflect, manifolds.cPoints[0]);
+                b2->AddImpulseAt(reflect, manifolds.cPoints[0]);
+            }
+        }
+
 
     }
     // PrintVector("after velocity", b2->GetVelocity());

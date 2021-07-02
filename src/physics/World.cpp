@@ -20,8 +20,8 @@ void World::Init()
 
     // 바닥
     pos = {-0.5, -0.5};
-    vert = {Vector2{0.0, 0.0}, Vector2{.4, .0}, Vector2{.4, .1}, Vector2{0.0, .1}}; // x, y order
-    rot = 0;
+    vert = {Vector2{0.0, 0.0}, Vector2{.3, .0}, Vector2{.4, .1}, Vector2{0.0, .2}}; // x, y order
+    rot = 15;
     mass = 0;
     radius = 0;
     Create(vert, pos, rot, 0, STATIC);
@@ -29,8 +29,8 @@ void World::Init()
 
     // 예시 body
     pos = {-0.5, 0.2};
-    vert = {Vector2{0.0, 0.0}, Vector2{.1, 0.0}, Vector2{.1, .1}}; // x, y order
-    rot = 30;
+    vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.1, .2}}; // x, y order
+    rot = 10;
     mass = 1;
     radius = 1;
     Create(vert, pos, rot, 1, DYNAMIC);

@@ -12,6 +12,7 @@ private:
     Vector2 collisionNormal;
     double penetrationDepth;
     ClippedPoints manifolds;
+    bool flip;
 public:
     Collision(Body*, Body*);
     void FindCollisioninfo(Simplex);
