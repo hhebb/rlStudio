@@ -7,7 +7,7 @@
 Vector2 GetFarthestVertex(POLY_DATA, Vector2);
 Vector2 SupportFunction(POLY_DATA, POLY_DATA, Vector2);
 Vector2 TripleProduct(Vector2, Vector2, Vector2);
-bool IsContainOrigin(Simplex, Vector2&);
+bool IsContainOrigin(Simplex&, Vector2&);
 void PrintVector(string, Vector2);
 void PrintScalar(string, SCALAR);
 

@@ -105,7 +105,7 @@ SCALAR Collider::CalculateMass(SCALAR density)
     return mass;
 }
 
-SCALAR Collider::CalculateInertia(Vector2 center)
+SCALAR Collider::CalculateInertia(Vector2 center, SCALAR density)
 {
     SCALAR inertia = 0;
     SCALAR mass_tri;
@@ -125,6 +125,7 @@ SCALAR Collider::CalculateInertia(Vector2 center)
     mass_tri = abs(a.Cross(b) * .5);
     inertia_tri = mass_tri * (a.GetSqrLength() + b.GetSqrLength() + a.Dot(b)) / 6;
     inertia += inertia_tri;
+    inertia *= density;
     return inertia;
 }
 

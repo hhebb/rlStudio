@@ -20,7 +20,7 @@ Body::Body(POLY_DATA vertices, Vector2 pos, SCALAR rot, int i, SCALAR density, B
     // get mass data from created collider.
     mass = type == DYNAMIC ? collider->CalculateMass(density) : 0;
     inverseMass = mass == 0 ? 0 : 1 / mass;
-    inertia = type == DYNAMIC ? collider->CalculateInertia(position) : 0;
+    inertia = type == DYNAMIC ? collider->CalculateInertia(position, density) : 0;
     inverseInertia = inertia == 0 ? 0 : 1 / inertia;
     // PrintScalar("mass", mass);
     // PrintScalar("i_mass", inverseMass);
@@ -98,8 +98,15 @@ void Body::AddImpulseAt(Vector2 impulse, Vector2 pos)
 {
     // dynamics for impulse at arbitrary point.
     // for collision solve.
-    velocity = impulse;
-    angularVelocity += pos.Cross(impulse) * 1;
+    SCALAR rotation_impulse = (pos - position).Cross(impulse);
+
+    // PrintVector("after", velocity);
+    // PrintVector("impulse", impulse);
+    velocity += impulse * inverseMass;
+    // PrintVector("after", velocity);
+    angularVelocity += rotation_impulse * inverseInertia;
+    // PrintScalar("rot impulse", rotation_impulse);
+    // PrintScalar("angular", angularVelocity);
 }
 
 void Body::CalculateVelocity()
@@ -143,7 +150,12 @@ void Body::UpdateCentroid()
 #pragma endregion
 
 // test
-void Body::SetVel(SCALAR w)
+void Body::SetVel(Vector2 vel)
+{
+    velocity = vel;
+}
+
+void Body::SetAngular(SCALAR w)
 {
     angularVelocity = w;
 }

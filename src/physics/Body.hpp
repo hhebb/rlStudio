@@ -54,7 +54,8 @@ public:
     void ClearTorque();
     void UpdateCentroid();
     
-    void SetVel(SCALAR);
+    void SetVel(Vector2);
+    void SetAngular(SCALAR);
 };
 
 

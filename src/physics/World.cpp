@@ -19,21 +19,19 @@ void World::Init()
     float radius;
 
     // 바닥
-    pos = {-0.5, -0.5};
-    vert = {Vector2{0.0, 0.0}, Vector2{.3, .0}, Vector2{.4, .1}, Vector2{0.0, .2}}; // x, y order
-    rot = 15;
-    mass = 0;
-    radius = 0;
+    pos = {-0.5, -0.8};
+    vert = {Vector2{0.0, 0.0}, Vector2{.3, .0}, Vector2{.4, .2}, Vector2{0.0, .2}}; // x, y order
+    rot = 0;
     Create(vert, pos, rot, 0, STATIC);
-
+    bodies[0].SetVel(Vector2{.3, .5});
 
     // 예시 body
-    pos = {-0.5, 0.2};
-    vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.1, .2}}; // x, y order
-    rot = 10;
-    mass = 1;
-    radius = 1;
+    pos = {0.5, 0.4};
+    vert = {Vector2{0.0, 0.0}, Vector2{.2, .0}, Vector2{.3, .2}, Vector2{0.0, .2}}; // x, y order
+    // vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
+    rot = 0;
     Create(vert, pos, rot, 1, DYNAMIC);
+    bodies[1].SetVel(Vector2{-1, -1});
 
 }
 
@@ -52,8 +50,8 @@ void World::Step()
 
         // - force generation
         Vector2 gravity = {.0, -GRAVITY * bodies[i].GetMass()};
-        SCALAR torque = 3;
-        bodies[i].AddForce(gravity);
+        SCALAR torque = 1;
+        // bodies[i].AddForce(gravity);
         // bodies[i].AddTorque(torque);
         
         // - velocity calculation
@@ -172,14 +170,21 @@ bool World::IsCollide(Body* body1, Body* body2)
         // cout << "> colliding check" << endl;
         Vector2 b = SupportFunction(body1->GetCollider()->GetVertices(), body2->GetCollider()->GetVertices(), direction);
         simplex.add(b);
-
+        
+        // cout << "count: " << count << endl;
+        
         if (simplex.GetLastElement().Dot(direction) < 0)
         {
             // origin 을 지나지 않는다는 것이 확실할 때 종료
+            // cout << "not collide" << endl;
+            // PrintVector("last: ", simplex.GetLastElement());
+            // PrintVector("dir: ", direction);
             return false;
         }
         else
         {
+            // PrintVector("contain, last: ", simplex.GetLastElement());
+            // PrintVector("contain, dir: ", direction);
             // origin 지날 때, 아직은 지나지 않을 때
             if (IsContainOrigin(simplex, direction))
             {
@@ -190,6 +195,7 @@ bool World::IsCollide(Body* body1, Body* body2)
                 collision->FindManifolds();
                 return true;
             }
+            // PrintVector("changed dir", direction);
 
         }
 

@@ -32,7 +32,7 @@ Vector2 TripleProduct(Vector2 a, Vector2 b, Vector2 c)
     return b * c.Dot(a) - a * c.Dot(b);
 }
 
-bool IsContainOrigin(Simplex simplex, Vector2& d)
+bool IsContainOrigin(Simplex& simplex, Vector2& d)
 {
     Vector2 a = simplex.GetLastElement();
     
@@ -51,6 +51,7 @@ bool IsContainOrigin(Simplex simplex, Vector2& d)
         {
             simplex.Remove(2);
             d.Set(abPerp);
+            // PrintVector("ab perp", abPerp);
         }
         else
         {
@@ -58,11 +59,13 @@ bool IsContainOrigin(Simplex simplex, Vector2& d)
             {
                 simplex.Remove(1);
                 d.Set(acPerp);
+                // PrintVector("ac perp", acPerp);
+
             }
             else
             {
                 // already contain origin. dont need to change direction
-                cout << "> contain origin" << endl;
+                // cout << "> contain origin" << endl;
                 return true;
             }
         }
@@ -74,6 +77,12 @@ bool IsContainOrigin(Simplex simplex, Vector2& d)
         Vector2 ab = b - a;
         Vector2 abPerp = TripleProduct(ab, -a, ab);
         d.Set(abPerp);
+        // PrintVector("ab perp 2", abPerp);
+
+    }
+    else
+    {
+        // cout << "only one size!!!!!" << endl;
     }
 
     return false;

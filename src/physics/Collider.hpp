@@ -27,8 +27,8 @@ public:
     void CalculateArea();
     Vector2 CalculateCentroid();
     void InitVertices(Vector2 origin, SCALAR rot);
-    SCALAR CalculateMass(SCALAR);
-    SCALAR CalculateInertia(Vector2 center);
+    SCALAR CalculateMass(SCALAR density);
+    SCALAR CalculateInertia(Vector2 center, SCALAR density);
 
     // getter
     POLY_DATA GetVertices();
