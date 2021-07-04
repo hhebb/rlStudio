@@ -50,6 +50,7 @@ void Collision::FindManifolds()
         ref = e2;
         inc = e1;
         flip = true;
+        cout << "flipped!" << endl;
     }
 
     Vector2 normalizedRef = ref.GetVector().Normalise();
@@ -172,6 +173,9 @@ void Collision::Solve()
     impulse_1 *= b1->GetMass() * (1 + e);
     impulse_2 *= b2->GetMass() * (1 + e);
 
+    // PrintVector("norm", norm);
+    // PrintVector("b2 vel", b2->GetVelocity());
+
     // Vector2 impulse_1 = b1->GetVelocity() * b1->GetMass() * e;
     // Vector2 impulse_2 = -b2->GetVelocity() * b2->GetMass() * e;
 
@@ -180,59 +184,70 @@ void Collision::Solve()
         Vector2 tmp = impulse_1;
         impulse_1 = impulse_2;
         impulse_2 = tmp;
+        cout << "flipped!!!!!!" << endl;
     }
-    // Vector2 relative = b2->GetVelocity() - b1->GetVelocity(); // 상대가 고정되었다고 본 자신의 상대속도.
-    // if (flip) {relative *= -1;}
-    // b1->velocity = b1->velocity - collisionNormal;// * DELTA_TIME; // add velocity 할 수 있도록 메서드 추가하기
-    // b2->velocity = b2->velocity + collisionNormal;// * DELTATIME; // add velocity 할 수 있도록 메서드 추가하기
     
     for (int i = 0; i < manifolds.cPoints.size(); i ++)
     {
         PrintVector("manifold", manifolds.cPoints[i]);
     }
     
+    // impulse
     if(manifolds.cPoints.size() > 0)
     {
         if (b1->GetType() != DYNAMIC)
         {
+            // 둘 다 dynamic 이 아님.
             if (b2->GetType() != DYNAMIC)
             {
                 ;
             }
+            // b2 만 dynamic
             else
             {
                 // penetration 이 너무 작지 않으면 그 깊이만큼 튕겨내줌.
-                if (penetrationDepth > 0.005)
+                if (penetrationDepth > 0.0001)
                 {
-                    Vector2 push = collisionNormal * penetrationDepth;
+                    Vector2 push = collisionNormal * penetrationDepth * 1.1;
                     b2->SetPosition(b2->GetPosition() + push);
                     // b2->GetCollider()->Update(b2->GetPosition(), push, 0);
                     // PrintVector("impulse", impulse_2);
-
                 }
 
-
-
+                SCALAR tmp = abs(b2->GetVelocity().Dot(collisionNormal.Cross(-1)));
+                PrintScalar("range", tmp);
+                PrintVector("normal test", collisionNormal);
+                // 힘을 지속적으로 받는 환경에서 normal 수직방향으로 발산하는 현상 방지.sd
+                if (tmp < .01)
+                {
+                    SCALAR v_tmp = collisionNormal.Normalise().Dot(b2->GetVelocity());
+                    b2->SetVel(collisionNormal * v_tmp);
+                    cout << "calm down" << endl;
+                    // b2->SetAngular(0);
+                }
                 // 속도가 너무 작을 때 impulse 를 주지않고 정지시킴.
                 if (b2->GetVelocity().GetLength() < 0.1)
                 {
-                    PrintScalar("no impulse", b2->GetVelocity().GetLength());
-                    PrintScalar("no rot", b2->GetAngularVelocity());
-                    b2->SetVel(Vector2{0, 0});
+                    // PrintScalar("no impulse", b2->GetVelocity().GetLength());
+                    // PrintScalar("no rot", b2->GetAngularVelocity());
+                    b2->SetVel(b2->GetVelocity() * .9);
+                    b2->SetAngular(b2->GetAngularVelocity() * .9);
+                    
+                    // SCALAR test1 = abs(b2->GetVelocity().Dot(collisionNormal));
+                    // SCALAR test2 =  b2->GetVelocity().GetLength() * collisionNormal.GetLength() * .9;
+                    // PrintScalar("dot", test1);
+                    // PrintScalar("len product", test2);
 
-                    if (abs(b2->GetAngularVelocity()) <2)
+
+                    if (abs(b2->GetAngularVelocity()) < 1)
                     {
                         b2->SetAngular(0);
                     }
 
-                    if (manifolds.cPoints.size() == 2)
-                    {
-                        b2->SetAngular(0);
-                    }
                 }
                 else
                 {
-                    PrintVector("impulse", impulse_2);
+                    // PrintVector("impulse", impulse_2);
                     // manifold 갯수에 따라 impulse 주는 포인트 다시 계산.
                     if (manifolds.cPoints.size() == 2)
                     {
@@ -243,17 +258,71 @@ void Collision::Solve()
                     {
                         b2->AddImpulseAt(impulse_2, manifolds.cPoints[0]);
                     }
-
                 }
-
             }
         }
         else
         {
+            // b1 만 dynamic
             if (b2->GetType() != DYNAMIC)
             {
-                b1->AddImpulseAt(impulse_1, manifolds.cPoints[0]);
+                // penetration 이 너무 작지 않으면 그 깊이만큼 튕겨내줌.
+                // penetration 이 너무 작지 않으면 그 깊이만큼 튕겨내줌.
+                if (penetrationDepth > 0.001)
+                {
+                    Vector2 push = collisionNormal * penetrationDepth * 1.01;
+                    b1->SetPosition(b1->GetPosition() + push);
+                    // b2->GetCollider()->Update(b2->GetPosition(), push, 0);
+                    // PrintVector("impulse", impulse_2);
+                }
+
+                // 속도가 너무 작을 때 impulse 를 주지않고 정지시킴.
+                if (b1->GetVelocity().GetLength() < 0.1)
+                {
+                    // PrintScalar("no impulse", b2->GetVelocity().GetLength());
+                    // PrintScalar("no rot", b2->GetAngularVelocity());
+                    b1->SetVel(b2->GetVelocity() * .9);
+                    b1->SetAngular(b2->GetAngularVelocity() * .9);
+                    
+                    SCALAR tmp = abs(b1->GetVelocity().Dot(collisionNormal.Cross(-1)));
+                    PrintScalar("range", tmp);
+                    // SCALAR test1 = abs(b2->GetVelocity().Dot(collisionNormal));
+                    // SCALAR test2 =  b2->GetVelocity().GetLength() * collisionNormal.GetLength() * .9;
+                    // PrintScalar("dot", test1);
+                    // PrintScalar("len product", test2);
+
+                    // 힘을 지속적으로 받는 환경에서 normal 수직방향으로 발산하는 현상 방지.
+                    if (tmp < .01)
+                    {
+                        SCALAR v_tmp = collisionNormal.Normalise().Dot(b1->GetVelocity());
+                        b1->SetVel(collisionNormal * v_tmp);
+                        cout << "calm down" << endl;
+                        // b2->SetAngular(0);
+                    }
+
+                    if (abs(b1->GetAngularVelocity()) < 1)
+                    {
+                        b1->SetAngular(0);
+                    }
+
+                }
+                else
+                {
+                    // PrintVector("impulse", impulse_2);
+                    // manifold 갯수에 따라 impulse 주는 포인트 다시 계산.
+                    if (manifolds.cPoints.size() == 2)
+                    {
+                        Vector2 point = (manifolds.cPoints[0] + manifolds.cPoints[1]) / 2;
+                        b1->AddImpulseAt(impulse_1, point);
+                    }
+                    else
+                    {
+                        b1->AddImpulseAt(impulse_1, manifolds.cPoints[0]);
+                    }
+                }
             }
+
+            // 둘 다 dynamic
             else
             {
                 b1->AddImpulseAt(impulse_1, manifolds.cPoints[0]);
@@ -267,6 +336,6 @@ void Collision::Solve()
     {
         // cout << "no manifold" << endl;
     }
-    PrintVector("after velocity", b2->GetVelocity());
+    // PrintVector("after velocity", b2->GetVelocity());
 
 }
