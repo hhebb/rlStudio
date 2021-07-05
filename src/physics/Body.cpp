@@ -59,6 +59,16 @@ SCALAR Body::GetInertia()
     return inertia;
 }
 
+SCALAR Body::GetInverseMass()
+{
+    return inverseMass;
+}
+
+SCALAR Body::GetInverseInertia()
+{
+    return inverseInertia;
+}
+
 BodyType Body::GetType()
 {
     return type;

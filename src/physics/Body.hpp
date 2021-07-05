@@ -36,6 +36,8 @@ public:
     SCALAR GetAngularVelocity();
     SCALAR GetMass();
     SCALAR GetInertia();
+    SCALAR GetInverseMass();
+    SCALAR GetInverseInertia();
     BodyType GetType();
     Collider* GetCollider();
 
