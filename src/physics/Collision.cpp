@@ -100,9 +100,9 @@ void Collision::FindManifolds()
 
         if (refNormal.Dot(cp2.cPoints[1]) - max < 0.0)
         {
-            PrintVector("ref norm", refNormal);
-            PrintVector("erase 1, 2", cp2.cPoints[1]);
-            PrintScalar("max", max);
+            // PrintVector("ref norm", refNormal);
+            // PrintVector("erase 1, 2", cp2.cPoints[1]);
+            // PrintScalar("max", max);
             // cout << "point count_2: " << cp2.cPoints.size() << endl;
             cp2.cPoints.erase(cp2.cPoints.begin());
             cp2.cPoints.erase(cp2.cPoints.begin());
@@ -167,9 +167,15 @@ void Collision::Solve()
     // PrintVector("normal", b2->GetVelocity());
 
     SCALAR e = .5;
+    SCALAR mu = .02;
     Vector2 relative = b1->GetVelocity() - b2->GetVelocity();
     SCALAR normalVelocity = collisionNormal.Dot(relative);
     SCALAR impulse = (1 + e) * normalVelocity / (collisionNormal.Dot(collisionNormal) * (b1->GetInverseMass() + b2->GetInverseMass()));
+    
+    // Vector2 relative = b1->GetVelocity() - b2->GetVelocity();
+    // SCALAR normalVelocity = collisionNormal.Dot(relative);
+    // SCALAR impulse = (1 + e) * normalVelocity / (collisionNormal.Dot(collisionNormal) * (b1->GetInverseMass() + b2->GetInverseMass()));
+    Vector2 tangential = collisionNormal.Cross(-1);
 
     Vector2 norm = collisionNormal.Normalise();
     // PrintVector("norm", norm);
@@ -197,6 +203,7 @@ void Collision::Solve()
             // b2 만 dynamic
             else
             {
+                PrintScalar("impulse 2", impulse);
                 // penetration 이 너무 작지 않으면 그 깊이만큼 튕겨내줌.
                 if (penetrationDepth > 0.0001)
                 {
@@ -204,20 +211,25 @@ void Collision::Solve()
                     b2->SetPosition(b2->GetPosition() + push);
                 }
 
-                b2->AddImpulseAt(norm * impulse, manifolds.cPoints[0]);
-
+                Vector2 friction = tangential * impulse * mu;
+                if (b2->GetVelocity().Dot(tangential) > 0)
+                    friction *= -1;
+                b2->AddImpulseAt(norm * impulse + friction, manifolds.cPoints[0]);
+                b2->SetAngular(b2->GetAngularVelocity() + b2->GetAngularVelocity() * -.1);
+                PrintVector("b2 velocity", b2->GetVelocity());
                 // // 속도가 너무 작을 때 impulse 를 주지않고 정지시킴.
                 // if (b2->GetVelocity().GetLength() < 0.3)
                 // {
+                //     Vector2 friction = norm.Cross(-1) * impulse * mu;
                 //     PrintScalar("no impulse", b2->GetVelocity().GetLength());
                 //     PrintScalar("no rot", b2->GetAngularVelocity());
-                //     b2->SetVel(b2->GetVelocity() * .95);
-                //     b2->SetAngular(b2->GetAngularVelocity() * .95);
+                //     b2->SetVel(b2->GetVelocity() + friction);
+                //     // b2->SetAngular(b2->GetAngularVelocity() * .95);
                     
-                //     if (abs(b2->GetAngularVelocity()) < 1)
-                //     {
-                //         b2->SetAngular(0);
-                //     }
+                //     // if (abs(b2->GetAngularVelocity()) < 1)
+                //     // {
+                //     //     b2->SetAngular(0);
+                //     // }
 
                 // }
             }
@@ -227,15 +239,20 @@ void Collision::Solve()
             // b1 만 dynamic
             if (b2->GetType() != DYNAMIC)
             {
+                PrintScalar("impulse 1", impulse);
                 // penetration 이 너무 작지 않으면 그 깊이만큼 튕겨내줌.
-                if (penetrationDepth > 0.001)
+                if (penetrationDepth > 0.0001)
                 {
-                    Vector2 push = collisionNormal * penetrationDepth * 1.01;
+                    Vector2 push = collisionNormal * penetrationDepth * 1;
                     b1->SetPosition(b1->GetPosition() - push);
                 }
 
-                b1->AddImpulseAt(-norm * impulse, manifolds.cPoints[0]);
-                
+                Vector2 friction = tangential * impulse * mu;
+                if (b1->GetVelocity().Dot(tangential) > 0)
+                    friction *= -1;
+                b1->AddImpulseAt(-norm * impulse + friction, manifolds.cPoints[0]);
+                b1->SetAngular(b1->GetAngularVelocity() + b1->GetAngularVelocity() * -.1);
+                PrintVector("b1 velocity", b1->GetVelocity());
                 // 속도가 너무 작을 때 impulse 를 주지않고 정지시킴.
                 // if (b1->GetVelocity().GetLength() < 0.3)
                 // {

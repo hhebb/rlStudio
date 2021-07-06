@@ -13,7 +13,7 @@ Body::Body(POLY_DATA vertices, Vector2 pos, SCALAR rot, int i, SCALAR density, B
     // SetPosition(pos);
     // SetRotation(rot);
     type = t;
-    PrintScalar("type", t);
+    // PrintScalar("type", t);
     // radius = rad; // ??? deprecated.
     
     
