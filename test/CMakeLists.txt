@@ -25,6 +25,8 @@ set(PROJECT_SOURCES
         ../src/physics/Collider.cpp
         ../src/physics/Collision.cpp
         ../src/Helper.cpp
+        ../src/physics/Joint.cpp
+        ../src/physics/DistanceJoint.cpp
 
 
         # _gltest/RectangleWindow.cpp

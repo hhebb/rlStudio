@@ -18,16 +18,6 @@ void World::Init()
     SCALAR mass;
     float radius;
 
-    // 예시 body
-    pos = {0.0, 0.6};
-    // vert = {Vector2{0.0, 0.0}, Vector2{.4, .0}, Vector2{.4, .4}, Vector2{0.0, .4}}; // x, y order
-    // vert = {Vector2{-0.2, 0.0}, Vector2{.4, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
-    vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
-    rot = -30;
-    Create(vert, pos, rot, 2, DYNAMIC);
-    bodies[0].SetVel(Vector2{.1, 0.0});
-    // bodies[0].SetAngular(50);
-
     // 바닥
     pos = {0.0, -0.95};
     vert = {Vector2{0.0, 0.0}, Vector2{2, .0}, Vector2{2, .1}, Vector2{0.0, .1}}; // x, y order
@@ -35,6 +25,17 @@ void World::Init()
     Create(vert, pos, rot, 0, STATIC);
     // bodies[0].SetVel(Vector2{0, 5.9});
     // bodies[0].SetAngular(500);
+
+    // 예시 body
+    pos = {0.0, 0.6};
+    // vert = {Vector2{0.0, 0.0}, Vector2{.4, .0}, Vector2{.4, .4}, Vector2{0.0, .4}}; // x, y order
+    // vert = {Vector2{-0.2, 0.0}, Vector2{.4, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
+    vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
+    rot = -30;
+    Create(vert, pos, rot, 2, DYNAMIC);
+    bodies[1].SetVel(Vector2{.1, 0.0});
+    // bodies[0].SetAngular(50);
+
 
     // 예시 body
     pos = {0.7, 0.6};
