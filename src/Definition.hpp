@@ -126,6 +126,33 @@ struct Vector2
     }
 };
 
+struct Matrix2x2
+{
+    double m11 = 0, m12 = 0, m21 = 0, m22 = 0;
+
+    void Set(double a, double b, double c, double d)
+    {
+        m11 = a;
+        m12 = b;
+        m21 = c;
+        m22 = d;
+    }
+
+    // solve Ax = b matrix equation. return x vector.
+    Vector2 Solve(Vector2 vec)
+    {
+        double det = m11 * m22 - m12 * m21;
+        if (det == 0)
+        {
+            return Vector2{0, 0};
+        }
+
+        Vector2 x = {m22 * vec.x - m12 * vec.y, -m21 * vec.x + m11 * vec.y};
+        x *= (1 / det);
+
+        return x;
+    }
+};
 
 // homogeneous transform 3x3 matrix for 2D.
 struct HomogeneousMatrix3x3 //HomogeneousMatrix
@@ -265,6 +292,7 @@ struct MassData
 };
 
 Q_DECLARE_METATYPE(Vector2);
+Q_DECLARE_METATYPE(Matrix2x2);
 Q_DECLARE_METATYPE(HomogeneousMatrix3x3);
 
 # endif

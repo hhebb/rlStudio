@@ -119,6 +119,12 @@ void Body::AddImpulseAt(Vector2 impulse, Vector2 pos)
     // PrintScalar("angular", angularVelocity);
 }
 
+void Body::AddJointImpulse(Vector2 v, SCALAR a)
+{
+    velocity += v;
+    angularVelocity += a;
+}
+
 void Body::CalculateVelocity()
 {
     velocity += force * inverseMass * DELTA_TIME;

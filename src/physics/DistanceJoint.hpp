@@ -7,7 +7,7 @@ class DistanceJoint: public Joint
 {
 public:
     DistanceJoint(Body* a, Vector2 offset_a, Body* b, Vector2 offset_b);
-    void InitJoint();
+    void InitJoint() override;
     void Solve() override;
 
 };

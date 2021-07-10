@@ -27,27 +27,28 @@ void World::Init()
     // bodies[0].SetAngular(500);
 
     // 예시 body
-    pos = {0.0, 0.6};
+    pos = {0.3, 0.6};
     // vert = {Vector2{0.0, 0.0}, Vector2{.4, .0}, Vector2{.4, .4}, Vector2{0.0, .4}}; // x, y order
     // vert = {Vector2{-0.2, 0.0}, Vector2{.4, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
     vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
-    rot = -30;
-    Create(vert, pos, rot, 2, DYNAMIC);
-    bodies[1].SetVel(Vector2{.1, 0.0});
-    // bodies[0].SetAngular(50);
-
+    rot = 1;
+    Create(vert, pos, rot, 1, DYNAMIC);
+    bodies[1].SetVel(Vector2{-0.5, 0.0});
+    // bodies[1].SetAngular(50);
 
     // 예시 body
-    pos = {0.7, 0.6};
+    pos = {0.3, 0.6};
     // vert = {Vector2{0.0, 0.0}, Vector2{.4, .0}, Vector2{.4, .4}, Vector2{0.0, .4}}; // x, y order
     // vert = {Vector2{-0.2, 0.0}, Vector2{.4, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
     vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
-    rot = -30;
-    Create(vert, pos, rot, 1, DYNAMIC);
-    bodies[2].SetVel(Vector2{-.2, .0});
+    rot = 1;
+    Create(vert, pos, rot, 2, DYNAMIC);
+    // bodies[2].SetVel(Vector2{-.2, .0});
     // bodies[1].SetAngular(-50);
 
-    
+    RevoluteJoint* revJoint = new RevoluteJoint(&bodies[1], Vector2{0.0, 0}, &bodies[2], Vector2{0.3, 0});
+    jointList.push_back(revJoint);
+
 }
 
 void World::Reset()
@@ -59,11 +60,10 @@ void World::Step()
 {
     // physics pipeline.
     // obj 들 update, vertices update
+
+    // integrate velocity
     for (int i = 0; i < bodies.size(); i ++)
     {   
-        Vector2 translateDiff = bodies[i].GetPosition();
-        SCALAR rotateDiff = bodies[i].GetRotation();
-
         // - force generation
         Vector2 gravity = {.0, -GRAVITY * bodies[i].GetMass()};
         SCALAR torque = 1;
@@ -86,7 +86,28 @@ void World::Step()
                 cout << "> collide!" << endl;
             }
         }
+    }
 
+    for (int i = 0; i < jointList.size(); i ++)
+    {
+        jointList[i]->InitJoint();
+    }
+
+    // joint constraint iterative solve.
+    for (int joint_iter = 0; joint_iter < 1; joint_iter ++)
+    {
+        for (int i = 0; i < jointList.size(); i ++)
+        {
+            jointList[i]->Solve();
+        }
+    }
+
+    // integrate position.
+    for (int i = 0; i < bodies.size(); i ++)
+    {
+        Vector2 translateDiff = bodies[i].GetPosition();
+        SCALAR rotateDiff = bodies[i].GetRotation();
+        
         // collision solve
         for (int j = 0; j < collisionList.size(); j ++)
         {

@@ -7,6 +7,8 @@
 # include "Collider.hpp"
 # include "Collision.hpp"
 # include "../Helper.hpp"
+# include "Joint.hpp"
+# include "RevoluteJoint.hpp"
 
 class World: public QThread
 {
@@ -18,6 +20,7 @@ private:
     vector<Body> bodies;
     POLY_LIST vertices;
     vector<Collision*> collisionList; // collision manager 만들어서 관리하도록 수정해야함.
+    vector<Joint*> jointList; // manager 만들어서 관리하도록 수정해야함.
     void run();
 
 public:

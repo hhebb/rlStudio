@@ -8,6 +8,11 @@ Joint::Joint(Body* a, Vector2 offset_a, Body* b, Vector2 offset_b)
     offsetB = offset_b;   
 }
 
+void Joint::InitJoint()
+{
+
+}
+
 void Joint::Solve()
 {
 

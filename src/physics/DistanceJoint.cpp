@@ -2,12 +2,13 @@
 
 DistanceJoint::DistanceJoint(Body* a, Vector2 offset_a, Body* b, Vector2 offset_b): Joint(a, offset_a, b, offset_b)
 {
+    Joint(a, offset_a, b, offset_b);
 }
 
 void DistanceJoint::InitJoint()
 {
     // J is 1x4 jacobian matrix.
-
+    
 
     // K is 2x2 JMJ matrix.
     double K_11 = 0;
