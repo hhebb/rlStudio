@@ -18,10 +18,17 @@ private:
     SCALAR t_b;
     Vector2 mr_a;
     Vector2 mr_b;
+
+    Vector2 v_a;
+    Vector2 v_b;
+    SCALAR w_a;
+    SCALAR w_b;
+
 public:
     RevoluteJoint(Body* a, Vector2 offset_a, Body* b, Vector2 offset_b);
     void InitJoint() override;
     void Solve() override;
+    void ApplyJointImpulse() override;
 
 };
 

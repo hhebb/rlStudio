@@ -19,7 +19,7 @@ void World::Init()
     float radius;
 
     // 바닥
-    pos = {0.0, -0.95};
+    pos = {0.0, -0.65};
     vert = {Vector2{0.0, 0.0}, Vector2{2, .0}, Vector2{2, .1}, Vector2{0.0, .1}}; // x, y order
     rot = 0;
     Create(vert, pos, rot, 0, STATIC);
@@ -27,28 +27,32 @@ void World::Init()
     // bodies[0].SetAngular(500);
 
     // 예시 body
-    pos = {0.3, 0.6};
+    pos = {0.0, 0.6};
     // vert = {Vector2{0.0, 0.0}, Vector2{.4, .0}, Vector2{.4, .4}, Vector2{0.0, .4}}; // x, y order
     // vert = {Vector2{-0.2, 0.0}, Vector2{.4, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
     vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
     rot = 1;
     Create(vert, pos, rot, 1, DYNAMIC);
-    bodies[1].SetVel(Vector2{-0.5, 0.0});
-    // bodies[1].SetAngular(50);
+    bodies[1].SetVel(Vector2{-0.0, -.5});
+    // bodies[1].SetAngular(5);
 
     // 예시 body
-    pos = {0.3, 0.6};
+    pos = {-0.3, 0.6};
     // vert = {Vector2{0.0, 0.0}, Vector2{.4, .0}, Vector2{.4, .4}, Vector2{0.0, .4}}; // x, y order
     // vert = {Vector2{-0.2, 0.0}, Vector2{.4, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
     vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
     rot = 1;
     Create(vert, pos, rot, 2, DYNAMIC);
-    // bodies[2].SetVel(Vector2{-.2, .0});
-    // bodies[1].SetAngular(-50);
+    bodies[2].SetVel(Vector2{-.0, -.5});
+    // bodies[2].SetAngular(50);
 
-    RevoluteJoint* revJoint = new RevoluteJoint(&bodies[1], Vector2{0.0, 0}, &bodies[2], Vector2{0.3, 0});
+    RevoluteJoint* revJoint = new RevoluteJoint(&bodies[1], Vector2{-0.15, 0}, &bodies[2], Vector2{0.15, 0});
     jointList.push_back(revJoint);
 
+    for (int i = 0; i < jointList.size(); i ++)
+    {
+        jointList[i]->InitJoint();
+    }
 }
 
 void World::Reset()
@@ -65,9 +69,9 @@ void World::Step()
     for (int i = 0; i < bodies.size(); i ++)
     {   
         // - force generation
-        Vector2 gravity = {.0, -GRAVITY * bodies[i].GetMass()};
+        Vector2 gravity = {.0, -GRAVITY * 1 * bodies[i].GetMass()};
         SCALAR torque = 1;
-        bodies[i].AddForce(gravity);
+        // bodies[i].AddForce(gravity);
         // bodies[i].AddTorque(torque);
         
         // - velocity calculation
@@ -94,12 +98,22 @@ void World::Step()
     }
 
     // joint constraint iterative solve.
-    for (int joint_iter = 0; joint_iter < 1; joint_iter ++)
+    for (int joint_iter = 0; joint_iter < 4; joint_iter ++)
     {
         for (int i = 0; i < jointList.size(); i ++)
         {
             jointList[i]->Solve();
         }
+    }
+
+    for (int i = 0; i < jointList.size(); i ++)
+    {
+        // jointList[i]->ApplyJointImpulse();
+    }
+
+    for (int i = 0; i < collisionList.size(); i ++)
+    {
+        collisionList[i]->Solve();
     }
 
     // integrate position.
@@ -109,10 +123,10 @@ void World::Step()
         SCALAR rotateDiff = bodies[i].GetRotation();
         
         // collision solve
-        for (int j = 0; j < collisionList.size(); j ++)
-        {
-            collisionList[j]->Solve();
-        }
+        // for (int j = 0; j < collisionList.size(); j ++)
+        // {
+        //     collisionList[j]->Solve();
+        // }
 
         // - position calculation
         bodies[i].CalculatePosition();

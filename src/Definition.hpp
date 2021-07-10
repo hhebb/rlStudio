@@ -144,6 +144,7 @@ struct Matrix2x2
         double det = m11 * m22 - m12 * m21;
         if (det == 0)
         {
+            cout << "det = 0!" << endl;
             return Vector2{0, 0};
         }
 

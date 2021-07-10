@@ -9,7 +9,7 @@ public:
     DistanceJoint(Body* a, Vector2 offset_a, Body* b, Vector2 offset_b);
     void InitJoint() override;
     void Solve() override;
-
+    void ApplyJointImpulse() override;
 };
 
 # endif

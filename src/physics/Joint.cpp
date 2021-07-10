@@ -17,3 +17,5 @@ void Joint::Solve()
 {
 
 }
+
+void Joint::ApplyJointImpulse(){}

@@ -28,3 +28,6 @@ void DistanceJoint::Solve()
     // Vector2 impulse = ; // 
 
 }
+
+void DistanceJoint::ApplyJointImpulse()
+{}
