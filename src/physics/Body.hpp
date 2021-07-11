@@ -49,6 +49,7 @@ public:
     void AddTorque(SCALAR);
     void AddImpulseAt(Vector2, Vector2);
     void AddJointImpulse(Vector2 v, SCALAR a);
+    void AddVelocity(Vector2 v, SCALAR a);
     void CalculateVelocity();
     void CalculateAngularVelocity();
     void CalculatePosition();

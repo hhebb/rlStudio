@@ -25,5 +25,7 @@ struct Edge
 
 Edge FindClosetEdge(Simplex);
 
+double Clamp(double, double, double);
+
 
 # endif

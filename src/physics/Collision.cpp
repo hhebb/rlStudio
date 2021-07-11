@@ -5,6 +5,8 @@ Collision::Collision(Body* b1, Body* b2)
 {
     this->b1 = b1;
     this->b2 = b2;
+
+    
 }
 
 void Collision::FindCollisioninfo(Simplex simplex)
@@ -160,6 +162,103 @@ ClippedPoints Collision::Clip(Vector2 p1, Vector2 p2, Vector2 n, double o)
 
     return cp;
 }
+
+void Collision::InitCollision()
+{
+    m_a = b1->GetInverseMass();
+    m_b = b2->GetInverseMass();
+    i_a = b1->GetInverseInertia();
+    i_b = b2->GetInverseInertia();
+    
+    // temporal attributes
+    pos_a = b1->GetPosition();
+    pos_b = b2->GetPosition();
+    angle_a = b1->GetRotation();
+    angle_b = b2->GetRotation();
+    v_a = b1->GetVelocity();
+    v_b = b2->GetVelocity();
+    w_a = b1->GetAngularVelocity();
+    w_b = b2->GetAngularVelocity();
+
+    // contact point from center
+    r_a = manifolds.cPoints[0] - pos_a;
+    r_b = manifolds.cPoints[0] - pos_b;
+
+    // normal to <R> vector
+    rn_a = r_a.Cross(collisionNormal);
+    rn_b = r_b.Cross(collisionNormal);
+
+    n_impulse = 0;
+    t_impulse = 0;
+    
+    k_normal = m_a + m_b + i_a * rn_a * rn_a + i_b * rn_b * rn_b;
+    m_normal = k_normal > 0 ? 1 / k_normal : 0;
+    tangent = collisionNormal.Cross(-1);
+    rt_a = r_a.Cross(tangent);
+    rt_b = r_b.Cross(tangent);
+    
+    k_tangent = m_a + m_b + i_a * rt_a * rt_a + i_b * rt_b * rt_b;
+    m_tangent = k_tangent > 0 ? 1 / k_tangent : 0;
+
+    // for restitution
+    v_rel = collisionNormal.Dot(v_b + r_b.Cross(w_b) - (v_a + r_a.Cross(w_b)));
+    e = 0.5;
+    // PrintScalar("relative vel", v_rel);
+    bias = -e * v_rel;
+    // if (v_rel < -1)
+    //     bias = -e * v_rel;
+
+    // for friction
+    friction = .01;
+}
+
+
+void Collision::Solve2()
+{
+    // collision solve using constraint based method.
+
+    // solve tangent constraint for friction.
+    // 
+    v_a = b1->GetVelocity();
+    v_b = b2->GetVelocity();
+    w_a = b1->GetAngularVelocity();
+    w_b = b2->GetAngularVelocity();
+    
+    Vector2 dv = v_b + r_b.Cross(-w_b) - (v_a + r_a.Cross(-w_a));
+    SCALAR v_t = dv.Dot(tangent);
+    SCALAR lambda = m_tangent * -v_t;
+    SCALAR max_friction = friction * n_impulse;
+    double new_impulse = Clamp(t_impulse + lambda, -max_friction, max_friction);
+    lambda = new_impulse - t_impulse;
+    t_impulse = new_impulse;
+
+    Vector2 P = tangent * lambda;
+    b1->AddVelocity(-P * m_a, -r_a.Cross(P) * i_a);
+    b2->AddVelocity(P * m_b, r_b.Cross(P) * i_b);
+
+    // solve normal constraint for restitution, no penetration.
+    // 
+    dv = dv = v_b + r_b.Cross(w_b) - (v_a + r_a.Cross(w_a));
+    SCALAR v_n = dv.Dot(collisionNormal);
+    lambda = -m_normal * (v_n - bias);
+    PrintScalar("lambda", lambda);
+    
+    new_impulse = fmax(n_impulse + lambda, 0);
+    lambda = new_impulse - n_impulse;
+    n_impulse = new_impulse;
+    
+    P = collisionNormal * lambda;
+    // b1->AddVelocity(-P * m_a, -r_a.Cross(P) * i_a);
+    // b2->AddVelocity(P * m_b, r_b.Cross(P) * i_b);
+    b1->AddVelocity(-P * m_a, 0);
+    b2->AddVelocity(P * m_b, .1);
+
+    PrintVector("impulse", P);
+    // PrintVector("v", b2->GetVelocity());
+    // PrintScalar("w", b2->GetAngularVelocity());
+}
+
+
 
 void Collision::Solve()
 {
