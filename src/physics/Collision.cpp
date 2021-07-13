@@ -201,15 +201,24 @@ void Collision::InitCollision()
     m_tangent = k_tangent > 0 ? 1 / k_tangent : 0;
 
     // for restitution
-    v_rel = collisionNormal.Dot(v_b + r_b.Cross(w_b) - (v_a + r_a.Cross(w_b)));
-    e = 0.5;
+    v_rel = collisionNormal.Dot(v_b + r_b.Cross(w_b) - (v_a + r_a.Cross(w_a)));
+    e = .5;
     // PrintScalar("relative vel", v_rel);
-    bias = -e * v_rel;
-    // if (v_rel < -1)
-    //     bias = -e * v_rel;
+    bias = 0;
+    if (v_rel < -1.5)
+        bias = -e * v_rel;
 
     // for friction
-    friction = .01;
+    friction = .2;
+    // PrintScalar("bias", bias);
+
+    // for position solve
+    separation = -penetrationDepth;
+
+    for (int i = 0; i < manifolds.cPoints.size(); i ++)
+    {
+        PrintVector("manifold", manifolds.cPoints[i]);
+    }
 }
 
 
@@ -224,7 +233,7 @@ void Collision::Solve2()
     w_a = b1->GetAngularVelocity();
     w_b = b2->GetAngularVelocity();
     
-    Vector2 dv = v_b + r_b.Cross(-w_b) - (v_a + r_a.Cross(-w_a));
+    Vector2 dv = v_b + r_b.Cross(w_b) - (v_a + r_a.Cross(w_a));
     SCALAR v_t = dv.Dot(tangent);
     SCALAR lambda = m_tangent * -v_t;
     SCALAR max_friction = friction * n_impulse;
@@ -238,27 +247,70 @@ void Collision::Solve2()
 
     // solve normal constraint for restitution, no penetration.
     // 
-    dv = dv = v_b + r_b.Cross(w_b) - (v_a + r_a.Cross(w_a));
-    SCALAR v_n = dv.Dot(collisionNormal);
+    SCALAR v_n = collisionNormal.Dot(v_b + r_b.Cross(w_b) - (v_a + r_a.Cross(w_a)));
+    // SCALAR v_n = dv.Dot(collisionNormal);
     lambda = -m_normal * (v_n - bias);
-    PrintScalar("lambda", lambda);
-    
+    // PrintScalar("pure lambda", lambda);
     new_impulse = fmax(n_impulse + lambda, 0);
     lambda = new_impulse - n_impulse;
     n_impulse = new_impulse;
+    // PrintScalar("n_impulse", n_impulse);
     
     P = collisionNormal * lambda;
-    // b1->AddVelocity(-P * m_a, -r_a.Cross(P) * i_a);
-    // b2->AddVelocity(P * m_b, r_b.Cross(P) * i_b);
-    b1->AddVelocity(-P * m_a, 0);
-    b2->AddVelocity(P * m_b, .1);
+    b1->AddVelocity(-P * m_a, -r_a.Cross(P) * i_a);
+    b2->AddVelocity(P * m_b, r_b.Cross(P) * i_b);
 
-    PrintVector("impulse", P);
+    // PrintVector("impulse", P);
     // PrintVector("v", b2->GetVelocity());
     // PrintScalar("w", b2->GetAngularVelocity());
+
 }
 
+void Collision::SolvePosition()
+{
+    double min_separation = 0;
+    Vector2 pos_a = b1->GetPosition();
+    Vector2 pos_b = b2->GetPosition();
+    SCALAR t_a = b1->GetRotation();
+    SCALAR t_b = b2->GetRotation();
+    // double bgt = .5;
+    // double slop = .01;
+    // double max_correction = .2;
 
+    // solve normal constraint.
+    Vector2 r_a = manifolds.cPoints[0] - pos_a;
+    Vector2 r_b = manifolds.cPoints[0] - pos_b;
+
+    // min separation???
+    // separation = -penetrationDepth;
+    // min_separation = min(min_separation, separation);
+
+    double C = Clamp(bgt * (separation + slop), -max_correction, 0);
+    SCALAR rn_a = r_a.Cross(collisionNormal);
+    SCALAR rn_b = r_b.Cross(collisionNormal);
+    double K = m_a + m_b + i_a * rn_a * rn_a + i_b * rn_b * rn_b;
+    SCALAR impulse = K > 0 ? -C / K : 0;
+    Vector2 P = collisionNormal * impulse;
+    // PrintScalar("correction", C);
+    // PrintScalar("K", K);
+
+    b1->AddTranslation(-P * m_a, -r_a.Cross(P) * i_a);
+    b2->AddTranslation(P * m_b, r_b.Cross(P) * i_b);
+    // b2->AddImpulseAt(P, manifolds.cPoints[0]);
+    // PrintVector("correction dist", P * m_b);
+    // PrintVector("corrected pos", pos_b);
+}
+
+void Collision::Push()
+{
+    // penetration 이 너무 작지 않으면 그 깊이만큼 튕겨내줌.
+    if (penetrationDepth > 0.0001)
+    {
+        Vector2 push = collisionNormal * penetrationDepth * 1;
+        b2->AddTranslation(push, 0);
+        PrintVector("vel on push", b2->GetVelocity());
+    }
+}
 
 void Collision::Solve()
 {
@@ -306,8 +358,8 @@ void Collision::Solve()
                 // penetration 이 너무 작지 않으면 그 깊이만큼 튕겨내줌.
                 if (penetrationDepth > 0.0001)
                 {
-                    Vector2 push = collisionNormal * penetrationDepth * 1;
-                    b2->SetPosition(b2->GetPosition() + push);
+                    Vector2 push = collisionNormal * penetrationDepth * .8;
+                    b2->AddTranslation(push, 0);
                 }
 
                 Vector2 friction = tangential * impulse * mu;

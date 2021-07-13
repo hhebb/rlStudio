@@ -181,7 +181,7 @@ void Collider::SetPosition(Vector2 pos)
 void Collider::SetRotation(SCALAR rot)
 {
     // SCALAR diff = rot - ;
-    SCALAR radAngle = rot * INVERSE_RADIAN;
+    SCALAR radAngle = rot;
     double c = cos(radAngle);
     double s = sin(radAngle);
     for (int i = 0; i < vertices.size(); i ++)

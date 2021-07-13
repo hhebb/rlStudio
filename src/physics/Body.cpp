@@ -9,6 +9,8 @@ Body::Body(POLY_DATA vertices, Vector2 pos, SCALAR rot, int i, SCALAR density, B
     id = i;
     position = pos; // centroid 로 대체된다.
     rotation = rot;
+    prev_position = position;
+    prev_rotation = rotation;
     collider = new Collider(vertices, position, rotation, radius);
     // SetPosition(pos);
     // SetRotation(rot);
@@ -37,6 +39,16 @@ Vector2 Body::GetPosition()
 SCALAR Body::GetRotation()
 {
     return rotation;
+}
+
+Vector2 Body::GetPrevPosition()
+{
+    return prev_position;
+}
+
+SCALAR Body::GetPrevRotation()
+{
+    return prev_rotation;
 }
 
 Vector2 Body::GetVelocity()
@@ -93,6 +105,16 @@ void Body::SetRotation(SCALAR rot)
     collider->SetRotation(rotation);
 }
 
+void Body::SetPrevPosition(Vector2 pos)
+{
+    prev_position = pos;
+}
+
+void Body::SetPrevRotation(SCALAR rot)
+{
+    prev_rotation = rot;
+}
+
 #pragma region CALCULATE
 void Body::AddForce(Vector2 f)
 {
@@ -129,6 +151,12 @@ void Body::AddVelocity(Vector2 v, SCALAR a)
 {
     velocity += v;
     angularVelocity += a;
+}
+
+void Body::AddTranslation(Vector2 pos, SCALAR angle)
+{
+    position += pos;
+    rotation += angle;
 }
 
 void Body::CalculateVelocity()

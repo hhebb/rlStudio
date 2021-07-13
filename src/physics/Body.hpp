@@ -12,6 +12,8 @@ private:
 
     Vector2 position; // = centroid
     SCALAR rotation;
+    Vector2 prev_position;
+    SCALAR prev_rotation;
     Vector2 velocity = {0.0f, 0.0f};
     SCALAR angularVelocity;
     Vector2 force = {0, 0};
@@ -32,6 +34,8 @@ public:
     // getter
     Vector2 GetPosition();
     SCALAR GetRotation();
+    Vector2 GetPrevPosition();
+    SCALAR GetPrevRotation();
     Vector2 GetVelocity();
     SCALAR GetAngularVelocity();
     SCALAR GetMass();
@@ -44,12 +48,15 @@ public:
     // setter
     void SetPosition(Vector2);
     void SetRotation(SCALAR);
+    void SetPrevPosition(Vector2);
+    void SetPrevRotation(SCALAR);
 
     void AddForce(Vector2);
     void AddTorque(SCALAR);
     void AddImpulseAt(Vector2, Vector2);
     void AddJointImpulse(Vector2 v, SCALAR a);
     void AddVelocity(Vector2 v, SCALAR a);
+    void AddTranslation(Vector2 pos, SCALAR angle);
     void CalculateVelocity();
     void CalculateAngularVelocity();
     void CalculatePosition();

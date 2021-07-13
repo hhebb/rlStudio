@@ -19,7 +19,13 @@ void World::Init()
     float radius;
 
     // 바닥
-    pos = {0.0, -0.65};
+    pos = {0.0, -0.85};
+    vert = {Vector2{0.0, 0.0}, Vector2{2, .0}, Vector2{2, .1}, Vector2{0.0, .1}}; // x, y order
+    rot = -5 * DEGREE_TO_RADIAN;
+    Create(vert, pos, rot, 0, STATIC);
+
+    // 바닥
+    pos = {0.0, 0.95};
     vert = {Vector2{0.0, 0.0}, Vector2{2, .0}, Vector2{2, .1}, Vector2{0.0, .1}}; // x, y order
     rot = 0;
     Create(vert, pos, rot, 0, STATIC);
@@ -27,31 +33,41 @@ void World::Init()
     // bodies[0].SetAngular(500);
 
     // 예시 body
-    pos = {0.0, 0.6};
-    // vert = {Vector2{0.0, 0.0}, Vector2{.4, .0}, Vector2{.4, .4}, Vector2{0.0, .4}}; // x, y order
+    pos = {0.2, 0.0};
+    // vert = {Vector2{0.0, 0.0}, Vector2{.2, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
     // vert = {Vector2{-0.2, 0.0}, Vector2{.4, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
     vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
-    rot = 30;
+    rot = 0 * DEGREE_TO_RADIAN;
     Create(vert, pos, rot, 1, DYNAMIC);
-    // bodies[1].SetVel(Vector2{-0.0, -.5});
-    // bodies[1].SetAngular(5);
+    bodies[2].SetVel(Vector2{.0, 2.0});
+    bodies[2].SetAngular(10);
 
     // 예시 body
-    pos = {-0.3, 0.6};
-    // vert = {Vector2{0.0, 0.0}, Vector2{.4, .0}, Vector2{.4, .4}, Vector2{0.0, .4}}; // x, y order
+    pos = {-0.3, 0.0};
+    vert = {Vector2{0.0, 0.0}, Vector2{.4, .0}, Vector2{.4, .4}, Vector2{0.0, .4}}; // x, y order
     // vert = {Vector2{-0.2, 0.0}, Vector2{.4, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
-    vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
-    rot = -45;
-    // Create(vert, pos, rot, 2, DYNAMIC);
-    bodies[2].SetVel(Vector2{-.0, .5});
+    // vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
+    rot = -0 * DEGREE_TO_RADIAN;
+    Create(vert, pos, rot, 2, DYNAMIC);
+    // bodies[3].SetVel(Vector2{.5, .0});
     // bodies[2].SetAngular(50);
 
-    RevoluteJoint* revJoint = new RevoluteJoint(&bodies[1], Vector2{-0.15, 0}, &bodies[2], Vector2{0.15, 0});
+    // 예시 body
+    pos = {0.7, 0.0};
+    // vert = {Vector2{0.0, 0.0}, Vector2{.4, .0}, Vector2{.4, .4}, Vector2{0.0, .4}}; // x, y order
+    vert = {Vector2{-0.2, 0.0}, Vector2{.2, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
+    // vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
+    rot = -0 * DEGREE_TO_RADIAN;
+    Create(vert, pos, rot, 2, DYNAMIC);
+    // bodies[3].SetVel(Vector2{.5, .0});
+    // bodies[2].SetAngular(50);
+
+    RevoluteJoint* revJoint = new RevoluteJoint(&bodies[0], Vector2{0, 0}, &bodies[1], Vector2{0.0, .95});
     jointList.push_back(revJoint);
 
     for (int i = 0; i < jointList.size(); i ++)
     {
-        jointList[i]->InitJoint();
+        // jointList[i]->InitJoint();
     }
 }
 
@@ -94,11 +110,11 @@ void World::Step()
 
     for (int i = 0; i < jointList.size(); i ++)
     {
-        jointList[i]->InitJoint();
+        // jointList[i]->InitJoint();
     }
 
     // joint constraint iterative solve.
-    for (int joint_iter = 0; joint_iter < 4; joint_iter ++)
+    for (int joint_iter = 0; joint_iter < 2; joint_iter ++)
     {
         for (int i = 0; i < jointList.size(); i ++)
         {
@@ -116,7 +132,8 @@ void World::Step()
         collisionList[i]->InitCollision();
     }
 
-    for (int solve_iter = 0; solve_iter < 2; solve_iter ++)
+
+    for (int solve_iter = 0; solve_iter < 4; solve_iter ++)
     {
         for (int i = 0; i < collisionList.size(); i ++)
         {
@@ -124,11 +141,16 @@ void World::Step()
         }
     }
 
+    for (int i = 0; i < collisionList.size(); i ++)
+    {
+        // collisionList[i]->ApplyVelocity();
+    }
+
+
     // integrate position.
     for (int i = 0; i < bodies.size(); i ++)
     {
-        Vector2 translateDiff = bodies[i].GetPosition();
-        SCALAR rotateDiff = bodies[i].GetRotation();
+        
         
         // collision solve
         // for (int j = 0; j < collisionList.size(); j ++)
@@ -142,19 +164,38 @@ void World::Step()
         // - update position, rotation, vertices
 
         //  calculate diff position, rotation
-        translateDiff = bodies[i].GetPosition() - translateDiff;
-        rotateDiff = bodies[i].GetRotation() - rotateDiff;
+        // translateDiff = bodies[i].GetPosition() - translateDiff;
+        // rotateDiff = bodies[i].GetRotation() - rotateDiff;
         
-        // - clear forces
-        bodies[i].ClearForce();
+    }
+
+    // solve position
+    for (int solve_iter = 0; solve_iter < 8; solve_iter ++)
+    {
+        for (int i = 0; i < collisionList.size(); i ++)
+        {
+            collisionList[i]->SolvePosition();
+        }
+    }
+
+    // update.
+    for (int i = 0; i < bodies.size(); i ++)
+    {
+        Vector2 translateDiff = bodies[i].GetPosition() - bodies[i].GetPrevPosition();
+        SCALAR rotateDiff = bodies[i].GetRotation() - bodies[i].GetPrevRotation();
+        bodies[i].SetPrevPosition(bodies[i].GetPosition());
+        bodies[i].SetPrevRotation(bodies[i].GetRotation());
 
         // update collider shape, body centroid
         bodies[i].GetCollider()->Update(bodies[i].GetPosition(), translateDiff, rotateDiff);
         bodies[i].UpdateCentroid();
 
-        // clear collisions
-        collisionList.clear();
+        // - clear forces
+        bodies[i].ClearForce();
     }
+
+    // clear collisions
+    collisionList.clear();
 }
 
 POLY_LIST World::GetVertices()

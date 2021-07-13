@@ -20,8 +20,13 @@ void RevoluteJoint::InitJoint()
 {
     r_a = offsetA; //bodyA->GetPosition() + offsetA;
     r_b = offsetB; //bodyB->GetPosition() + offsetB;
-    t_a = bodyA->GetRotation() * INVERSE_RADIAN;
-    t_b = bodyB->GetRotation() * INVERSE_RADIAN;
+    t_a = bodyA->GetRotation();
+    t_b = bodyB->GetRotation();
+    v_a = bodyA->GetVelocity();
+    v_b = bodyB->GetVelocity();
+    w_a = bodyA->GetAngularVelocity();
+    w_b = bodyB->GetAngularVelocity();
+
     mr_a = {cos(t_a) * r_a.x - sin(t_a) * r_a.y, sin(t_a) * r_a.x + cos(t_a) * r_a.y};
     mr_b = {cos(t_b) * r_b.x - sin(t_b) * r_b.y, sin(t_b) * r_b.x + cos(t_b) * r_b.y};
 
@@ -31,21 +36,17 @@ void RevoluteJoint::InitJoint()
     K.m21 = K.m12;
     K.m22 = m_a + m_b + mr_a.x * mr_a.x * i_a + mr_b.x * mr_b.x * i_b;
 
-    // v_a = Vector2{0, 0};
-    // v_b = Vector2{0, 0};
-    // w_a = 0;
-    // w_b = 0;
 }
 
 void RevoluteJoint::Solve()
 {
-    Vector2 pa_dot = bodyA->GetVelocity() + offsetA.Cross(bodyA->GetAngularVelocity());
-    Vector2 pb_dot = bodyB->GetVelocity() + offsetB.Cross(bodyB->GetAngularVelocity());
-    Vector2 C_dot = pa_dot - pb_dot; // = J * V
-    Vector2 impulse = K.Solve(C_dot);
+    Vector2 pa_dot = bodyA->GetVelocity() + mr_a.Cross(bodyA->GetAngularVelocity());
+    Vector2 pb_dot = bodyB->GetVelocity() + mr_b.Cross(bodyB->GetAngularVelocity());
+    Vector2 C_dot = pb_dot - pa_dot; // = J * V
+    Vector2 impulse = K.Solve(-C_dot);
 
-    bodyA->AddJointImpulse(impulse * m_a, i_a * mr_a.Cross(impulse));
-    bodyB->AddJointImpulse(impulse * m_b, i_b * mr_b.Cross(impulse));
+    bodyA->AddVelocity(impulse * m_a, mr_a.Cross(impulse) * i_a);
+    bodyB->AddVelocity(impulse * m_b, mr_b.Cross(impulse) * i_b);
     // v_a += impulse * m_a;
     // v_b += impulse * m_b;
     // w_a += i_a * mr_a.Cross(impulse);
