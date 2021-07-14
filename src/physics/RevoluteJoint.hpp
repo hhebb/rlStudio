@@ -24,10 +24,16 @@ private:
     SCALAR w_a;
     SCALAR w_b;
 
+    Vector2 pos_a;
+    Vector2 pos_b;
+    SCALAR angle_a;
+    SCALAR angle_b;
+
 public:
     RevoluteJoint(Body* a, Vector2 offset_a, Body* b, Vector2 offset_b);
     void InitJoint() override;
-    void Solve() override;
+    void VelocitySolve() override;
+    void PositionSolve() override;
     void ApplyJointImpulse() override;
 
 };

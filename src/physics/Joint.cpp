@@ -13,9 +13,14 @@ void Joint::InitJoint()
 
 }
 
-void Joint::Solve()
+void Joint::VelocitySolve()
 {
 
+}
+
+void Joint::PositionSolve()
+{
+    
 }
 
 void Joint::ApplyJointImpulse(){}

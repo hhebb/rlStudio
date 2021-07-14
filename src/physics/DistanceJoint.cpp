@@ -17,7 +17,7 @@ void DistanceJoint::InitJoint()
     double K_22 = 0;
 }
 
-void DistanceJoint::Solve()
+void DistanceJoint::VelocitySolve()
 {
     Vector2 pa_dot = bodyA->GetVelocity() + offsetA * bodyA->GetAngularVelocity();
     Vector2 pb_dot = bodyB->GetVelocity() + offsetB * bodyB->GetAngularVelocity();
@@ -27,6 +27,11 @@ void DistanceJoint::Solve()
     // impulse - J * K^-1 * C'
     // Vector2 impulse = ; // 
 
+}
+
+void DistanceJoint::PositionSolve()
+{
+    ;
 }
 
 void DistanceJoint::ApplyJointImpulse()

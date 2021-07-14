@@ -38,21 +38,48 @@ void RevoluteJoint::InitJoint()
 
 }
 
-void RevoluteJoint::Solve()
+void RevoluteJoint::VelocitySolve()
 {
     Vector2 pa_dot = bodyA->GetVelocity() + mr_a.Cross(bodyA->GetAngularVelocity());
     Vector2 pb_dot = bodyB->GetVelocity() + mr_b.Cross(bodyB->GetAngularVelocity());
     Vector2 C_dot = pb_dot - pa_dot; // = J * V
     Vector2 impulse = K.Solve(-C_dot);
 
-    bodyA->AddVelocity(impulse * m_a, mr_a.Cross(impulse) * i_a);
+    bodyA->AddVelocity(-impulse * m_a, -mr_a.Cross(impulse) * i_a);
     bodyB->AddVelocity(impulse * m_b, mr_b.Cross(impulse) * i_b);
     // v_a += impulse * m_a;
     // v_b += impulse * m_b;
     // w_a += i_a * mr_a.Cross(impulse);
     // w_b += i_b * mr_b.Cross(impulse);
 
-    PrintVector("joint impulse", impulse);
+    // PrintVector("joint impulse", impulse);
+
+}
+
+void RevoluteJoint::PositionSolve()
+{
+    pos_a = bodyA->GetPosition();
+    pos_b = bodyB->GetPosition();
+    angle_a = bodyA->GetRotation();
+    angle_b = bodyB->GetRotation();
+
+    t_a = bodyA->GetRotation();
+    t_b = bodyB->GetRotation();
+    r_a = {cos(t_a) * r_a.x - sin(t_a) * r_a.y, sin(t_a) * r_a.x + cos(t_a) * r_a.y};
+    r_b = {cos(t_b) * r_b.x - sin(t_b) * r_b.y, sin(t_b) * r_b.x + cos(t_b) * r_b.y};
+    Vector2 C = pos_b + r_b - (pos_a + r_a);
+    double pos_error = C.GetLength();
+
+    K.m11 = m_a + m_b + i_a * r_a.y * r_a.y + i_b * r_b.y * r_b.y;
+    K.m12 = -i_a * r_a.x * r_a.y -i_b * r_b.x * r_b.y;
+    K.m21 = K.m12;
+    K.m22 = m_a + m_b + i_a * r_a.x * r_a.x + i_b * r_b.x * r_b.x;
+    Vector2 impulse = -K.Solve(C);
+
+    bodyA->AddTranslation(-impulse * m_a, -r_a.Cross(impulse) * i_a);
+    bodyB->AddTranslation(impulse * m_b, r_b.Cross(impulse) * i_b);
+
+    // PrintVector("position correction", impulse);
 
 }
 
