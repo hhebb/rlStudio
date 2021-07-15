@@ -1,11 +1,16 @@
-# ifndef REVOLUTE_JOINT
-# define REVOLUTE_JOINT
+# ifndef PRISMATIC_JOINT
+# define PRISMATIC_JOINT
 
 # include "Joint.hpp"
 
-class RevoluteJoint: public Joint
+class PrismaticJoint: public Joint
 {
 private:
+    Vector2 anchor;
+    Vector2 axis;
+    Vector2 local_axis_x;
+    Vector2 local_axis_y;
+
     Matrix2x2 K;
     SCALAR m_a;
     SCALAR m_b;
@@ -29,9 +34,13 @@ private:
     SCALAR angle_a;
     SCALAR angle_b;
 
+    Vector2 m_perp;
+    double m_s1;
+    double m_s2;
+    Vector2 m_impulse;
 
 public:
-    RevoluteJoint(Body* a, Vector2 offset_a, Body* b, Vector2 offset_b);
+    PrismaticJoint(Body* a, Vector2 o, Body* b, Vector2 ax);
     void InitJoint() override;
     void VelocitySolve() override;
     void PositionSolve() override;

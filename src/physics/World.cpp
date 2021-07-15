@@ -19,9 +19,9 @@ void World::Init()
     float radius;
 
     // 바닥
-    pos = {-0.4, -0.5};
+    pos = {-0.0, -0.5};
     vert = {Vector2{0.0, 0.0}, Vector2{2, .0}, Vector2{2, .1}, Vector2{0.0, .1}}; // x, y order
-    rot = 90 * DEGREE_TO_RADIAN;
+    rot = 0 * DEGREE_TO_RADIAN;
     Create(vert, pos, rot, 0, STATIC);
 
     // 천장
@@ -33,13 +33,13 @@ void World::Init()
     // bodies[0].SetAngular(500);
 
     // 예시 body
-    pos = {0.1, 0.0};
+    pos = {0.5, -0.0};
     // vert = {Vector2{0.0, 0.0}, Vector2{.2, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
     // vert = {Vector2{-0.2, 0.0}, Vector2{.4, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
     vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
     rot = 60 * DEGREE_TO_RADIAN;
     Create(vert, pos, rot, 1, DYNAMIC);
-    // bodies[2].SetVel(Vector2{.0, 2.0});
+    // bodies[2].SetVel(Vector2{.0, -1.0});
     // bodies[2].SetAngular(10 * DEGREE_TO_RADIAN);
 
     // 예시 body
@@ -62,8 +62,9 @@ void World::Init()
     // bodies[3].SetVel(Vector2{.5, .0});
     // bodies[2].SetAngular(50);
 
-    RevoluteJoint* revJoint = new RevoluteJoint(&bodies[1], Vector2{0.1, -0.0}, &bodies[2], Vector2{-0.0, 1.0});
-    jointList.push_back(revJoint);
+    // RevoluteJoint* revJoint = new RevoluteJoint(&bodies[1], Vector2{0.1, -0.0}, &bodies[2], Vector2{-0.0, 1.0});
+    DistanceJoint* distJoint = new DistanceJoint(&bodies[0], Vector2{-0.5, .5}, &bodies[2], Vector2{-0.0, .0});
+    jointList.push_back(distJoint);
 
     for (int i = 0; i < jointList.size(); i ++)
     {
@@ -87,7 +88,7 @@ void World::Step()
         // - force generation
         Vector2 gravity = {.0, -GRAVITY * 1 * bodies[i].GetMass()};
         SCALAR torque = 1;
-        bodies[i].AddForce(gravity);
+        // bodies[i].AddForce(gravity);
         // bodies[i].AddTorque(torque);
         
         // - velocity calculation

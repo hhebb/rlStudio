@@ -79,7 +79,7 @@ void RevoluteJoint::PositionSolve()
     bodyA->AddTranslation(-impulse * m_a, -r_a.Cross(impulse) * i_a);
     bodyB->AddTranslation(impulse * m_b, r_b.Cross(impulse) * i_b);
 
-    // PrintVector("position correction", impulse);
+    PrintVector("position correction", pos_a);
 
 }
 

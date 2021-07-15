@@ -9,6 +9,7 @@
 # include "../Helper.hpp"
 # include "Joint.hpp"
 # include "RevoluteJoint.hpp"
+# include "DistanceJoint.hpp"
 
 class World: public QThread
 {

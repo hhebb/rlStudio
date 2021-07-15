@@ -28,6 +28,7 @@ set(PROJECT_SOURCES
         ../src/physics/Joint.cpp
         ../src/physics/DistanceJoint.cpp
         ../src/physics/RevoluteJoint.cpp
+        ../src/physics/PrismaticJoint.cpp
 
 
         # _gltest/RectangleWindow.cpp
