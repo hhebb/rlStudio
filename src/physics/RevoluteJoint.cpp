@@ -27,8 +27,8 @@ void RevoluteJoint::InitJoint()
     w_a = bodyA->GetAngularVelocity();
     w_b = bodyB->GetAngularVelocity();
 
-    mr_a = {cos(t_a) * r_a.x - sin(t_a) * r_a.y, sin(t_a) * r_a.x + cos(t_a) * r_a.y};
-    mr_b = {cos(t_b) * r_b.x - sin(t_b) * r_b.y, sin(t_b) * r_b.x + cos(t_b) * r_b.y};
+    mr_a = r_a.SimpleRotate(t_a); //{cos(t_a) * r_a.x - sin(t_a) * r_a.y, sin(t_a) * r_a.x + cos(t_a) * r_a.y};
+    mr_b = r_b.SimpleRotate(t_b); //{cos(t_b) * r_b.x - sin(t_b) * r_b.y, sin(t_b) * r_b.x + cos(t_b) * r_b.y};
 
     // K is 2x2 JMJ matrix.
     K.m11 = m_a + m_b + mr_a.y * mr_a.y * i_a + mr_b.y * mr_b.y * i_b;
@@ -45,8 +45,10 @@ void RevoluteJoint::VelocitySolve()
     Vector2 C_dot = pb_dot - pa_dot; // = J * V
     Vector2 impulse = K.Solve(-C_dot);
 
-    bodyA->AddVelocity(-impulse * m_a, -mr_a.Cross(impulse) * i_a);
-    bodyB->AddVelocity(impulse * m_b, mr_b.Cross(impulse) * i_b);
+    bodyA->AddVelocity(-impulse * m_a);
+    bodyA->AddAngularVelocity(-mr_a.Cross(impulse) * i_a);
+    bodyB->AddVelocity(impulse * m_b);
+    bodyB->AddAngularVelocity(mr_b.Cross(impulse) * i_b);
     // v_a += impulse * m_a;
     // v_b += impulse * m_b;
     // w_a += i_a * mr_a.Cross(impulse);
@@ -65,8 +67,8 @@ void RevoluteJoint::PositionSolve()
 
     t_a = bodyA->GetRotation();
     t_b = bodyB->GetRotation();
-    r_a = {cos(t_a) * r_a.x - sin(t_a) * r_a.y, sin(t_a) * r_a.x + cos(t_a) * r_a.y};
-    r_b = {cos(t_b) * r_b.x - sin(t_b) * r_b.y, sin(t_b) * r_b.x + cos(t_b) * r_b.y};
+    r_a = r_a.SimpleRotate(t_a); //{cos(t_a) * r_a.x - sin(t_a) * r_a.y, sin(t_a) * r_a.x + cos(t_a) * r_a.y};
+    r_b = r_b.SimpleRotate(t_b); //{cos(t_b) * r_b.x - sin(t_b) * r_b.y, sin(t_b) * r_b.x + cos(t_b) * r_b.y};
     Vector2 C = pos_b + r_b - (pos_a + r_a);
     double pos_error = C.GetLength();
 
@@ -76,8 +78,10 @@ void RevoluteJoint::PositionSolve()
     K.m22 = m_a + m_b + i_a * r_a.x * r_a.x + i_b * r_b.x * r_b.x;
     Vector2 impulse = -K.Solve(C);
 
-    bodyA->AddTranslation(-impulse * m_a, -r_a.Cross(impulse) * i_a);
-    bodyB->AddTranslation(impulse * m_b, r_b.Cross(impulse) * i_b);
+    bodyA->AddPosition(-impulse * m_a);
+    bodyA->AddRotation(-r_a.Cross(impulse) * i_a);
+    bodyB->AddPosition(impulse * m_b);
+    bodyB->AddRotation(r_b.Cross(impulse) * i_b);
 
     PrintVector("position correction", pos_a);
 

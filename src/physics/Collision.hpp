@@ -54,22 +54,21 @@ private:
     double friction;
 
     // for position solve
-    double bgt = .2;
-    double slop = .001;
-    double max_correction = .5;
-    double separation = 0;
+    double bgt;
+    double slop;
+    double max_correction;
+    double separation;
 
 public:
     Collision(Body*, Body*);
     void FindCollisioninfo(Simplex);
     void FindManifolds();
     ClippedPoints Clip(Vector2, Vector2, Vector2, double);
-    void Solve();
+    void InitSolver();
+    void VelocitySolve();
+    void VelocitySolve2();
+    void PositionSolve();
     void Push();
-
-    void InitCollision();
-    void Solve2();
-    void SolvePosition();
 };
 
 # endif

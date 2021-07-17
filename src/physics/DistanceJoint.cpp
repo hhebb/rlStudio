@@ -29,8 +29,8 @@ void DistanceJoint::InitJoint()
     w_a = bodyA->GetAngularVelocity();
     w_b = bodyB->GetAngularVelocity();
 
-    mr_a = {cos(t_a) * r_a.x - sin(t_a) * r_a.y, sin(t_a) * r_a.x + cos(t_a) * r_a.y};
-    mr_b = {cos(t_b) * r_b.x - sin(t_b) * r_b.y, sin(t_b) * r_b.x + cos(t_b) * r_b.y};
+    mr_a = r_a.SimpleRotate(t_a); //{cos(t_a) * r_a.x - sin(t_a) * r_a.y, sin(t_a) * r_a.x + cos(t_a) * r_a.y};
+    mr_b = r_b.SimpleRotate(t_b); //{cos(t_b) * r_b.x - sin(t_b) * r_b.y, sin(t_b) * r_b.x + cos(t_b) * r_b.y};
     m_u = pos_b + mr_b - (pos_a + mr_a);
     cr_au = mr_a.Cross(m_u);
     cr_bu = mr_b.Cross(m_u);
@@ -58,8 +58,10 @@ void DistanceJoint::VelocitySolve()
 
     Vector2 P = m_u * impulse;
 
-    bodyA->AddVelocity(-P * m_a, -mr_a.Cross(P) * i_a);
-    bodyB->AddVelocity(P * m_b, mr_b.Cross(P) * i_b);
+    bodyA->AddVelocity(-P * m_a);
+    bodyA->AddAngularVelocity(-mr_a.Cross(P) * i_a);
+    bodyB->AddVelocity(P * m_b);
+    bodyB->AddAngularVelocity(mr_b.Cross(P) * i_b);
 
     PrintVector("p impulse", P);
 }
@@ -71,16 +73,18 @@ void DistanceJoint::PositionSolve()
     t_a = bodyA->GetRotation();
     t_b = bodyB->GetRotation();
 
-    r_a = {cos(t_a) * r_a.x - sin(t_a) * r_a.y, sin(t_a) * r_a.x + cos(t_a) * r_a.y};
-    r_b = {cos(t_b) * r_b.x - sin(t_b) * r_b.y, sin(t_b) * r_b.x + cos(t_b) * r_b.y};
+    r_a = r_a.SimpleRotate(t_a); //{cos(t_a) * r_a.x - sin(t_a) * r_a.y, sin(t_a) * r_a.x + cos(t_a) * r_a.y};
+    r_b = r_b.SimpleRotate(t_b); //{cos(t_b) * r_b.x - sin(t_b) * r_b.y, sin(t_b) * r_b.x + cos(t_b) * r_b.y};
     Vector2 u = pos_b + r_b - (pos_a + r_a);
     SCALAR length = u.GetLength();
     double C = length - d;
 
     SCALAR impulse = -inv_m * C;
     Vector2 P = u * impulse;
-    bodyA->AddTranslation(-P * m_a, - r_a.Cross(P) * i_a);
-    bodyB->AddTranslation(P * m_b, + r_b.Cross(P) * i_b);
+    bodyA->AddPosition(-P * m_a);
+    bodyA->AddRotation(- r_a.Cross(P) * i_a);
+    bodyB->AddPosition(P * m_b);
+    bodyB->AddRotation(r_b.Cross(P) * i_b);
     PrintVector("dist impulse", P);
     PrintVector("angle", r_b);
     PrintScalar("m", m_b);

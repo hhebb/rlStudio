@@ -55,8 +55,10 @@ public:
     void AddTorque(SCALAR);
     void AddImpulseAt(Vector2, Vector2);
     void AddJointImpulse(Vector2 v, SCALAR a);
-    void AddVelocity(Vector2 v, SCALAR a);
-    void AddTranslation(Vector2 pos, SCALAR angle);
+    void AddVelocity(Vector2 v);
+    void AddAngularVelocity(SCALAR a);
+    void AddPosition(Vector2 pos);
+    void AddRotation(SCALAR angle);
     void CalculateVelocity();
     void CalculateAngularVelocity();
     void CalculatePosition();
@@ -65,6 +67,7 @@ public:
     void ClearTorque();
     void UpdateCentroid();
     
+    // for test
     void SetVel(Vector2);
     void SetAngular(SCALAR);
 };

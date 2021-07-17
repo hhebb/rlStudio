@@ -6,7 +6,10 @@ Collision::Collision(Body* b1, Body* b2)
     this->b1 = b1;
     this->b2 = b2;
 
-    
+    bgt = .2;
+    slop = .0;
+    max_correction = .5;
+    separation = 0;
 }
 
 void Collision::FindCollisioninfo(Simplex simplex)
@@ -56,19 +59,12 @@ void Collision::FindManifolds()
     }
 
     Vector2 normalizedRef = ref.GetVector().Normalise();
-    // cout << "> ref a: " << ref.a.x  << ", " << ref.a.y << endl;
-    // cout << "> ref b: " << ref.b.x  << ", " << ref.b.y << endl;
-    // cout << "> ref edge: " << ref.GetVector().x  << ", " << ref.GetVector().y << endl;
-    // cout << "> normalized ref edge: " << normalizedRef.x  << ", " << normalizedRef.y << endl;
     double offset1 = normalizedRef.Dot(ref.a);
-
-    // cout << "> offset1, " << offset1 << endl;
-
     ClippedPoints cp = Clip(inc.a, inc.b, normalizedRef, offset1);
 
     if (cp.cPoints.size() < 2)
     {
-        // cout << "less than 2 point (1)" << endl;
+        cout << "less than 2 point (1)" << endl;
         return;
     }
     
@@ -79,7 +75,7 @@ void Collision::FindManifolds()
     ClippedPoints cp2 = Clip(cp.cPoints[0], cp.cPoints[1], -normalizedRef, -offset2);
     if (cp2.cPoints.size() < 2)
     {
-        // cout << "> less than 2 point (2)" << endl;
+        cout << "> less than 2 point (2)" << endl;
         return;
     }
 
@@ -98,20 +94,19 @@ void Collision::FindManifolds()
     if (refNormal.Dot(cp2.cPoints[0]) - max < 0.0)
     {
         // cout << "> erase 1, dot: " << refNormal.Dot(cp2.cPoints[0]) << endl;
-        // cp2.cPoints.erase(cp2.cPoints.begin());
 
         if (refNormal.Dot(cp2.cPoints[1]) - max < 0.0)
         {
             // PrintVector("ref norm", refNormal);
             // PrintVector("erase 1, 2", cp2.cPoints[1]);
             // PrintScalar("max", max);
-            // cout << "point count_2: " << cp2.cPoints.size() << endl;
-            cp2.cPoints.erase(cp2.cPoints.begin());
+            cout << "> erase 1, 2" << endl;
+            // cp2.cPoints.erase(cp2.cPoints.begin()); // 충돌지점 다 사라지는 거 방지하는 임시방편.
             cp2.cPoints.erase(cp2.cPoints.begin());
         }
         else
         {
-            cout << "erase 1: " << cp2.cPoints.size() << endl;
+            cout << "erase 1" << endl;
             cp2.cPoints.erase(cp2.cPoints.begin());
         }
     }
@@ -119,8 +114,7 @@ void Collision::FindManifolds()
     {
         if (refNormal.Dot(cp2.cPoints[1]) - max < 0.0)
         {
-            // cout << "> erase 2, " << cp2.cPoints[1].x << endl;
-            cout << "erase 2: " << cp2.cPoints.size() << endl;
+            cout << "> erase 2" << endl;
             cp2.cPoints.erase(cp2.cPoints.begin() + 1);
 
         }
@@ -163,7 +157,7 @@ ClippedPoints Collision::Clip(Vector2 p1, Vector2 p2, Vector2 n, double o)
     return cp;
 }
 
-void Collision::InitCollision()
+void Collision::InitSolver()
 {
     m_a = b1->GetInverseMass();
     m_b = b2->GetInverseMass();
@@ -181,6 +175,9 @@ void Collision::InitCollision()
     w_b = b2->GetAngularVelocity();
 
     // contact point from center
+    cout << "> manifold count - " << manifolds.cPoints.size() << endl;
+    if (manifolds.cPoints.size() == 0)
+        return;
     r_a = manifolds.cPoints[0] - pos_a;
     r_b = manifolds.cPoints[0] - pos_b;
 
@@ -202,14 +199,14 @@ void Collision::InitCollision()
 
     // for restitution
     v_rel = collisionNormal.Dot(v_b + r_b.Cross(w_b) - (v_a + r_a.Cross(w_a)));
-    e = .5;
+    e = .0;
     // PrintScalar("relative vel", v_rel);
     bias = 0;
     if (v_rel < -1.5)
         bias = -e * v_rel;
 
     // for friction
-    friction = .2;
+    friction = .0;
     // PrintScalar("bias", bias);
 
     // for position solve
@@ -222,7 +219,7 @@ void Collision::InitCollision()
 }
 
 
-void Collision::Solve2()
+void Collision::VelocitySolve()
 {
     // collision solve using constraint based method.
 
@@ -242,8 +239,10 @@ void Collision::Solve2()
     t_impulse = new_impulse;
 
     Vector2 P = tangent * lambda;
-    b1->AddVelocity(-P * m_a, -r_a.Cross(P) * i_a);
-    b2->AddVelocity(P * m_b, r_b.Cross(P) * i_b);
+    b1->AddVelocity(-P * m_a);
+    b1->AddAngularVelocity(-r_a.Cross(P) * i_a);
+    b2->AddVelocity(P * m_b);
+    b2->AddAngularVelocity(r_b.Cross(P) * i_b);
 
     // solve normal constraint for restitution, no penetration.
     // 
@@ -257,8 +256,10 @@ void Collision::Solve2()
     // PrintScalar("n_impulse", n_impulse);
     
     P = collisionNormal * lambda;
-    b1->AddVelocity(-P * m_a, -r_a.Cross(P) * i_a);
-    b2->AddVelocity(P * m_b, r_b.Cross(P) * i_b);
+    b1->AddVelocity(-P * m_a);
+    b1->AddAngularVelocity(-r_a.Cross(P) * i_a);
+    b2->AddVelocity(P * m_b);
+    b2->AddAngularVelocity(r_b.Cross(P) * i_b);
 
     // PrintVector("impulse", P);
     // PrintVector("v", b2->GetVelocity());
@@ -266,7 +267,7 @@ void Collision::Solve2()
 
 }
 
-void Collision::SolvePosition()
+void Collision::PositionSolve()
 {
     double min_separation = 0;
     Vector2 pos_a = b1->GetPosition();
@@ -278,6 +279,9 @@ void Collision::SolvePosition()
     // double max_correction = .2;
 
     // solve normal constraint.
+    if (manifolds.cPoints.size() == 0)
+        return;
+
     Vector2 r_a = manifolds.cPoints[0] - pos_a;
     Vector2 r_b = manifolds.cPoints[0] - pos_b;
 
@@ -294,8 +298,10 @@ void Collision::SolvePosition()
     // PrintScalar("correction", C);
     // PrintScalar("K", K);
 
-    b1->AddTranslation(-P * m_a, -r_a.Cross(P) * i_a);
-    b2->AddTranslation(P * m_b, r_b.Cross(P) * i_b);
+    b1->AddPosition(-P * m_a);
+    b1->AddRotation(-r_a.Cross(P) * i_a);
+    b2->AddPosition(P * m_b);
+    b2->AddRotation(r_b.Cross(P) * i_b);
     // b2->AddImpulseAt(P, manifolds.cPoints[0]);
     // PrintVector("correction dist", P * m_b);
     // PrintVector("corrected pos", pos_b);
@@ -307,12 +313,12 @@ void Collision::Push()
     if (penetrationDepth > 0.0001)
     {
         Vector2 push = collisionNormal * penetrationDepth * 1;
-        b2->AddTranslation(push, 0);
+        b2->AddPosition(push);
         PrintVector("vel on push", b2->GetVelocity());
     }
 }
 
-void Collision::Solve()
+void Collision::VelocitySolve2()
 {
     // PrintVector("before velocity", b2->GetVelocity());
     // PrintVector("normal", b2->GetVelocity());
@@ -359,7 +365,7 @@ void Collision::Solve()
                 if (penetrationDepth > 0.0001)
                 {
                     Vector2 push = collisionNormal * penetrationDepth * .8;
-                    b2->AddTranslation(push, 0);
+                    b2->AddPosition(push);
                 }
 
                 Vector2 friction = tangential * impulse * mu;

@@ -76,8 +76,10 @@ void PrismaticJoint::VelocitySolve()
     double LA = df.x * m_s1 + df.y;
     double LB = df.x * m_s2 + df.y;
 
-    bodyA->AddVelocity(-P * m_a, -LA * i_a);
-    bodyB->AddVelocity(P * m_b, LB * i_b);
+    bodyA->AddVelocity(-P * m_a);
+    bodyA->AddAngularVelocity(-LA * i_a);
+    bodyB->AddVelocity(P * m_b);
+    bodyB->AddAngularVelocity(LB * i_b);
     // PrintVector("joint impulse", impulse);
 
 }

@@ -74,6 +74,22 @@ struct Vector2
         double factor = sqrt(x * x + y * y);
         return Vector2{x / factor, y / factor};
     }
+    
+    Vector2 SimpleTranslate(Vector2 delta)
+    {
+        return Vector2{x + delta.x, y + delta.y};
+    }
+
+    Vector2 SimpleRotate(SCALAR angle, bool inverse=false)
+    {
+        double c = cos(angle);
+        double s = sin(angle);
+
+        if (inverse)
+            return Vector2{c * x + s * y, s * x - c * y};
+        else
+            return Vector2{c * x - s * y, s * x + c * y};
+    }
 
     // operator
     Vector2 operator-()
@@ -126,6 +142,17 @@ struct Vector2
     }
 };
 
+struct Vector3
+{
+    double x, y, z;
+    void Set(double x, double y, double z)
+    {
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
+};
+
 struct Matrix2x2
 {
     double m11 = 0, m12 = 0, m21 = 0, m22 = 0;
@@ -155,6 +182,39 @@ struct Matrix2x2
     }
 };
 
+struct Matrix3x3
+{
+    double m11 = 0, m12 = 0, m13 = 0, m21 = 0, m22 = 0, m23 = 0, m31 = 0, m32 = 0, m33 = 0;
+
+    void Set(vector<double> r1, vector<double> r2, vector<double> r3)
+    {
+        m11, m12, m13 = r1[0], r1[2], r1[3];
+        m21, m22, m23 = r2[0], r2[2], r2[3];
+        m31, m32, m33 = r3[0], r3[2], r3[3];
+    }
+
+    // solve Ax = b matrix equation. return x vector.
+    Vector3 Solve(Vector3 vec)
+    {
+        double det = m11 * (m22 * m33 - m23 * m32) - m12 * (m21 * m33 - m23 * m31) + m13 * (m21 * m32 - m22 * m31);
+        if (det == 0)
+        {
+            cout << "det = 0!" << endl;
+            return Vector3{0, 0, 0};
+        }
+
+        double x = (m22 * m33 - m23 * m32) * vec.x - (m12 * m33 - m13 * m32) * vec.y + (m12 * m23 - m13 * m22) * vec.z;
+        double y = -(m21 * m33 - m23 * m31) * vec.x + (m11 * m33 - m13 * m31) * vec.y - (m11 * m23 - m13 * m21) * vec.z;
+        double z = (m21 * m32 - m22 * m31) * vec.x - (m11 * m32 - m12 * m31) * vec.y + (m11 * m22 - m13 * m31) * vec.z;
+        x = x /det;
+        y = y /det;
+        z = z /det;
+
+        Vector3 v{x, y, z};
+        return v;
+    }
+};
+
 // homogeneous transform 3x3 matrix for 2D.
 struct HomogeneousMatrix3x3 //HomogeneousMatrix
 {
@@ -179,9 +239,8 @@ struct HomogeneousMatrix3x3 //HomogeneousMatrix
 
     void Rotate(SCALAR angle, Vector2 center)
     {
-        // cout << "> angle check: " << angle << endl;
-        // cout << "> center check: " << center.x << ", " << center.y << endl;
-        SCALAR radAngle = angle;// * INVERSE_RADIAN;
+        // radian based
+        SCALAR radAngle = angle;
         double c = cos(radAngle);
         double s = sin(radAngle);
 
@@ -223,7 +282,7 @@ struct HomogeneousMatrix3x3 //HomogeneousMatrix
         m32 *= scale;
     }
 
-
+    // return transformed all vertices of one body's
     POLY_DATA Multiply(POLY_DATA vertices)
     {
         POLY_DATA result;
@@ -236,6 +295,14 @@ struct HomogeneousMatrix3x3 //HomogeneousMatrix
         }
 
         return result;
+    }
+
+    Vector2 Multiply(Vector2 vec)
+    {
+        Vector2 tmp;
+        tmp.x = m11 * vec.x + m12 * vec.y + m13;
+        tmp.y = m21 * vec.x + m22 * vec.y + m23;
+        return tmp;
     }
 };
 
@@ -281,18 +348,19 @@ struct ClippedPoints
     VERTEX_LIST cPoints;
 };
 
-struct MassData
-{
-    SCALAR density = 1;
-    SCALAR mass; // = density * area
-    SCALAR inverseMass;
-    SCALAR area;
-    SCALAR inertia;
-    SCALAR inverseInertia;
-    Vector2 centroid;
-};
+// struct MassData
+// {
+//     SCALAR density = 1;
+//     SCALAR mass; // = density * area
+//     SCALAR inverseMass;
+//     SCALAR area;
+//     SCALAR inertia;
+//     SCALAR inverseInertia;
+//     Vector2 centroid;
+// };
 
 Q_DECLARE_METATYPE(Vector2);
+Q_DECLARE_METATYPE(Vector3);
 Q_DECLARE_METATYPE(Matrix2x2);
 Q_DECLARE_METATYPE(HomogeneousMatrix3x3);
 

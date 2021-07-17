@@ -147,15 +147,23 @@ void Body::AddJointImpulse(Vector2 v, SCALAR a)
     angularVelocity += a;
 }
 
-void Body::AddVelocity(Vector2 v, SCALAR a)
+void Body::AddVelocity(Vector2 v)
 {
     velocity += v;
+}
+
+void Body::AddAngularVelocity(SCALAR a)
+{
     angularVelocity += a;
 }
 
-void Body::AddTranslation(Vector2 pos, SCALAR angle)
+void Body::AddPosition(Vector2 pos)
 {
     position += pos;
+}
+
+void Body::AddRotation(SCALAR angle)
+{
     rotation += angle;
 }
 
@@ -194,7 +202,6 @@ void Body::ClearTorque()
 void Body::UpdateCentroid()
 {
     position = collider->GetCentroid();
-    // PrintVector("body centroid", position);
 }
 
 #pragma endregion

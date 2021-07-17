@@ -10,48 +10,22 @@ Collider::Collider(POLY_DATA vert, Vector2 pos, SCALAR rot, double rad)
 {
     vertices = vert;
     radius = rad; // deprecated
-    CalculateArea();
+    // CalculateArea();
     CalculateCentroid();
     InitVertices(pos, rot); // body 의 position 기준으로 centroid 를 옮김.
+    CalculateCentroid();
+    PrintVector("init centroid", centroid);
 
 }
 
 void Collider::Update(Vector2 center,Vector2 translate, SCALAR rotate)
 {
+    // calculate transform matrix, update vertices coordinates.
     matrix.SetIdentity();
     matrix.Translate(translate);
     matrix.Rotate(rotate, center);
     vertices = matrix.Multiply(vertices);
-
-    // cout << vertices[1].x << ", " << vertices[1].y << endl;
-
-    for (int i = 0; i < vertices.size(); i ++)
-    {
-        // PrintVector("v", vertices[i]);
-    }
-    // cout << endl;
-
-    // centroid update!
-    // CalculateArea();
-    
-    
-    // PrintScalar("ratio", area_ratio);
-    CalculateCentroid();
-    // PrintVector("centroid updated", centroid);
-}
-
-void Collider::CalculateArea()
-{
-    area_init = 0;
-    for (int i = 0; i < vertices.size() - 1; i ++)
-    {
-        // area += vertices[i].x * vertices[i + 1].y - vertices[i + 1].x * vertices[i].y;
-        area_init += vertices[i].Cross(vertices[i + 1]);
-    }
-    area_init += vertices[vertices.size() - 1].Cross(vertices[0]);
-
-    area_init /= 2;
-    // PrintScalar("initial area", area_init);
+    centroid = matrix.Multiply(centroid);
 }
 
 Vector2 Collider::CalculateCentroid()
@@ -61,7 +35,6 @@ Vector2 Collider::CalculateCentroid()
     double area_tmp = 0;
     for (int i = 0; i < vertices.size() - 1; i ++)
     {
-        // similar to cross product.
         // PrintVector("v", vertices[i]);
         area_tmp = vertices[i].Cross(vertices[i + 1]);
         area += area_tmp;
@@ -72,9 +45,7 @@ Vector2 Collider::CalculateCentroid()
     area += area_tmp;
     centroid += (vertices[vertices.size() - 1] + vertices[0]) * area_tmp;
         
-    //
     area *= .5;
-    area_ratio = area / area_init;
     centroid /= (6 * area);
     // PrintScalar("area update", area);
     // PrintVector("centroid updated", centroid);
@@ -151,41 +122,24 @@ Vector2 Collider::GetCentroid()
     return centroid;
 }
 
-Vector2 Collider::GetCenter()
-{
-    // deprecated!
-    double x = 0;
-    double y = 0;
-    
-    for (int i = 0; i < vertices.size(); i ++)
-    {
-        x += vertices[i].x;
-        y += vertices[i].y;
-    }
-
-    x /= vertices.size();
-    y /= vertices.size();
-
-    return Vector2{x, y};
-}
 
 void Collider::SetPosition(Vector2 pos)
 {
     Vector2 diff = pos - centroid;
     for (int i = 0; i < vertices.size(); i ++)
     {
+        // vertices[i] = vertices[i].SimpleTranslate(diff);
         vertices[i] += diff;
     }
 }
 
 void Collider::SetRotation(SCALAR rot)
 {
-    // SCALAR diff = rot - ;
-    SCALAR radAngle = rot;
-    double c = cos(radAngle);
-    double s = sin(radAngle);
+    double c = cos(rot);
+    double s = sin(rot);
     for (int i = 0; i < vertices.size(); i ++)
     {
+        // vertices[i] = (vertices[i] - centroid).SimpleRotate(rot);
         vertices[i].x = (vertices[i].x - centroid.x) * c - (vertices[i].y - centroid.y) * s + centroid.x;
         vertices[i].y = (vertices[i].x - centroid.x) * s + (vertices[i].y - centroid.y) * c + centroid.y;
     }

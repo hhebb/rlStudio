@@ -7,6 +7,10 @@ World::World()
     // vertices;
     // Init();
     // Reset();
+    colVelIter = 4;
+    colPosIter = 8;
+    jointVelIter = 4;
+    jointPosIter = 8;
 }
 
 void World::Init()
@@ -33,7 +37,7 @@ void World::Init()
     // bodies[0].SetAngular(500);
 
     // 예시 body
-    pos = {0.5, -0.0};
+    pos = {0.2, -0.0};
     // vert = {Vector2{0.0, 0.0}, Vector2{.2, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
     // vert = {Vector2{-0.2, 0.0}, Vector2{.4, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
     vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
@@ -43,28 +47,28 @@ void World::Init()
     // bodies[2].SetAngular(10 * DEGREE_TO_RADIAN);
 
     // 예시 body
-    pos = {-0.5, 0.5};
+    pos = {-0.2, 0.5};
     vert = {Vector2{0.0, 0.0}, Vector2{.4, .0}, Vector2{.4, .4}, Vector2{0.0, .4}}; // x, y order
     // vert = {Vector2{-0.2, 0.0}, Vector2{.4, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
     // vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
-    rot = -10 * DEGREE_TO_RADIAN;
-    // Create(vert, pos, rot, 2, DYNAMIC);
+    rot = 10 * DEGREE_TO_RADIAN;
+    Create(vert, pos, rot, 2, DYNAMIC);
     // bodies[3].SetVel(Vector2{.0, -.0});
     // bodies[3].SetAngular(-100 * DEGREE_TO_RADIAN);
 
     // 예시 body
-    // pos = {0.7, 0.5};
-    // // vert = {Vector2{0.0, 0.0}, Vector2{.4, .0}, Vector2{.4, .4}, Vector2{0.0, .4}}; // x, y order
-    // vert = {Vector2{-0.2, 0.0}, Vector2{.2, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
-    // // vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
-    // rot = -0 * DEGREE_TO_RADIAN;
-    // Create(vert, pos, rot, 2, DYNAMIC);
+    pos = {0.5, 0.5};
+    // vert = {Vector2{0.0, 0.0}, Vector2{.4, .0}, Vector2{.4, .4}, Vector2{0.0, .4}}; // x, y order
+    vert = {Vector2{-0.2, 0.0}, Vector2{.2, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
+    // vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
+    rot = -0 * DEGREE_TO_RADIAN;
+    Create(vert, pos, rot, 2, DYNAMIC);
     // bodies[3].SetVel(Vector2{.5, .0});
     // bodies[2].SetAngular(50);
 
     // RevoluteJoint* revJoint = new RevoluteJoint(&bodies[1], Vector2{0.1, -0.0}, &bodies[2], Vector2{-0.0, 1.0});
     DistanceJoint* distJoint = new DistanceJoint(&bodies[0], Vector2{-0.5, .5}, &bodies[2], Vector2{-0.0, .0});
-    jointList.push_back(distJoint);
+    // jointList.push_back(distJoint);
 
     for (int i = 0; i < jointList.size(); i ++)
     {
@@ -88,7 +92,7 @@ void World::Step()
         // - force generation
         Vector2 gravity = {.0, -GRAVITY * 1 * bodies[i].GetMass()};
         SCALAR torque = 1;
-        // bodies[i].AddForce(gravity);
+        bodies[i].AddForce(gravity);
         // bodies[i].AddTorque(torque);
         
         // - velocity calculation
@@ -96,9 +100,6 @@ void World::Step()
         bodies[i].CalculateAngularVelocity();
         // bodies[i].SetVel(500);
 
-        // cout << "> velocity: " << i << ", " << bodies[i].GetVelocity().x << ", " << bodies[i].GetVelocity().y << endl;
-        // cout << "> position: " << i << ", " << bodies[i].GetPosition().x << ", " << bodies[i].GetPosition().y << endl;
-        
         // - collision detection
         for (int j = i + 1; j < bodies.size(); j ++)
         {
@@ -109,18 +110,21 @@ void World::Step()
         }
     }
 
+    // init joint
     for (int i = 0; i < jointList.size(); i ++)
     {
         jointList[i]->InitJoint();
     }
 
+    // init collision
     for (int i = 0; i < collisionList.size(); i ++)
     {
-        collisionList[i]->InitCollision();
+        collisionList[i]->InitSolver();
+        cout << "> collision init check" << i << endl;
     }
 
     // joint constraint iterative solve.
-    for (int joint_iter = 0; joint_iter < 4; joint_iter ++)
+    for (int joint_iter = 0; joint_iter < jointVelIter; joint_iter ++)
     {
         for (int i = 0; i < jointList.size(); i ++)
         {
@@ -128,39 +132,27 @@ void World::Step()
         }
     }
 
-    for (int solve_iter = 0; solve_iter < 4; solve_iter ++)
+    // collision constraint iterative solve.
+    for (int solve_iter = 0; solve_iter < colVelIter; solve_iter ++)
     {
         for (int i = 0; i < collisionList.size(); i ++)
         {
-            collisionList[i]->Solve2();
+            collisionList[i]->VelocitySolve();
+            // cout << "> collision velocity solve check" << i << endl;
         }
     }
 
     // integrate position.
     for (int i = 0; i < bodies.size(); i ++)
     {
-        
-        
-        // collision solve
-        // for (int j = 0; j < collisionList.size(); j ++)
-        // {
-        //     collisionList[j]->Solve();
-        // }
-
         // - position calculation
         bodies[i].CalculatePosition();
         bodies[i].CalculateAngle();
-        // - update position, rotation, vertices
-
-        //  calculate diff position, rotation
-        // translateDiff = bodies[i].GetPosition() - translateDiff;
-        // rotateDiff = bodies[i].GetRotation() - rotateDiff;
-        
     }
 
 
-    // solve position
-    for (int solve_iter = 0; solve_iter < 8; solve_iter ++)
+    // joint solve position
+    for (int solve_iter = 0; solve_iter < jointPosIter; solve_iter ++)
     {
         for (int i = 0; i < jointList.size(); i ++)
         {
@@ -168,12 +160,13 @@ void World::Step()
         }
     }
     
-    // solve position
-    for (int solve_iter = 0; solve_iter < 8; solve_iter ++)
+    // collision solve position
+    for (int solve_iter = 0; solve_iter < colPosIter; solve_iter ++)
     {
         for (int i = 0; i < collisionList.size(); i ++)
         {
-            collisionList[i]->SolvePosition();
+            collisionList[i]->PositionSolve();
+            // cout << "> collision position solve check" << i << endl;
         }
     }
 
@@ -255,6 +248,7 @@ void World::run()
 
 bool World::IsCollide(Body* body1, Body* body2)
 {
+    // GJK algorithm.
     Vector2 center1 = body1->GetPosition();
     Vector2 center2 = body2->GetPosition();
     Vector2 direction = center1 - center2;
