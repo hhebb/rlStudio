@@ -27,6 +27,7 @@ void World::Init()
     vert = {Vector2{0.0, 0.0}, Vector2{2, .0}, Vector2{2, .1}, Vector2{0.0, .1}}; // x, y order
     rot = 0 * DEGREE_TO_RADIAN;
     Create(vert, pos, rot, 0, STATIC);
+    bodies[0].SetLayer(0);
 
     // 천장
     pos = {0.0, 0.95};
@@ -35,6 +36,7 @@ void World::Init()
     Create(vert, pos, rot, 0, STATIC);
     // bodies[0].SetVel(Vector2{0, 5.9});
     // bodies[0].SetAngular(500);
+    bodies[1].SetLayer(1);
 
     // 예시 body
     pos = {0.2, -0.0};
@@ -45,6 +47,7 @@ void World::Init()
     Create(vert, pos, rot, 1, DYNAMIC);
     // bodies[2].SetVel(Vector2{.0, -1.0});
     // bodies[2].SetAngular(10 * DEGREE_TO_RADIAN);
+    bodies[2].SetLayer(2);
 
     // 예시 body
     pos = {-0.2, 0.5};
@@ -55,6 +58,7 @@ void World::Init()
     Create(vert, pos, rot, 2, DYNAMIC);
     // bodies[3].SetVel(Vector2{.0, -.0});
     // bodies[3].SetAngular(-100 * DEGREE_TO_RADIAN);
+    bodies[3].SetLayer(2);
 
     // 예시 body
     pos = {0.5, 0.5};
@@ -65,6 +69,7 @@ void World::Init()
     Create(vert, pos, rot, 2, DYNAMIC);
     // bodies[3].SetVel(Vector2{.5, .0});
     // bodies[2].SetAngular(50);
+    bodies[4].SetLayer(4);
 
     // RevoluteJoint* revJoint = new RevoluteJoint(&bodies[1], Vector2{0.1, -0.0}, &bodies[2], Vector2{-0.0, 1.0});
     DistanceJoint* distJoint = new DistanceJoint(&bodies[0], Vector2{-0.5, .5}, &bodies[2], Vector2{-0.0, .0});
@@ -103,6 +108,13 @@ void World::Step()
         // - collision detection
         for (int j = i + 1; j < bodies.size(); j ++)
         {
+            // filter collision detection.
+            if (bodies[i].GetLayer() == bodies[j].GetLayer())
+            {
+                cout << "> same layer, layer: " << bodies[i].GetLayer() << endl;
+                continue;
+            }
+
             if (IsCollide(&bodies[i], &bodies[j]))
             {
                 cout << "> collide!" << endl;

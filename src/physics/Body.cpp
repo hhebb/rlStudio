@@ -91,6 +91,11 @@ Collider* Body::GetCollider()
     return collider;
 }
 
+int Body::GetLayer()
+{
+    return layer;
+}
+
 #pragma endregion
 
 void Body::SetPosition(Vector2 pos)
@@ -113,6 +118,11 @@ void Body::SetPrevPosition(Vector2 pos)
 void Body::SetPrevRotation(SCALAR rot)
 {
     prev_rotation = rot;
+}
+
+void Body::SetLayer(int l)
+{
+    layer = l;
 }
 
 #pragma region CALCULATE

@@ -9,6 +9,7 @@ class Body
 private:
     int id; // 초기화 시 추가
     BodyType type = DYNAMIC; // 초기화 시 추가
+    int layer;
 
     Vector2 position; // = centroid
     SCALAR rotation;
@@ -44,12 +45,14 @@ public:
     SCALAR GetInverseInertia();
     BodyType GetType();
     Collider* GetCollider();
+    int GetLayer();
 
     // setter
     void SetPosition(Vector2);
     void SetRotation(SCALAR);
     void SetPrevPosition(Vector2);
     void SetPrevRotation(SCALAR);
+    void SetLayer(int);
 
     void AddForce(Vector2);
     void AddTorque(SCALAR);

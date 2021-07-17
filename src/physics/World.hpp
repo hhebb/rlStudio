@@ -35,6 +35,7 @@ public:
     void Reset();
     void Step();
     POLY_LIST GetVertices();
+    // id 리턴하도록 바꾸기. create.
     void Create(POLY_DATA ver, Vector2 pos, SCALAR rot, int id, BodyType t);
     void Debug();
     vector<Body> GetBodies();
