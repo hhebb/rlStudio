@@ -9,8 +9,8 @@ World::World()
     // Reset();
     colVelIter = 4;
     colPosIter = 8;
-    jointVelIter = 4;
-    jointPosIter = 8;
+    jointVelIter = 8;
+    jointPosIter = 1;
 }
 
 void World::Init()
@@ -22,21 +22,35 @@ void World::Init()
     SCALAR mass;
     float radius;
 
-    // 바닥
-    pos = {-0.0, -0.5};
-    vert = {Vector2{0.0, 0.0}, Vector2{2, .0}, Vector2{2, .1}, Vector2{0.0, .1}}; // x, y order
-    rot = 0 * DEGREE_TO_RADIAN;
-    Create(vert, pos, rot, 0, STATIC);
-    bodies[0].SetLayer(0);
-
     // 천장
-    pos = {0.0, 0.95};
+    pos = {0.0, 0.65};
     vert = {Vector2{0.0, 0.0}, Vector2{2, .0}, Vector2{2, .1}, Vector2{0.0, .1}}; // x, y order
     rot = 0;
     Create(vert, pos, rot, 0, STATIC);
     // bodies[0].SetVel(Vector2{0, 5.9});
     // bodies[0].SetAngular(500);
-    bodies[1].SetLayer(1);
+    bodies[0].SetLayer(0);
+
+    // 바닥
+    pos = {-0.1, 0.0};
+    vert = {Vector2{0.0, 0.0}, Vector2{.5, .0}, Vector2{.5, .1}, Vector2{0.0, .1}}; // x, y order
+    rot = 45 * DEGREE_TO_RADIAN;
+    Create(vert, pos, rot, 0, DYNAMIC);
+    bodies[1].SetLayer(0);
+
+    // 바닥
+    pos = {-0.1, 0.0};
+    vert = {Vector2{0.0, 0.0}, Vector2{.5, .0}, Vector2{.5, .1}, Vector2{0.0, .1}}; // x, y order
+    rot = -45 * DEGREE_TO_RADIAN;
+    Create(vert, pos, rot, 0, DYNAMIC);
+    bodies[2].SetLayer(0);
+
+    // 바닥
+    pos = {-0.1, 0.0};
+    vert = {Vector2{0.0, 0.0}, Vector2{.5, .0}, Vector2{.5, .1}, Vector2{0.0, .1}}; // x, y order
+    rot = 0 * DEGREE_TO_RADIAN;
+    Create(vert, pos, rot, 0, DYNAMIC);
+    bodies[3].SetLayer(0);
 
     // 예시 body
     pos = {0.2, -0.0};
@@ -44,10 +58,10 @@ void World::Init()
     // vert = {Vector2{-0.2, 0.0}, Vector2{.4, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
     vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
     rot = 60 * DEGREE_TO_RADIAN;
-    Create(vert, pos, rot, 1, DYNAMIC);
+    // Create(vert, pos, rot, 1, DYNAMIC);
     // bodies[2].SetVel(Vector2{.0, -1.0});
     // bodies[2].SetAngular(10 * DEGREE_TO_RADIAN);
-    bodies[2].SetLayer(2);
+    // bodies[2].SetLayer(2);
 
     // 예시 body
     pos = {-0.2, 0.5};
@@ -55,10 +69,10 @@ void World::Init()
     // vert = {Vector2{-0.2, 0.0}, Vector2{.4, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
     // vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
     rot = 10 * DEGREE_TO_RADIAN;
-    Create(vert, pos, rot, 2, DYNAMIC);
+    // Create(vert, pos, rot, 2, DYNAMIC);
     // bodies[3].SetVel(Vector2{.0, -.0});
     // bodies[3].SetAngular(-100 * DEGREE_TO_RADIAN);
-    bodies[3].SetLayer(2);
+    // bodies[3].SetLayer(2);
 
     // 예시 body
     pos = {0.5, 0.5};
@@ -66,19 +80,18 @@ void World::Init()
     vert = {Vector2{-0.2, 0.0}, Vector2{.2, .0}, Vector2{.2, .2}, Vector2{0.0, .2}}; // x, y order
     // vert = {Vector2{0.0, 0.0}, Vector2{.2, 0.0}, Vector2{.13, .2}}; // x, y order
     rot = -0 * DEGREE_TO_RADIAN;
-    Create(vert, pos, rot, 2, DYNAMIC);
+    // Create(vert, pos, rot, 2, DYNAMIC);
     // bodies[3].SetVel(Vector2{.5, .0});
     // bodies[2].SetAngular(50);
-    bodies[4].SetLayer(4);
+    // bodies[4].SetLayer(4);
 
-    // RevoluteJoint* revJoint = new RevoluteJoint(&bodies[1], Vector2{0.1, -0.0}, &bodies[2], Vector2{-0.0, 1.0});
-    DistanceJoint* distJoint = new DistanceJoint(&bodies[0], Vector2{-0.5, .5}, &bodies[2], Vector2{-0.0, .0});
-    // jointList.push_back(distJoint);
-
-    for (int i = 0; i < jointList.size(); i ++)
-    {
-        // jointList[i]->InitJoint();
-    }
+    RevoluteJoint* revJoint = new RevoluteJoint(&bodies[0], Vector2{0.0, -0.0}, &bodies[1], Vector2{-0.25, 0.0});
+    RevoluteJoint* revJoint2 = new RevoluteJoint(&bodies[1], Vector2{0.25, -0.0}, &bodies[2], Vector2{-0.25, 0.0});
+    RevoluteJoint* revJoint3 = new RevoluteJoint(&bodies[2], Vector2{0.25, -0.0}, &bodies[3], Vector2{-0.25, 0.0});
+    // DistanceJoint* distJoint = new DistanceJoint(&bodies[0], Vector2{-0.5, .5}, &bodies[2], Vector2{-0.0, .0});
+    jointList.push_back(revJoint);
+    jointList.push_back(revJoint2);
+    jointList.push_back(revJoint3);
 }
 
 void World::Reset()
@@ -111,7 +124,6 @@ void World::Step()
             // filter collision detection.
             if (bodies[i].GetLayer() == bodies[j].GetLayer())
             {
-                cout << "> same layer, layer: " << bodies[i].GetLayer() << endl;
                 continue;
             }
 

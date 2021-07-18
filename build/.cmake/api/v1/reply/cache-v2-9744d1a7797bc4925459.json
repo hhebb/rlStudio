@@ -1546,6 +1546,18 @@
 			"value" : "/usr/lib/x86_64-linux-gnu/cmake/Qt5"
 		},
 		{
+			"name" : "jsoncpp_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for jsoncpp."
+				}
+			],
+			"type" : "PATH",
+			"value" : "/usr/lib/x86_64-linux-gnu/cmake/jsoncpp"
+		},
+		{
 			"name" : "rlstudio_BINARY_DIR",
 			"properties" : 
 			[

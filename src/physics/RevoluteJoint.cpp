@@ -18,8 +18,8 @@ RevoluteJoint::RevoluteJoint(Body* a, Vector2 offset_a, Body* b, Vector2 offset_
 
 void RevoluteJoint::InitJoint()
 {
-    r_a = offsetA; //bodyA->GetPosition() + offsetA;
-    r_b = offsetB; //bodyB->GetPosition() + offsetB;
+    r_a = offsetA;
+    r_b = offsetB;
     t_a = bodyA->GetRotation();
     t_b = bodyB->GetRotation();
     v_a = bodyA->GetVelocity();
@@ -49,11 +49,6 @@ void RevoluteJoint::VelocitySolve()
     bodyA->AddAngularVelocity(-mr_a.Cross(impulse) * i_a);
     bodyB->AddVelocity(impulse * m_b);
     bodyB->AddAngularVelocity(mr_b.Cross(impulse) * i_b);
-    // v_a += impulse * m_a;
-    // v_b += impulse * m_b;
-    // w_a += i_a * mr_a.Cross(impulse);
-    // w_b += i_b * mr_b.Cross(impulse);
-
     // PrintVector("joint impulse", impulse);
 
 }
@@ -67,8 +62,8 @@ void RevoluteJoint::PositionSolve()
 
     t_a = bodyA->GetRotation();
     t_b = bodyB->GetRotation();
-    r_a = r_a.SimpleRotate(t_a); //{cos(t_a) * r_a.x - sin(t_a) * r_a.y, sin(t_a) * r_a.x + cos(t_a) * r_a.y};
-    r_b = r_b.SimpleRotate(t_b); //{cos(t_b) * r_b.x - sin(t_b) * r_b.y, sin(t_b) * r_b.x + cos(t_b) * r_b.y};
+    r_a = r_a.SimpleRotate(t_a);
+    r_b = r_b.SimpleRotate(t_b);
     Vector2 C = pos_b + r_b - (pos_a + r_a);
     double pos_error = C.GetLength();
 
@@ -83,7 +78,7 @@ void RevoluteJoint::PositionSolve()
     bodyB->AddPosition(impulse * m_b);
     bodyB->AddRotation(r_b.Cross(impulse) * i_b);
 
-    PrintVector("position correction", pos_a);
+    // PrintVector("position correction", pos_a);
 
 }
 

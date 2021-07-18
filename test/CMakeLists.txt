@@ -14,6 +14,7 @@ find_package(QT NAMES Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets OpenGL REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
+find_package(jsoncpp REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -29,7 +30,7 @@ set(PROJECT_SOURCES
         ../src/physics/DistanceJoint.cpp
         ../src/physics/RevoluteJoint.cpp
         ../src/physics/PrismaticJoint.cpp
-
+        ../src/physics/WorldParser.cpp
 
         # _gltest/RectangleWindow.cpp
         # _gltest/TestDialog.cpp
@@ -45,3 +46,4 @@ target_link_libraries(mytest Qt5::Widgets Qt5::OpenGL ${OPENGL_LIBRARIES} ${GLUT
 target_link_libraries(mytest GL)
 target_link_libraries(mytest GLU)
 target_link_libraries(mytest glut)
+target_link_libraries(mytest jsoncpp)

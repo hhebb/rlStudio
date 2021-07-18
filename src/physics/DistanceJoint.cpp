@@ -20,8 +20,8 @@ void DistanceJoint::InitJoint()
 {
     pos_a = bodyA->GetPosition();
     pos_b = bodyB->GetPosition();
-    r_a = offsetA; //bodyA->GetPosition() + offsetA;
-    r_b = offsetB; //bodyB->GetPosition() + offsetB;
+    r_a = offsetA;
+    r_b = offsetB;
     t_a = bodyA->GetRotation();
     t_b = bodyB->GetRotation();
     v_a = bodyA->GetVelocity();
@@ -29,8 +29,8 @@ void DistanceJoint::InitJoint()
     w_a = bodyA->GetAngularVelocity();
     w_b = bodyB->GetAngularVelocity();
 
-    mr_a = r_a.SimpleRotate(t_a); //{cos(t_a) * r_a.x - sin(t_a) * r_a.y, sin(t_a) * r_a.x + cos(t_a) * r_a.y};
-    mr_b = r_b.SimpleRotate(t_b); //{cos(t_b) * r_b.x - sin(t_b) * r_b.y, sin(t_b) * r_b.x + cos(t_b) * r_b.y};
+    mr_a = r_a.SimpleRotate(t_a);
+    mr_b = r_b.SimpleRotate(t_b);
     m_u = pos_b + mr_b - (pos_a + mr_a);
     cr_au = mr_a.Cross(m_u);
     cr_bu = mr_b.Cross(m_u);
@@ -73,8 +73,8 @@ void DistanceJoint::PositionSolve()
     t_a = bodyA->GetRotation();
     t_b = bodyB->GetRotation();
 
-    r_a = r_a.SimpleRotate(t_a); //{cos(t_a) * r_a.x - sin(t_a) * r_a.y, sin(t_a) * r_a.x + cos(t_a) * r_a.y};
-    r_b = r_b.SimpleRotate(t_b); //{cos(t_b) * r_b.x - sin(t_b) * r_b.y, sin(t_b) * r_b.x + cos(t_b) * r_b.y};
+    r_a = r_a.SimpleRotate(t_a);
+    r_b = r_b.SimpleRotate(t_b);
     Vector2 u = pos_b + r_b - (pos_a + r_a);
     SCALAR length = u.GetLength();
     double C = length - d;
