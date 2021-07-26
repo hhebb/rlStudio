@@ -3,3 +3,4 @@
 - 충돌 관련 sleep 기능 추가.
 - friction 정확하게 구현.
 - 축척 설정.
+- env 에서 action command 받는 형태 구체화.

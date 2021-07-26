@@ -104,15 +104,24 @@ void World::Step()
     // physics pipeline.
     // obj 들 update, vertices update
 
-    // integrate velocity
+    // generate force
     for (int i = 0; i < bodies.size(); i ++)
-    {   
+    {
         // - force generation
         Vector2 gravity = {.0, -GRAVITY * 1 * bodies[i].GetMass()};
         SCALAR torque = 1;
         bodies[i].AddForce(gravity);
         // bodies[i].AddTorque(torque);
-        
+    }
+
+    // apply environment command. need initialize.
+    {
+        // bodies[command.bodyIndex].AddImpulseAt(Vector2{0, 0}, command.applyPoint);
+    }
+
+    // integrate velocity
+    for (int i = 0; i < bodies.size(); i ++)
+    {   
         // - velocity calculation
         bodies[i].CalculateVelocity();
         bodies[i].CalculateAngularVelocity();
@@ -213,6 +222,11 @@ void World::Step()
 
     // clear collisions
     collisionList.clear();
+}
+
+void World::SetCommand(Command com)
+{
+    command = com;
 }
 
 POLY_LIST World::GetVertices()

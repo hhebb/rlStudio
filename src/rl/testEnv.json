@@ -1,0 +1,56 @@
+- Env
+    - state type : discrete or continuous
+    - action type : discrete or continuous
+    - world
+        - bodies (list)
+            - vertices : POLY_DATA
+            - body type : enum
+            - layer : int
+        - joints (list)
+            - body a : int
+            - body b : int
+            - joint type : enum
+            - anchor a : Vector2
+            - anchor b : Vector2
+        - initial condition (list)
+            - position : Vector2
+            - rotation : SCALAR
+    - state mask
+        - discrete
+            - need?
+        - continuous (list)
+            - body : bool
+            - position : bool
+            - rotation : bool
+            - velocity : bool
+            - angularVelocity : bool
+            - arbitrary point : Vector2 or bool
+    - reward
+        - time elapse : float per step
+        - target (list)
+            - body : int
+            - position : Vector2 (world)
+            - rotation : SCALAR (world)
+            - arbitrary point : Vector2
+            - position thresh : SCALAR (distance)
+            - rotation thresh : SCALAR
+    - terminal condition
+        - time elapse : int
+        - condition
+            - body
+            - position
+            - rotation
+            - arbitrary point
+            - position thresh
+            - rotation thresh
+    - action affect
+        - discrete (list, mapper)
+            - body : int
+            - impact point : Vector2
+            - impulse : Vector2
+            - motor : SCALAR, optional
+        - continuous (list)
+            - body : int
+            - impact point : Vector2
+            - impulse : Vector2
+            - strength : float

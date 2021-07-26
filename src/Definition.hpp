@@ -348,16 +348,13 @@ struct ClippedPoints
     VERTEX_LIST cPoints;
 };
 
-// struct MassData
-// {
-//     SCALAR density = 1;
-//     SCALAR mass; // = density * area
-//     SCALAR inverseMass;
-//     SCALAR area;
-//     SCALAR inertia;
-//     SCALAR inverseInertia;
-//     Vector2 centroid;
-// };
+struct Command
+{
+    int bodyIndex;
+    int commandType; // motor, push impulse.
+    Vector2 applyPoint;
+
+};
 
 Q_DECLARE_METATYPE(Vector2);
 Q_DECLARE_METATYPE(Vector3);
