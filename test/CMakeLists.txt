@@ -1,3 +1,4 @@
+# test build targets
 cmake_minimum_required(VERSION 3.0.0)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -10,13 +11,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(QT_USE_QTOPENGL TRUE)
 # cmake_policy(SET CMP0072 NEW)
 
+# find library.
 find_package(QT NAMES Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets OpenGL REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(jsoncpp REQUIRED)
 
-set(PROJECT_SOURCES
+# set sources for target.
+set(PHYSICS_SOURCES
         main.cpp
         window/TestWindow.cpp
         apps/TestApp.cpp
@@ -38,12 +41,27 @@ set(PROJECT_SOURCES
         # src/TriangleWindow.cpp
 )
 
+set(RL_SOURCES
+        main.cpp
+        window/TestWindow.cpp
+        ../src/rl/Agent.cpp
+        ../src/rl/Environment.cpp
+        ../src/rl/Runner.cpp
+)
 
-add_executable(mytest ${PROJECT_SOURCES})
-# add_dependencies(mytest OpenGL::OpenGL)
+# add build target.
+add_executable(physics_test ${PHYSICS_SOURCES})
+add_executable(rl_test ${RL_SOURCES})
 
-target_link_libraries(mytest Qt5::Widgets Qt5::OpenGL ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
-target_link_libraries(mytest GL)
-target_link_libraries(mytest GLU)
-target_link_libraries(mytest glut)
-target_link_libraries(mytest jsoncpp)
+# link founded libraries.
+target_link_libraries(physics_test Qt5::Widgets Qt5::OpenGL ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
+target_link_libraries(physics_test GL)
+target_link_libraries(physics_test GLU)
+target_link_libraries(physics_test glut)
+target_link_libraries(physics_test jsoncpp)
+
+target_link_libraries(rl_test Qt5::Widgets Qt5::OpenGL ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
+target_link_libraries(rl_test GL)
+target_link_libraries(rl_test GLU)
+target_link_libraries(rl_test glut)
+target_link_libraries(rl_test jsoncpp)
