@@ -36,11 +36,11 @@ QT_MOC_LITERAL(1, 8, 13), // "requestUpdate"
 QT_MOC_LITERAL(2, 22, 0), // ""
 QT_MOC_LITERAL(3, 23, 7), // "Vector2"
 QT_MOC_LITERAL(4, 31, 3), // "Run"
-QT_MOC_LITERAL(5, 35, 8) // "testSlot"
+QT_MOC_LITERAL(5, 35, 8) // "setReady"
 
     },
     "TestApp\0requestUpdate\0\0Vector2\0Run\0"
-    "testSlot"
+    "setReady"
 };
 #undef QT_MOC_LITERAL
 
@@ -62,14 +62,14 @@ static const uint qt_meta_data_TestApp[] = {
 
  // slots: name, argc, parameters, tag, flags
        4,    0,   32,    2, 0x0a /* Public */,
-       5,    1,   33,    2, 0x0a /* Public */,
+       5,    0,   33,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    2,
 
  // slots: parameters
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,    2,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -82,8 +82,19 @@ void TestApp::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         switch (_id) {
         case 0: _t->requestUpdate((*reinterpret_cast< Vector2(*)>(_a[1]))); break;
         case 1: _t->Run(); break;
-        case 2: _t->testSlot((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 2: _t->setReady(); break;
         default: ;
+        }
+    } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        switch (_id) {
+        default: *reinterpret_cast<int*>(_a[0]) = -1; break;
+        case 0:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<int*>(_a[0]) = -1; break;
+            case 0:
+                *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< Vector2 >(); break;
+            }
+            break;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
@@ -131,7 +142,7 @@ int TestApp::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         _id -= 3;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         if (_id < 3)
-            *reinterpret_cast<int*>(_a[0]) = -1;
+            qt_static_metacall(this, _c, _id, _a);
         _id -= 3;
     }
     return _id;

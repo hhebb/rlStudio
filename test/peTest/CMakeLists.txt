@@ -23,35 +23,22 @@ set(PHYSICS_SOURCES
         main.cpp
         window/TestWindow.cpp
         apps/TestApp.cpp
-        ../src/physics/World.cpp
-        ../src/physics/Body.cpp
+        ../../src/physics/World.cpp
+        ../../src/physics/Body.cpp
         # ../src/physics/TestThread.cpp
-        ../src/physics/Collider.cpp
-        ../src/physics/Collision.cpp
-        ../src/Helper.cpp
-        ../src/physics/Joint.cpp
-        ../src/physics/DistanceJoint.cpp
-        ../src/physics/RevoluteJoint.cpp
-        ../src/physics/PrismaticJoint.cpp
-        ../src/physics/WorldParser.cpp
+        ../../src/physics/Collider.cpp
+        ../../src/physics/Collision.cpp
+        ../../src/Helper.cpp
+        ../../src/physics/Joint.cpp
+        ../../src/physics/DistanceJoint.cpp
+        ../../src/physics/RevoluteJoint.cpp
+        ../../src/physics/PrismaticJoint.cpp
+        ../../src/physics/WorldParser.cpp
 
-        # _gltest/RectangleWindow.cpp
-        # _gltest/TestDialog.cpp
-        # src/OpenGLWindow.cpp
-        # src/TriangleWindow.cpp
-)
-
-set(RL_SOURCES
-        main.cpp
-        window/TestWindow.cpp
-        ../src/rl/Agent.cpp
-        ../src/rl/Environment.cpp
-        ../src/rl/Runner.cpp
 )
 
 # add build target.
 add_executable(physics_test ${PHYSICS_SOURCES})
-add_executable(rl_test ${RL_SOURCES})
 
 # link founded libraries.
 target_link_libraries(physics_test Qt5::Widgets Qt5::OpenGL ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
@@ -59,9 +46,3 @@ target_link_libraries(physics_test GL)
 target_link_libraries(physics_test GLU)
 target_link_libraries(physics_test glut)
 target_link_libraries(physics_test jsoncpp)
-
-target_link_libraries(rl_test Qt5::Widgets Qt5::OpenGL ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
-target_link_libraries(rl_test GL)
-target_link_libraries(rl_test GLU)
-target_link_libraries(rl_test glut)
-target_link_libraries(rl_test jsoncpp)

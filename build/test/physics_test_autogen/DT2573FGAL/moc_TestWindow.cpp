@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_TestWindow_t {
-    QByteArrayData data[4];
-    char stringdata0[27];
+    QByteArrayData data[3];
+    char stringdata0[19];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -33,11 +33,10 @@ static const qt_meta_stringdata_TestWindow_t qt_meta_stringdata_TestWindow = {
     {
 QT_MOC_LITERAL(0, 0, 10), // "TestWindow"
 QT_MOC_LITERAL(1, 11, 6), // "Render"
-QT_MOC_LITERAL(2, 18, 0), // ""
-QT_MOC_LITERAL(3, 19, 7) // "Vector2"
+QT_MOC_LITERAL(2, 18, 0) // ""
 
     },
-    "TestWindow\0Render\0\0Vector2"
+    "TestWindow\0Render\0"
 };
 #undef QT_MOC_LITERAL
 
@@ -58,7 +57,7 @@ static const uint qt_meta_data_TestWindow[] = {
        1,    1,   19,    2, 0x0a /* Public */,
 
  // slots: parameters
-    QMetaType::Void, 0x80000000 | 3,    2,
+    QMetaType::Void, QMetaType::QVariant,    2,
 
        0        // eod
 };
@@ -69,7 +68,7 @@ void TestWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         auto *_t = static_cast<TestWindow *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->Render((*reinterpret_cast< Vector2(*)>(_a[1]))); break;
+        case 0: _t->Render((*reinterpret_cast< QVariant(*)>(_a[1]))); break;
         default: ;
         }
     }

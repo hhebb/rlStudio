@@ -14,9 +14,9 @@
 			}
 		]
 	},
-	"id" : "mytest_autogen::@36f028580bb02cc8272a",
+	"id" : "physics_test_autogen::@36f028580bb02cc8272a",
 	"isGeneratorProvided" : true,
-	"name" : "mytest_autogen",
+	"name" : "physics_test_autogen",
 	"paths" : 
 	{
 		"build" : "test",
@@ -44,13 +44,13 @@
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "build/test/CMakeFiles/mytest_autogen",
+			"path" : "build/test/CMakeFiles/physics_test_autogen",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "build/test/CMakeFiles/mytest_autogen.rule",
+			"path" : "build/test/CMakeFiles/physics_test_autogen.rule",
 			"sourceGroupIndex" : 1
 		}
 	],

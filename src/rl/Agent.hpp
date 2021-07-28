@@ -3,6 +3,11 @@
 
 class Agent
 {
-
+private:
+    ;
+public:
+    void MakeAction();
+    void Train();
 };
+
 # endif

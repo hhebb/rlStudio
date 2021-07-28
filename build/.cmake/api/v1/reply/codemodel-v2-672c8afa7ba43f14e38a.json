@@ -29,7 +29,9 @@
 					"targetIndexes" : 
 					[
 						0,
-						1
+						1,
+						2,
+						3
 					]
 				}
 			],
@@ -46,7 +48,9 @@
 					"targetIndexes" : 
 					[
 						0,
-						1
+						1,
+						2,
+						3
 					]
 				}
 			],
@@ -54,16 +58,30 @@
 			[
 				{
 					"directoryIndex" : 1,
-					"id" : "mytest::@36f028580bb02cc8272a",
-					"jsonFile" : "target-mytest-Debug-bd32fd612ef5d99f8b68.json",
-					"name" : "mytest",
+					"id" : "physics_test::@36f028580bb02cc8272a",
+					"jsonFile" : "target-physics_test-Debug-d2408b5e12382075c7c3.json",
+					"name" : "physics_test",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 1,
-					"id" : "mytest_autogen::@36f028580bb02cc8272a",
-					"jsonFile" : "target-mytest_autogen-Debug-d064902c1c6757f0a788.json",
-					"name" : "mytest_autogen",
+					"id" : "physics_test_autogen::@36f028580bb02cc8272a",
+					"jsonFile" : "target-physics_test_autogen-Debug-268fc1d358c21b236740.json",
+					"name" : "physics_test_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "rl_test::@36f028580bb02cc8272a",
+					"jsonFile" : "target-rl_test-Debug-9b8f514f021028e664bf.json",
+					"name" : "rl_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "rl_test_autogen::@36f028580bb02cc8272a",
+					"jsonFile" : "target-rl_test_autogen-Debug-7a29fa98ca2c18bbb000.json",
+					"name" : "rl_test_autogen",
 					"projectIndex" : 0
 				}
 			]

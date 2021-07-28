@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "test/mytest"
+			"path" : "test/physics_test"
 		}
 	],
 	"backtrace" : 1,
@@ -25,13 +25,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 42,
+				"line" : 53,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 45,
+				"line" : 57,
 				"parent" : 0
 			}
 		]
@@ -81,7 +81,7 @@
 				},
 				{
 					"backtrace" : 0,
-					"path" : "/home/hebb/project/rlstudio/build/test/mytest_autogen/include"
+					"path" : "/home/hebb/project/rlstudio/build/test/physics_test_autogen/include"
 				},
 				{
 					"backtrace" : 2,
@@ -138,10 +138,10 @@
 	[
 		{
 			"backtrace" : 0,
-			"id" : "mytest_autogen::@36f028580bb02cc8272a"
+			"id" : "physics_test_autogen::@36f028580bb02cc8272a"
 		}
 	],
-	"id" : "mytest::@36f028580bb02cc8272a",
+	"id" : "physics_test::@36f028580bb02cc8272a",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -203,8 +203,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "mytest",
-	"nameOnDisk" : "mytest",
+	"name" : "physics_test",
+	"nameOnDisk" : "physics_test",
 	"paths" : 
 	{
 		"build" : "test",
@@ -239,7 +239,7 @@
 			"backtrace" : 0,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
-			"path" : "build/test/mytest_autogen/mocs_compilation.cpp",
+			"path" : "build/test/physics_test_autogen/mocs_compilation.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
