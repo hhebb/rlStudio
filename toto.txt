@@ -9,3 +9,4 @@
 [rl module]
 - runner, environment, agent 모듈 구조 설계 심화.
 - meta file 설계 마무리.
+- 추가적인 클래스 및 구조체 작성 - action, state, return object

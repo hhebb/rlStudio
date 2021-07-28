@@ -43,10 +43,11 @@ set(PHYSICS_SOURCES
 
 set(RL_SOURCES
         main.cpp
+        TestApp.cpp
         window/TestWindow.cpp
-        ../src/rl/Agent.cpp
-        ../src/rl/Environment.cpp
-        ../src/rl/Runner.cpp
+        ../../src/rl/Agent.cpp
+        ../../src/rl/Environment.cpp
+        ../../src/rl/Runner.cpp
 )
 
 # add build target.

@@ -4,7 +4,7 @@
 # include <QThread>
 # include <QEventLoop>
 # include <QCoreApplication>
-# include "../../src/physics/TestThread.hpp"
+# include "../../../src/physics/TestThread.hpp"
 
 using namespace std;
 

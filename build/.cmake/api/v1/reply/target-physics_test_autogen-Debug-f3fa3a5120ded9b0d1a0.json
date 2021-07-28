@@ -5,7 +5,7 @@
 		"commands" : [],
 		"files" : 
 		[
-			"test/CMakeLists.txt"
+			"test/peTest/CMakeLists.txt"
 		],
 		"nodes" : 
 		[
@@ -14,13 +14,13 @@
 			}
 		]
 	},
-	"id" : "rl_test_autogen::@36f028580bb02cc8272a",
+	"id" : "physics_test_autogen::@34f2cdab1f9523365291",
 	"isGeneratorProvided" : true,
-	"name" : "rl_test_autogen",
+	"name" : "physics_test_autogen",
 	"paths" : 
 	{
-		"build" : "test",
-		"source" : "test"
+		"build" : "test/peTest",
+		"source" : "test/peTest"
 	},
 	"sourceGroups" : 
 	[
@@ -44,13 +44,13 @@
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "build/test/CMakeFiles/rl_test_autogen",
+			"path" : "build/test/peTest/CMakeFiles/physics_test_autogen",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "build/test/CMakeFiles/rl_test_autogen.rule",
+			"path" : "build/test/peTest/CMakeFiles/physics_test_autogen.rule",
 			"sourceGroupIndex" : 1
 		}
 	],

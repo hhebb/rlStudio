@@ -2,9 +2,9 @@
 # define TEST_APP
 
 # include <QObject>
-# include "../../src/physics/World.hpp"
+# include "../../../src/physics/World.hpp"
 # include "../window/TestWindow.hpp"
-# include "../../src/Definition.hpp"
+# include "../../../src/Definition.hpp"
 
 class TestApp: public QObject
 {
