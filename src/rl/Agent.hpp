@@ -1,12 +1,16 @@
 # ifndef AGENT
 # define AGENT
 
+# include "RLUtil.hpp"
+
 class Agent
 {
 private:
-    ;
+    // Action action;
+    History history;
 public:
-    void MakeAction();
+    Action MakeAction(State s);
+    void SetEnvResponse(State s, REWARD r, bool d);
     void Train();
 };
 

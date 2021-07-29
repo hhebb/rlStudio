@@ -8,12 +8,16 @@ class Runner
 {
 private:
     // some memebers are from env, agent's meta file.
-    int epochs;
-    Environment env;
-    Agent agent;
+    int totalEpochs;
+    Environment* env;
+    Agent* agent;
 public:
+    Runner();
+    void MakeEnv(); // make env using json config
+    void MakeAgent(); // make agent using json config
     void ExecuteTrain();
     void ExecuteSimulate();
+    void GetResult();
 };
 
 # endif

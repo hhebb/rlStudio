@@ -8,7 +8,7 @@ using namespace std;
 
 class TestApp
 {
-    Runner runner;
+    Runner* runner;
 };
 
 # endif

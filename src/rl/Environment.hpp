@@ -2,15 +2,24 @@
 # define ENVIRONMENT
 
 # include "../physics/World.hpp"
+# include "RLUtil.hpp"
 
 class Environment
 {
 private:
-    World world;
+    State state;
+    REWARD reward;
+    bool done;
+    World* world;
+
 public:
-    void Step();
+    Environment();
     void Reset();
+    void Step(Action action);
     void Render();
+    State GetState();
+    REWARD GetReward();
+    bool GetDone();
 };
 
 # endif

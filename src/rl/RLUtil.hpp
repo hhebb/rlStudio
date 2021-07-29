@@ -6,6 +6,7 @@
 # define IMAGE_STATE vector<vector<float>>
 # define DISCRETE_ACTION vector<int>
 # define CONTINUOUS_ACTION vector<float>
+# define REWARD float
 
 # include <vector>
 
@@ -27,6 +28,15 @@ struct Action
     DISCRETE_ACTION discreteAction;
     // continuous
     CONTINUOUS_ACTION continuousAction;
+};
+
+struct History
+{
+    int maxHistory;
+    vector<State> stateHistory;
+    vector<Action> actionHistory;
+    vector<REWARD> rewardHistory;
+    vector<bool> doneHistory;
 };
 
 

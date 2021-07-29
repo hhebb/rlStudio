@@ -10,3 +10,5 @@
 - runner, environment, agent 모듈 구조 설계 심화.
 - meta file 설계 마무리.
 - 추가적인 클래스 및 구조체 작성 - action, state, return object
+- step 실행 후 바로 반환하지 말고, getter 로 각각 가져오기.
+- 행동 양식에 따라 서브 클래스를 만들고 설정값들만 json 으로 파싱하는 형태. (agent, env)
