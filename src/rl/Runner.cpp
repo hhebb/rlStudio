@@ -5,12 +5,12 @@ Runner::Runner()
     ;
 }
 
-void Runner::MakeEnv()
+void Runner::CreateEnv()
 {
     env = new Environment();
 }
 
-void Runner::MakeAgent()
+void Runner::CreateAgent()
 {
     agent = new Agent();
 }
@@ -30,7 +30,7 @@ void Runner::ExecuteTrain()
             State nextState = env->GetState();
             REWARD reward = env->GetReward();
             bool done = env->GetDone();
-            agent->SetEnvResponse(nextState, reward, done);
+            agent->TakeEnvResponse(nextState, reward, done);
             
             env->Render();
         }

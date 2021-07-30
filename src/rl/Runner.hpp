@@ -13,8 +13,8 @@ private:
     Agent* agent;
 public:
     Runner();
-    void MakeEnv(); // make env using json config
-    void MakeAgent(); // make agent using json config
+    void CreateEnv(); // make env using json config
+    void CreateAgent(); // make agent using json config
     void ExecuteTrain();
     void ExecuteSimulate();
     void GetResult();
