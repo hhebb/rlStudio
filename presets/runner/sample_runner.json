@@ -1,0 +1,7 @@
+{
+    "id": 0,
+    "name": "sample_runner",
+    "env_file": "../env/sample_env.json",
+    "agent_file": "../agent/sample_agent.json",
+    "etc": ""
+  }

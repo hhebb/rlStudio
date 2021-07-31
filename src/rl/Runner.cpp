@@ -1,8 +1,17 @@
 # include "Runner.hpp"
 
-Runner::Runner()
+Runner::Runner(string jsonPath)
 {
-    ;
+    ifstream s;
+    s.open(jsonPath);
+    Json::Reader reader;
+    Json::Value root;
+    if (!reader.parse(s, root))
+    {
+        cout << "> json parse error." << endl;
+        return;
+    }
+    
 }
 
 void Runner::CreateEnv()

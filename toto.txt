@@ -10,3 +10,8 @@
 - meta file 설계 마무리.
 - 행동 양식에 따라 서브 클래스를 만들고 설정값들만 json 으로 파싱하는 형태. (agent, env)
 - algorithm 디렉토리에 있는 모든 파일들을 한꺼번에 include 하는 헤더 파일 필요?
+- env - pe 연결.
+
+[etc]
+- logger 만들기
+- debugger 고치기

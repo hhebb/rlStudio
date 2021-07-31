@@ -8,7 +8,10 @@ using namespace std;
 
 class TestApp
 {
+private:
     Runner* runner;
+public:
+    void StartApp();
 };
 
 # endif

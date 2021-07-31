@@ -2,7 +2,9 @@
 
 Environment::Environment()
 {
-    ;
+    // world 객체 생성, world json parsing.
+    world = new World();
+    world->Init(); // need json parse
 }
 
 void Environment::Reset()

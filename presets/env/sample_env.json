@@ -1,0 +1,10 @@
+{
+    "name": "sample_env",
+    "world_file": "sample_world.json",
+    "state_type": "discrete",
+    "action_type": "discrete",
+    "state_mask": "",
+    "reward": "",
+    "terminal_condition": "",
+    "action_affect": ""
+  }
